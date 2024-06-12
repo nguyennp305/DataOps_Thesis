@@ -97,12 +97,32 @@ aside {
 }
 
 .filter-container {
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 
   .filter-item {
     display: inline-block;
     vertical-align: middle;
     margin-bottom: 10px;
+  }
+
+  .portlet-filter {
+    padding-bottom: 20px;
+  }
+
+  .portlet-filter_action {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+    .portlet-filter_action-button {
+      width: 150px;
+    }
+  }
+
+  .mod-table {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px
   }
 }
 

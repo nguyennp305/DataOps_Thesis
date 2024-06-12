@@ -16,7 +16,7 @@
       />
       <mallki
         class="mallki-text"
-        text="vue-typescript-admin"
+        text="dataOps"
       />
       <div
         style="padding-top:35px;"

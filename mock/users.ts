@@ -28,6 +28,7 @@ const userList: IUserData[] = [
 ]
 const userCount = 100
 
+// random user
 for (let i = 2; i < userCount; i++) {
   userList.push({
     id: i,

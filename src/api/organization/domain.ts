@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export const getListDomain = (params: any) =>
   request({
-    url: '/articles',
+    url: '/domains',
     method: 'get',
     params
   })

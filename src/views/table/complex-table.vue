@@ -503,7 +503,7 @@ export default class extends Vue {
       if (valid) {
         const articleData = this.tempArticleData
         articleData.id = Math.round(Math.random() * 100) + 1024 // mock a id
-        articleData.author = 'vue-typescript-admin'
+        articleData.author = 'dataOps'
         const { data } = await createArticle({ article: articleData })
         data.article.timestamp = Date.parse(data.article.timestamp)
         this.list.unshift(data.article)

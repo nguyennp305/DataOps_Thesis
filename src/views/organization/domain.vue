@@ -1,111 +1,145 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-checkbox
-        v-model="showReviewer"
-        class="filter-item"
-        @change="tableKey=tableKey+1"
-      >{{ $t('table.reviewer') }}</el-checkbox>
+      <div class="portlet-filter">
+        <labeling-slot :label="$t('table.title')">
+          <el-input
+            v-model="listQuery.title"
+            :placeholder="$t('table.title')"
+          />
+        </labeling-slot>
+
+        <labeling-slot :label="$t('table.author')">
+          <el-input
+            v-model="listQuery.author"
+            :placeholder="$t('table.author')"
+          />
+        </labeling-slot>
+
+        <labeling-slot :label="$t('table.reviewer')">
+          <el-input
+            v-model="listQuery.reviewer"
+            :placeholder="$t('table.reviewer')"
+          />
+        </labeling-slot>
+
+        <labeling-slot :label="$t('table.type')">
+          <el-select
+            v-model="listQuery.type"
+            :placeholder="$t('table.type')"
+            clearable
+          >
+            <el-option
+              v-for="item in calendarTypeOptions"
+              :key="item.key"
+              :label="item.displayName+'('+item.key+')'"
+              :value="item.key"
+            />
+        </el-select>
+        </labeling-slot>
+
+        <labeling-slot :label="$t('table.status')">
+          <el-select
+            v-model="listQuery.status"
+            :placeholder="$t('table.status')"
+            clearable
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.key"
+              :label="item.displayName"
+              :value="item.key"
+            />
+        </el-select>
+        </labeling-slot>
+
+      </div>
+      <div class="portlet-filter_action">
+        <el-button
+          v-waves
+          type="primary"
+          icon="el-icon-search"
+          class="portlet-filter_action-button"
+          @click="handleFilter"
+        >
+          {{ $t('table.search') }}
+        </el-button>
+      </div>
+      <div class="mod-table">
+        <el-checkbox
+          v-model="showReviewer"
+          @change="tableKey=tableKey+1"
+        >
+          {{ $t('table.reviewer') }}
+        </el-checkbox>
+        <el-checkbox
+          v-model="showStatus"
+          @change="tableKey=tableKey+1"
+        >
+          {{ $t('table.status') }}
+        </el-checkbox>
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          @click="handleCreate"
+        >
+          {{ $t('table.add') }}
+        </el-button>
+        <el-button
+          v-waves
+          :loading="downloadLoading"
+          type="primary"
+          icon="el-icon-download"
+          @click="handleDownload"
+        >
+          {{ $t('table.export') }}
+        </el-button>
+      </div>
     </div>
+    <!-- <filter-seach
+      :listQuery="listQuery"
+      :showReviewer.sync="showReviewer"
+      :showStatus.sync="showStatus"
+      :downloadLoading="downloadLoading"
+      :calendarTypeOptions="calendarTypeOptions"
+      :statusOptions="statusOptions"
+      @filter="handleFilter"
+      @create="handleCreate"
+      @download="handleDownload"
+      @update:listQuery="updateListQuery"
+      @update:showReviewer="updateShowReviewer"
+      @update:showStatus="updateShowStatus"
+    /> -->
 
-    <el-table
-      v-loading="listLoading"
-      :key="tableKey"
+    <datatable
+      :loading="listLoading"
       :data="list"
-      :border="true"
-      fit
-      highlight-current-row
-      style="width: 100%;"
+      :total="total"
+      :tableKey="tableKey"
+      :listQuery="listQuery"
+      :showReviewer="showReviewer"
+      :showStatus="showStatus"
       @sort-change="sortChange"
-    >
-      <el-table-column
-        :label="$t('table.id')"
-        prop="id"
-        sortable="custom"
-        :align="'center'"
-        width="80"
-        :class-name="getSortClass('id')"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('table.date')"
-        width="180px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('table.title')"
-        min-width="150px"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.title }}</span>
-          <el-tag>{{ row.type }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('table.author')"
-        width="180px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        v-if="showReviewer"
-        :label="$t('table.reviewer')"
-        width="180px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <span style="color: red;">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('table.actions')"
-        :align="'center'"
-        width="230px"
-        clas-name="fixed-width"
-      >
-        <template slot-scope="{row, $index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            {{  $t('table.edit') }}
-          </el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row, $index)">
-            {{  $t('table.delete') }}
-          </el-button>
-        </template>
-      </el-table-column>
-  </el-table>
-
-  <pagination
-    v-show="total > 0"
-    :total=total
-    :page.sync="listQuery.page"
-    :limit.sync="listQuery.limit"
-    @pagination="getList"
-  />
+      @update="handleUpdate"
+      @delete="handleDelete"
+      @pagination="getList"
+    />
   </div>
 </template>
 
 <script>
+// import component
+import Datatable from './components/domain/datatable'
+import LabelingSlot from '@/components/Commons/labeling-slot'
+// import FilterSearch from './components/domain/filter-search'
+// import function call api.
 import { getListDomain } from '@/api/organization/domain'
-import Pagination from '@/components/Pagination/index.vue'
 
 export default {
   components: {
-    Pagination
+    Datatable,
+    // FilterSearch,
+    LabelingSlot
   },
   data() {
     return {
@@ -116,9 +150,27 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
+        title: undefined,
+        type: undefined,
+        author: undefined,
+        reviewer: undefined,
+        status: undefined,
         sort: '+id'
       },
-      showReviewer: false
+      showReviewer: false,
+      showStatus: false,
+      downloadLoading: false,
+      calendarTypeOptions: [
+        { key: 'CN', displayName: 'China' },
+        { key: 'US', displayName: 'USA' },
+        { key: 'JP', displayName: 'Japan' },
+        { key: 'EU', displayName: 'Eurozone' }
+      ],
+      statusOptions: [
+        { key: 'published', displayName: 'Published' },
+        { key: 'draft', displayName: 'Draft' },
+        { key: 'deleted', displayName: 'Deleted' }
+      ]
     }
   },
   created() {
@@ -134,10 +186,6 @@ export default {
       setTimeout(() => {
         this.listLoading = false
       }, 0.5 * 1000)
-    },
-    getSortClass(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
     },
     sortChange(data) {
       const { prop, order } = data
@@ -177,7 +225,24 @@ export default {
           this.list.splice(index, 1)
         })
         .catch(err => { console.error(err) })
-    }
+    },
+    handleCreate() {
+      console.log('handleCreate')
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      console.log('handleDownload')
+      this.downloadLoading = false
+    },
+    // updateListQuery(newListQuery) {
+    //   this.listQuery = newListQuery
+    // },
+    // updateShowReviewer(newVal) {
+    //   this.showReviewer = newVal
+    // },
+    // updateShowStatus(newVal) {
+    //   this.showStatus = newVal
+    // }
   }
 }
 </script>

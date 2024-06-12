@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: Mock API for vue-typescript-admin-template.
+  description: Mock API for dataOps.
   version: 1.0.0
   title: Mock API
   contact:
@@ -710,6 +710,85 @@ paths:
                         $ref: '#/components/schemas/User'
         401:
           $ref: '#/components/responses/Unauthorized'
+  /domains:
+    get:
+      tags:
+        - domains
+      summary: Get Domain List
+      description: Return a list of domains.
+      operationId: getDomains
+      parameters:
+        - name: title
+          in: query
+          description: Used to filter domains by matched title substring.
+          schema:
+            $ref: '#/components/schemas/Domain/properties/title'
+        - name: author
+          in: query
+          description: Used to filter domains by matched author substring.
+          schema:
+            $ref: '#/components/schemas/Domain/properties/author'
+        - name: reviewer
+          in: query
+          description: Used to filter domains by matched reviewer substring.
+          schema:
+            $ref: '#/components/schemas/Domain/properties/reviewer'
+        - name: type
+          in: query
+          description: Used to filter domains by type.
+          schema:
+            $ref: '#/components/schemas/Domain/properties/type'
+        - name: status
+          in: query
+          description: Used to filter domains by status.
+          schema:
+            $ref: '#/components/schemas/Domain/properties/status'
+        - name: page
+          in: query
+          description: The wanted page number (one page).
+          schema:
+            type: integer
+            format: int32
+            example: 1
+            minimum: 1
+        - name: limit
+          in: query
+          description: The maximum number of Domain returned for one page.
+          schema:
+            type: integer
+            format: int32
+            example: 10
+            minimum: 0
+            maximum: 50
+        - name: sort
+          in: query
+          description: Optional sorting order for Domain.
+          schema:
+            type: string
+            enum:
+              - +id
+              - -id
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        format: int32
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Domain'
 components:
   securitySchemes:
     AccessTokenAuth:
@@ -818,6 +897,36 @@ components:
        - timestamp
        - importance
        - author
+    Domain:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - deleted
+        title:
+          type: string
+          example: test_ik
+        author:
+          type: string
+          example: Chong Guo
+        reviewer:
+          type: string
+          example: Chong Guo
+        type:
+          type: string
+          enum:
+            - CN
+            - US
+            - JP
+            - EU
+      required:
+
     Pageviews:
       type: object
       properties:
