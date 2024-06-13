@@ -83,11 +83,11 @@
         width="230px"
         clas-name="fixed-width"
       >
-        <template slot-scope="{row, $index}">
+        <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             {{  $t('table.edit') }}
           </el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row, $index)">
+          <el-button type="danger" size="mini" @click="handleDelete(row)">
             {{  $t('table.delete') }}
           </el-button>
         </template>
@@ -134,8 +134,8 @@ export default {
     handleUpdate(row) {
       this.$emit('update', row)
     },
-    handleDelete(row, index) {
-      this.$emit('delete', { row, index })
+    handleDelete(row) {
+      this.$emit('delete', row)
     },
     emitPagination() {
       this.$emit('pagination')

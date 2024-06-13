@@ -6,3 +6,16 @@ export const getListDomain = (params: any) =>
     method: 'get',
     params
   })
+
+export const deleteDomain = (id: number) =>
+  request({
+    url: `/domains/${id}`,
+    method: 'delete'
+  })
+
+export const updateDomain = (id: number, data: any) =>
+  request({
+    url: `/domains/${id}`,
+    method: 'put',
+    data
+  })

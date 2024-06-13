@@ -1,5 +1,7 @@
 export default {
   route: {
+    add: '追加する',
+    edit: '編集する',
     dashboard: 'トップ',
     documentation: 'ドキュメント',
     guide: 'ガイド',

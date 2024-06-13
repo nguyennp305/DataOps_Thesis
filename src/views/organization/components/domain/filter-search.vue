@@ -67,13 +67,13 @@
     <div class="mod-table">
       <el-checkbox
         v-model="localShowReviewer"
-        @change="tableKey=tableKey+1"
+        @change="localTableKey=localTableKey+1"
       >
         {{ $t('table.reviewer') }}
       </el-checkbox>
       <el-checkbox
         v-model="localShowStatus"
-        @change="tableKey=tableKey+1"
+        @change="localTableKey=localTableKey+1"
       >
         {{ $t('table.status') }}
       </el-checkbox>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import LabelingSlot from '@/components/Commons/labelingSlot.vue'
+import LabelingSlot from '@/components/Commons/labeling-slot'
 
 export default {
   name: 'FilterSearchDomain',
@@ -109,15 +109,26 @@ export default {
     listQuery: Object,
     showReviewer: Boolean,
     showStatus: Boolean,
-    downloadLoading: Boolean,
-    calendarTypeOptions: Array,
-    statusOptions: Array
+    tableKey: Number,
+    downloadLoading: Boolean
   },
   data() {
     return {
       localListQuery: { ...this.listQuery },
       localShowReviewer: this.showReviewer,
-      localShowStatus: this.showStatus
+      localShowStatus: this.showStatus,
+      localTableKey: this.tableKey,
+      calendarTypeOptions: [
+        { key: 'CN', displayName: 'China' },
+        { key: 'US', displayName: 'USA' },
+        { key: 'JP', displayName: 'Japan' },
+        { key: 'EU', displayName: 'Eurozone' }
+      ],
+      statusOptions: [
+        { key: 'published', displayName: 'Published' },
+        { key: 'draft', displayName: 'Draft' },
+        { key: 'deleted', displayName: 'Deleted' }
+      ]
     }
   },
   watch: {
@@ -132,6 +143,20 @@ export default {
     },
     localShowStatus(newVal) {
       this.$emit('update:showStatus', newVal)
+    },
+    localTableKey(newVal) {
+      this.$emit('update:tableKey', newVal)
+    }
+  },
+  methods: {
+    handleFilter() {
+      this.$emit('filter')
+    },
+    handleCreate() {
+      this.$emit('create')
+    },
+    handleDownload() {
+      this.$emit('download')
     }
   }
 }

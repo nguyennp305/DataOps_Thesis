@@ -789,6 +789,37 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Domain'
+  /domains/{id}:
+    delete:
+      tags:
+        - domains
+      summary: Delete Domain
+      description: Delete domain by ID.
+      operationId: deleteDomainByID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Domain id.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+
 components:
   securitySchemes:
     AccessTokenAuth:

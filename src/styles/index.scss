@@ -106,7 +106,10 @@ aside {
   }
 
   .portlet-filter {
-    padding-bottom: 20px;
+    // padding-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
   }
 
   .portlet-filter_action {

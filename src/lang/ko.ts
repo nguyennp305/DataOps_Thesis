@@ -1,5 +1,7 @@
 export default {
   route: {
+    add: '추가',
+    edit: '수정',
     dashboard: '대시보드',
     documentation: '문서',
     guide: '가이드',

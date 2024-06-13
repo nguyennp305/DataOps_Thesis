@@ -1,5 +1,7 @@
 export default {
   route: {
+    add: '添加',
+    edit: '编辑',
     dashboard: '首页',
     documentation: '文档',
     guide: '引导页',

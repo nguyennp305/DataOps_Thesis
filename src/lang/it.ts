@@ -1,5 +1,7 @@
 export default {
   route: {
+    add: 'Aggiungi',
+    edit: 'Modifica',
     dashboard: 'Dashboard',
     documentation: 'Documentazione',
     guide: 'Guida',

@@ -1,7 +1,7 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 
-const domainList: any[] = []
+let domainList: any[] = []
 const domainCount = 100
 
 for (let i = 0; i < domainCount; i++) {
@@ -41,5 +41,23 @@ export const getDomains = (req: Request, res: Response) => {
       limit: parseInt(limit.toString()),
       page: parseInt(page.toString())
     }
+  })
+}
+
+export const updateDomain = (req: Request, res: Response) => {
+  const { id } = req.params
+  const { domain } = req.body
+  return res.json({
+    code: 70001,
+    message: 'Domain not found'
+  })
+}
+
+export const deleteDomainByID = (req: Request, res: Response) => {
+  const { id } = req.params
+  domainList = domainList.filter((item) => parseInt(item.id) !== parseInt(id))
+  console.log('domainList-domainList', domainList.length, id)
+  return res.json({
+    code: 20000
   })
 }
