@@ -67,8 +67,12 @@ export default class extends Vue {
     this.$i18n.locale = lang
     AppModule.SetLanguage(lang)
     document.documentElement.lang = lang
-    const title = this.$route.meta.title ? `${this.$t(`route.${this.$route.meta.title}`)} - ${settings.title}` : `${settings.title}`
+    const metaTitle = this.$route?.meta?.title
+    const title = metaTitle
+      ? `${this.$t(`route.${metaTitle}`)} - ${settings.title}`
+      : `${settings.title}`
     document.title = title
+    // const title = this.$route.meta.title ? `${this.$t(`route.${this.$route.meta.title}`)} - ${settings.title}` : `${settings.title}`
     this.$message({
       message: this.$t('components.changeLanguageTips').toString(),
       type: 'success'
