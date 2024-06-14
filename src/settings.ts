@@ -15,7 +15,7 @@ const settings: ISettings = {
   title: 'DataOps',
   showSettings: true,
   showTagsView: true,
-  fixedHeader: false,
+  fixedHeader: true,
   showSidebarLogo: false,
   errorLog: ['production'],
   sidebarTextTheme: true,

@@ -31,6 +31,7 @@
     <domain-modal
       :visible="visible"
       :isEdit="isEditModal"
+      :data="propDataItem"
       @update:visible="handleUpdateVisible"
     />
   </div>
@@ -70,7 +71,8 @@ export default {
       showStatus: false,
       downloadLoading: false,
       visible: false,
-      isEditModal: false
+      isEditModal: false,
+      propDataItem: null
     }
   },
   created() {
@@ -106,10 +108,12 @@ export default {
       this.getList()
     },
     handleUpdate(row) {
+      this.propDataItem = row
       this.isEditModal = true
       this.visible = true
     },
     handleUpdateVisible(newVal) {
+      this.propDataItem = null
       this.visible = newVal
     },
     handleDelete(row) {
@@ -131,6 +135,7 @@ export default {
         .catch(err => { console.error(err) })
     },
     handleCreate() {
+      this.propDataItem = null
       this.isEditModal = false
       this.visible = true
     },

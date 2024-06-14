@@ -46,11 +46,24 @@ export const getDomains = (req: Request, res: Response) => {
 
 export const updateDomain = (req: Request, res: Response) => {
   const { id } = req.params
-  const { domain } = req.body
-  return res.json({
-    code: 70001,
-    message: 'Domain not found'
-  })
+  const domain = req.query
+  let updated = false
+  for (let i = 0; i < domainList.length; i++) {
+    if (parseInt(domainList[i].id) === parseInt(id)) {
+      domainList[i] = { ...domainList[i], ...domain }
+      updated = true
+      return res.json({
+        code: 20000,
+        data: domainList[i]
+      })
+    }
+  }
+  if (!updated) {
+    return res.json({
+      code: 70001,
+      message: 'Domain not found'
+    })
+  }
 }
 
 export const deleteDomainByID = (req: Request, res: Response) => {

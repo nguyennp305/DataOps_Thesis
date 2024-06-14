@@ -819,7 +819,46 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
-
+    put:
+      tags:
+        - domains
+      summary: Update Domain Detail
+      description: Update domain deatail by ID.
+      operationId: updateDomain
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Domain id.
+          schema:
+            type: integer
+            format: int64
+        - name: domain
+          in: query
+          required: true
+          description: data for the updated domain.
+          schema:
+            $ref: '#/components/schemas/Domain'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                  data:
+                    type: object
+                    properties:
+                      article:
+                        $ref: '#/components/schemas/Domain'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     AccessTokenAuth:
