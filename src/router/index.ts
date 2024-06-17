@@ -185,28 +185,14 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/organization',
     component: Layout,
-    redirect: '/organization/domain',
-    meta: {
-      title: 'organization',
-      icon: 'component'
-    },
     children: [
-      {
-        path: 'domain',
-        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/organization/domain.vue'),
-        name: 'Domain',
-        meta: {
-          title: 'domain',
-          noCache: true
-        }
-      },
       {
         path: 'enterprise',
         component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/organization/enterprise.vue'),
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          noCache: true
+          icon: 'enterprise'
         }
       }
     ]

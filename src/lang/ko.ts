@@ -49,7 +49,6 @@ export default {
     editArticle: '게시물 편집',
     articleList: '게시물 리스트',
     organization: '조직',
-    domain: '도메인',
     enterprise: '기업',
     errorPages: '에러 페이지',
     page401: '401',

@@ -101,7 +101,7 @@
 import LabelingSlot from '@/components/Commons/labeling-slot'
 
 export default {
-  name: 'FilterSearchDomain',
+  name: 'FilterSearchEnterprise',
   components: {
     LabelingSlot
   },

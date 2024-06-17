@@ -49,7 +49,6 @@ export default {
     editArticle: '投稿編集',
     articleList: '投稿リスト',
     organization: '組織',
-    domain: 'ドメイン',
     enterprise: '企業',
     errorPages: 'エラーページ',
     page401: '401',

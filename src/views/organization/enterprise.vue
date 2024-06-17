@@ -1,14 +1,160 @@
 <template>
   <div class="app-container">
-    Enterprise
+    <filter-search
+      :listQuery="listQuery"
+      :showReviewer.sync="showReviewer"
+      :showStatus.sync="showStatus"
+      :downloadLoading="downloadLoading"
+      @filter="handleFilter"
+      @create="handleCreate"
+      @download="handleDownload"
+      @update:listQuery="updateListQuery"
+      @update:showReviewer="updateShowReviewer"
+      @update:showStatus="updateShowStatus"
+      @update:tableKey="updateTableKey"
+    />
+
+    <datatable
+      :loading="listLoading"
+      :data="list"
+      :total="total"
+      :tableKey="tableKey"
+      :listQuery="listQuery"
+      :showReviewer="showReviewer"
+      :showStatus="showStatus"
+      @sort-change="sortChange"
+      @update="handleUpdate"
+      @delete="handleDelete"
+      @pagination="getList"
+    />
+
+    <enterprise-modal
+      :visible="visible"
+      :isEdit="isEditModal"
+      :data="propDataItem"
+      @update:visible="handleUpdateVisible"
+    />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+<script>
+// import component
+import Datatable from '@/views/organization/components/enterprise/datatable'
+import FilterSearch from '@/views/organization/components/enterprise/filter-search'
+import enterpriseModal from '@/components/Modal/enterpriseModal'
+// import function call api.
+import { getListEnterprise, deleteEnterprise } from '@/api/organization/enterprise'
 
-@Component({
-  name: 'Enterprise'
-})
-export default class extends Vue {}
+export default {
+  components: {
+    Datatable,
+    FilterSearch,
+    enterpriseModal
+  },
+  data() {
+    return {
+      tableKey: 0,
+      listLoading: true,
+      list: [],
+      total: 0,
+      listQuery: {
+        page: 1,
+        limit: 10,
+        title: undefined,
+        type: undefined,
+        author: undefined,
+        reviewer: undefined,
+        status: undefined,
+        sort: '+id'
+      },
+      showReviewer: false,
+      showStatus: false,
+      downloadLoading: false,
+      visible: false,
+      isEditModal: false,
+      propDataItem: null
+    }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    async getList() {
+      this.listLoading = true
+      const { data } = await getListEnterprise(this.listQuery)
+      this.list = data.items
+      this.total = data.total
+      setTimeout(() => {
+        this.listLoading = false
+      }, 0.5 * 1000)
+    },
+    sortChange(data) {
+      const { prop, order } = data
+      if (prop === 'id') {
+        this.sortByID(order)
+      }
+    },
+    sortByID(order) {
+      if (order === 'ascending') {
+        this.listQuery.sort = '+id'
+      } else {
+        this.listQuery.sort = '-id'
+      }
+      this.handleFilter()
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    handleUpdate(row) {
+      this.propDataItem = row
+      this.isEditModal = true
+      this.visible = true
+    },
+    handleUpdateVisible(newVal) {
+      this.propDataItem = null
+      this.visible = newVal
+    },
+    handleDelete(row) {
+      this.$confirm('Confirm to remove this enterprise?', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      })
+        .then(async() => {
+          await deleteEnterprise(row.id)
+          this.list = this.list.filter((item) => item.id !== row.id)
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        })
+        .catch(err => { console.error(err) })
+    },
+    handleCreate() {
+      this.propDataItem = null
+      this.isEditModal = false
+      this.visible = true
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      console.log('handleDownload')
+      this.downloadLoading = false
+    },
+    updateListQuery(newListQuery) {
+      this.listQuery = newListQuery
+    },
+    updateShowReviewer(newVal) {
+      this.showReviewer = newVal
+    },
+    updateShowStatus(newVal) {
+      this.showStatus = newVal
+    },
+    updateTableKey(newVal) {
+      this.tableKey = newVal
+    }
+  }
+}
 </script>

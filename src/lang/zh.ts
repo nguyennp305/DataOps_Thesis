@@ -49,7 +49,6 @@ export default {
     editArticle: '编辑文章',
     articleList: '文章列表',
     organization: '组织',
-    domain: '域',
     enterprise: '企业',
     errorPages: '错误页面',
     page401: '401',

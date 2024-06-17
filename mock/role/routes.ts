@@ -127,29 +127,14 @@ export const asyncRoutes = [
   {
     path: '/organization',
     component: 'Layout',
-    redirect: '/organization/domain',
-    name: 'Organization',
-    meta: {
-      title: 'organization',
-      icon: 'component'
-    },
     children: [
-      {
-        path: 'domain',
-        component: 'views/organization/domain.vue',
-        name: 'Domain',
-        meta: {
-          title: 'domain',
-          noCache: true
-        }
-      },
       {
         path: 'enterprise',
         component: 'views/organization/enterprise.vue',
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          noCache: true
+          icon: 'user'
         }
       }
     ]

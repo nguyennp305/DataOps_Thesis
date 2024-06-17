@@ -710,39 +710,39 @@ paths:
                         $ref: '#/components/schemas/User'
         401:
           $ref: '#/components/responses/Unauthorized'
-  /domains:
+  /enterprises:
     get:
       tags:
-        - domains
-      summary: Get Domain List
-      description: Return a list of domains.
-      operationId: getDomains
+        - enterprises
+      summary: Get Enterprise List
+      description: Return a list of enterprises.
+      operationId: getEnterprises
       parameters:
         - name: title
           in: query
-          description: Used to filter domains by matched title substring.
+          description: Used to filter enterprises by matched title substring.
           schema:
-            $ref: '#/components/schemas/Domain/properties/title'
+            $ref: '#/components/schemas/Enterprise/properties/title'
         - name: author
           in: query
-          description: Used to filter domains by matched author substring.
+          description: Used to filter enterprises by matched author substring.
           schema:
-            $ref: '#/components/schemas/Domain/properties/author'
+            $ref: '#/components/schemas/Enterprise/properties/author'
         - name: reviewer
           in: query
-          description: Used to filter domains by matched reviewer substring.
+          description: Used to filter enterprises by matched reviewer substring.
           schema:
-            $ref: '#/components/schemas/Domain/properties/reviewer'
+            $ref: '#/components/schemas/Enterprise/properties/reviewer'
         - name: type
           in: query
-          description: Used to filter domains by type.
+          description: Used to filter enterprises by type.
           schema:
-            $ref: '#/components/schemas/Domain/properties/type'
+            $ref: '#/components/schemas/Enterprise/properties/type'
         - name: status
           in: query
-          description: Used to filter domains by status.
+          description: Used to filter enterprises by status.
           schema:
-            $ref: '#/components/schemas/Domain/properties/status'
+            $ref: '#/components/schemas/Enterprise/properties/status'
         - name: page
           in: query
           description: The wanted page number (one page).
@@ -753,7 +753,7 @@ paths:
             minimum: 1
         - name: limit
           in: query
-          description: The maximum number of Domain returned for one page.
+          description: The maximum number of Enterprise returned for one page.
           schema:
             type: integer
             format: int32
@@ -762,7 +762,7 @@ paths:
             maximum: 50
         - name: sort
           in: query
-          description: Optional sorting order for Domain.
+          description: Optional sorting order for Enterprise.
           schema:
             type: string
             enum:
@@ -788,19 +788,19 @@ paths:
                       items:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Domain'
-  /domains/{id}:
+                          $ref: '#/components/schemas/Enterprise'
+  /enterprises/{id}:
     delete:
       tags:
-        - domains
-      summary: Delete Domain
-      description: Delete domain by ID.
-      operationId: deleteDomainByID
+        - enterprises
+      summary: Delete Enterprise
+      description: Delete enterprise by ID.
+      operationId: deleteEnterpriseByID
       parameters:
         - name: id
           in: path
           required: true
-          description: Domain id.
+          description: Enterprise id.
           schema:
             type: integer
             format: int64
@@ -821,24 +821,24 @@ paths:
           $ref: '#/components/responses/NotFound'
     put:
       tags:
-        - domains
-      summary: Update Domain Detail
-      description: Update domain deatail by ID.
-      operationId: updateDomain
+        - enterprises
+      summary: Update Enterprise Detail
+      description: Update enterprise deatail by ID.
+      operationId: updateEnterprise
       parameters:
         - name: id
           in: path
           required: true
-          description: Domain id.
+          description: Enterprise id.
           schema:
             type: integer
             format: int64
-        - name: domain
+        - name: enterprise
           in: query
           required: true
-          description: data for the updated domain.
+          description: data for the updated enterprise.
           schema:
-            $ref: '#/components/schemas/Domain'
+            $ref: '#/components/schemas/Enterprise'
       responses:
         200:
           description: OK
@@ -854,7 +854,7 @@ paths:
                     type: object
                     properties:
                       article:
-                        $ref: '#/components/schemas/Domain'
+                        $ref: '#/components/schemas/Enterprise'
         401:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -967,7 +967,7 @@ components:
        - timestamp
        - importance
        - author
-    Domain:
+    Enterprise:
       type: object
       properties:
         id:

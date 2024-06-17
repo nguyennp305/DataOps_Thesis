@@ -118,17 +118,21 @@ export default {
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
         }
-        this.$nextTick(() => {
-          this.$refs.dataFormRef.clearValidate()
-        })
+        this.clearValidate()
       },
       deep: true
     }
   },
   methods: {
+    clearValidate() {
+      this.$nextTick(() => {
+        this.$refs.dataFormRef.clearValidate()
+      })
+    },
     handleModalClose() {
       console.log('handleModalClose')
       this.dataForm = cloneDeep(defaultDataForm)
+      this.clearValidate()
       this.$emit('update:visible', false)
     },
     handleModalCancel() {
@@ -138,26 +142,26 @@ export default {
     handleModalConfirm() {
       console.log('handleModalConfirm')
       if (this.isEdit) {
-        this.updateDomain()
+        this.updateEnterprise()
       } else {
-        this.createDomain()
+        this.createEnterprise()
       }
     },
-    updateDomain() {
+    updateEnterprise() {
       this.$refs.dataFormRef.validate((valid) => {
         if (valid) {
           this.$emit('update:visible', false)
         } else {
-          console.log('Form updateDomain is invalid')
+          console.log('Form updateEnterprise is invalid')
         }
       })
     },
-    createDomain() {
+    createEnterprise() {
       this.$refs.dataFormRef.validate((valid) => {
         if (valid) {
           this.$emit('update:visible', false)
         } else {
-          console.log('Form createDomain is invalid')
+          console.log('Form createEnterprise is invalid')
         }
       })
     }

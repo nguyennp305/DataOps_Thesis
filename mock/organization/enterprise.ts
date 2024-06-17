@@ -1,11 +1,11 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 
-let domainList: any[] = []
-const domainCount = 100
+let enterpriseList: any[] = []
+const enterpriseCount = 100
 
-for (let i = 0; i < domainCount; i++) {
-  domainList.push({
+for (let i = 0; i < enterpriseCount; i++) {
+  enterpriseList.push({
     id: i,
     author: faker.name.findName(),
     type: faker.random.arrayElement(['CN', 'US', 'JP', 'EU']),
@@ -16,9 +16,9 @@ for (let i = 0; i < domainCount; i++) {
   })
 }
 
-export const getDomains = (req: Request, res: Response) => {
+export const getEnterprises = (req: Request, res: Response) => {
   const { page = 1, limit = 10, title, status, type, author, reviewer, sort } = req.query
-  let mockList = domainList.filter(item => {
+  let mockList = enterpriseList.filter(item => {
     if (title && item.title.indexOf(title as string) < 0) return false
     if (author && item.author.indexOf(author as string) < 0) return false
     if (reviewer && item.reviewer.indexOf(reviewer as string) < 0) return false
@@ -44,32 +44,32 @@ export const getDomains = (req: Request, res: Response) => {
   })
 }
 
-export const updateDomain = (req: Request, res: Response) => {
+export const updateEnterprise = (req: Request, res: Response) => {
   const { id } = req.params
-  const domain = req.query
+  const enterprise = req.query
   let updated = false
-  for (let i = 0; i < domainList.length; i++) {
-    if (parseInt(domainList[i].id) === parseInt(id)) {
-      domainList[i] = { ...domainList[i], ...domain }
+  for (let i = 0; i < enterpriseList.length; i++) {
+    if (parseInt(enterpriseList[i].id) === parseInt(id)) {
+      enterpriseList[i] = { ...enterpriseList[i], ...enterprise }
       updated = true
       return res.json({
         code: 20000,
-        data: domainList[i]
+        data: enterpriseList[i]
       })
     }
   }
   if (!updated) {
     return res.json({
       code: 70001,
-      message: 'Domain not found'
+      message: 'Enterprise not found'
     })
   }
 }
 
-export const deleteDomainByID = (req: Request, res: Response) => {
+export const deleteEnterpriseByID = (req: Request, res: Response) => {
   const { id } = req.params
-  domainList = domainList.filter((item) => parseInt(item.id) !== parseInt(id))
-  console.log('domainList-domainList', domainList.length, id)
+  enterpriseList = enterpriseList.filter((item) => parseInt(item.id) !== parseInt(id))
+  console.log('enterpriseList-enterpriseList', enterpriseList.length, id)
   return res.json({
     code: 20000
   })

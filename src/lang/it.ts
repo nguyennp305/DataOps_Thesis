@@ -49,7 +49,6 @@ export default {
     editArticle: 'Modifica Articolo',
     articleList: 'Lista Articoli',
     organization: 'Organizzazione',
-    domain: 'Dominio',
     enterprise: 'Impresa',
     errorPages: 'Pagine di Errore',
     page401: '401',
