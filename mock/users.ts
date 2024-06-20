@@ -92,7 +92,7 @@ export const getUserInfo = (req: Request, res: Response) => {
   return res.json({
     code: 20000,
     data: {
-      user: req.header('X-Access-Token') === 'admin-token' ? userList[0] : userList[1]
+      user: req.header('X-Access-Token') === 'YWRtaW4tdG9rZW4=' ? userList[0] : userList[1] // ma hoa base64 cua admin-token
     }
   })
 }

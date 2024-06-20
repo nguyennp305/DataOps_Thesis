@@ -133,6 +133,14 @@ export default class extends Vue {
   private validatePassword = (rule: any, value: string, callback: Function) => {
     if (value.length < 6) {
       callback(new Error('The password can not be less than 6 digits'))
+    } else if (!/[a-z]/.test(value)) {
+      callback(new Error('Mật khẩu phải chứa ít nhất một ký tự viết thường'))
+    } else if (!/[A-Z]/.test(value)) {
+      callback(new Error('Mật khẩu phải chứa ít nhất một ký tự viết hoa'))
+    } else if (!/[0-9]/.test(value)) {
+      callback(new Error('Mật khẩu phải chứa ít nhất một ký tự số'))
+    } else if (!/[!@#$%^&*()+=._-]/.test(value)) {
+      callback(new Error('Mật khẩu phải chứa ít nhất một ký tự'))
     } else {
       callback()
     }
