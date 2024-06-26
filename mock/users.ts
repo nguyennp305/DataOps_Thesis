@@ -47,12 +47,12 @@ for (let i = 2; i < userCount; i++) {
 // base64 ma hoa tu text sang du lieu nhi phan.
 const encodeBase64 = (data: any) => {
   const encodedData = base64.fromByteArray(Buffer.from(data))
-  console.log('Encoded:', encodedData)
+  // console.log('Encoded:', encodedData)
   return encodedData
 }
 const decodeBase64 = (encodedData: any) => {
   const decodedData = Buffer.from(base64.toByteArray(encodedData)).toString('utf8')
-  console.log('Decoded:', decodedData)
+  // console.log('Decoded:', decodedData)
   return decodedData
 }
 
@@ -101,12 +101,24 @@ export const getUsers = (req: Request, res: Response) => {
 }
 
 export const getUserInfo = (req: Request, res: Response) => {
-  // Mock data based on access token
+  const token = req.header('X-Access-Token')
+  if (!token) {
+    return res.status(400).json({
+      code: 40000,
+      message: 'Token is missing'
+    })
+  }
+  const decodedToken = decodeBase64(token)
+  const user = userList.find(user => (user.username + '-token') === decodedToken)
+  if (!user) {
+    return res.status(401).json({
+      code: 40100,
+      message: 'Unauthorized'
+    })
+  }
   return res.json({
     code: 20000,
-    data: {
-      user: decodeBase64(req.header('X-Access-Token')) === 'admin-token' ? userList[0] : userList[1] // ma hoa nguoc base64 token check role
-    }
+    data: { user }
   })
 }
 

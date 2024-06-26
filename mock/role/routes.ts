@@ -49,22 +49,22 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/documentation',
-    component: 'Layout',
-    children: [
-      {
-        path: 'index',
-        component: 'views/documentation/index',
-        name: 'Documentation',
-        meta: {
-          title: 'documentation',
-          icon: 'documentation',
-          affix: true
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/documentation',
+  //   component: 'Layout',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: 'views/documentation/index',
+  //       name: 'Documentation',
+  //       meta: {
+  //         title: 'documentation',
+  //         icon: 'documentation',
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/guide',
     component: 'Layout',
@@ -127,6 +127,9 @@ export const asyncRoutes = [
   {
     path: '/organization',
     component: 'Layout',
+    meta: {
+      roles: ['admin']
+    },
     children: [
       {
         path: 'enterprise',
