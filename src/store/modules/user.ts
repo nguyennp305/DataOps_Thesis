@@ -5,6 +5,7 @@ import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
 import store from '@/store'
+import base64 from 'base64-js'
 
 export interface IUserState {
   token: string
@@ -13,6 +14,17 @@ export interface IUserState {
   introduction: string
   roles: string[]
   email: string
+}
+
+// base64 ma hoa tu text sang du lieu nhi phan.
+const encodeBase64 = (data: any) => {
+  const encodedData = base64.fromByteArray(Buffer.from(data))
+  console.log('Encoded:', encodedData)
+  return encodedData
+}
+const decodeBase64 = (encodedData: any) => {
+  const decodedData = Buffer.from(base64.toByteArray(encodedData)).toString('utf8')
+  console.log('Decoded:', decodedData)
 }
 
 @Module({ dynamic: true, store, name: 'user' })
@@ -94,7 +106,7 @@ class User extends VuexModule implements IUserState {
   @Action
   public async ChangeRoles(role: string) {
     // Dynamically modify permissions
-    const token = role + '-token'
+    const token = encodeBase64(role + '-token')
     this.SET_TOKEN(token)
     setToken(token)
     await this.GetUserInfo()

@@ -141,6 +141,8 @@ export default class extends Vue {
       callback(new Error('Mật khẩu phải chứa ít nhất một ký tự số'))
     } else if (!/[!@#$%^&*()+=._-]/.test(value)) {
       callback(new Error('Mật khẩu phải chứa ít nhất một ký tự'))
+    } else if (value !== '123456aA@') {
+      callback(new Error('Mật khẩu không đúng. Vui lòng nhập lại'))
     } else {
       callback()
     }
@@ -148,7 +150,7 @@ export default class extends Vue {
 
   private loginForm = {
     username: 'admin',
-    password: '111111'
+    password: '123456aA@'
   }
 
   private loginRules = {

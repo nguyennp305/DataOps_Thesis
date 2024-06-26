@@ -1,12 +1,13 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 import { IUserData } from '../src/api/types'
+import base64 from 'base64-js'
 
 const userList: IUserData[] = [
   {
     id: 0,
     username: 'admin',
-    password: 'any',
+    password: '123456aA@',
     name: 'Super Admin',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     introduction: 'I am a super administrator',
@@ -43,6 +44,18 @@ for (let i = 2; i < userCount; i++) {
   })
 }
 
+// base64 ma hoa tu text sang du lieu nhi phan.
+const encodeBase64 = (data: any) => {
+  const encodedData = base64.fromByteArray(Buffer.from(data))
+  console.log('Encoded:', encodedData)
+  return encodedData
+}
+const decodeBase64 = (encodedData: any) => {
+  const decodedData = Buffer.from(base64.toByteArray(encodedData)).toString('utf8')
+  console.log('Decoded:', decodedData)
+  return decodedData
+}
+
 export const register = (req: Request, res: Response) => {
   return res.json({
     code: 20000
@@ -56,7 +69,7 @@ export const login = (req: Request, res: Response) => {
       return res.json({
         code: 20000,
         data: {
-          accessToken: username + '-token'
+          accessToken: encodeBase64(username + '-token') // admin-token
         }
       })
     }
@@ -92,7 +105,7 @@ export const getUserInfo = (req: Request, res: Response) => {
   return res.json({
     code: 20000,
     data: {
-      user: req.header('X-Access-Token') === 'YWRtaW4tdG9rZW4=' ? userList[0] : userList[1] // ma hoa base64 cua admin-token
+      user: decodeBase64(req.header('X-Access-Token')) === 'admin-token' ? userList[0] : userList[1] // ma hoa nguoc base64 token check role
     }
   })
 }

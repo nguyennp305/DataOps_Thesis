@@ -12,23 +12,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { UserModule } from '@/store/modules/user'
 
 @Component({
   name: 'SwitchRoles'
 })
-export default class extends Vue {
+export default class SwitchRoles extends Vue {
+  // State
+  switchRoles: string = UserModule.roles[0] || 'admin'
+
+  // Computed property to get roles
   get roles() {
     return UserModule.roles
   }
 
-  get switchRoles() {
-    return this.roles[0]
-  }
-
-  set switchRoles(value) {
-    UserModule.ChangeRoles(value).then(() => {
+  // Watcher for switchRoles
+  @Watch('switchRoles')
+  onSwitchRolesChange(newValue: string) {
+    UserModule.ChangeRoles(newValue).then(() => {
       this.$emit('change')
     })
   }
