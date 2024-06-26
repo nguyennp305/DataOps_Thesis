@@ -16,7 +16,7 @@ const settings: ISettings = {
   showSettings: true,
   showTagsView: true,
   fixedHeader: true,
-  showSidebarLogo: false,
+  showSidebarLogo: true,
   errorLog: ['production'],
   sidebarTextTheme: true,
   devServerPort: 9527,

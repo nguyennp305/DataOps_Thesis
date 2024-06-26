@@ -137,7 +137,8 @@ export const asyncRoutes = [
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          icon: 'user'
+          icon: 'user',
+          roles: ['admin']
         }
       }
     ]

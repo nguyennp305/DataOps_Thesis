@@ -195,7 +195,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          icon: 'enterprise'
+          icon: 'enterprise',
+          roles: ['admin']
         }
       }
     ]

@@ -19,12 +19,12 @@ export interface IUserState {
 // base64 ma hoa tu text sang du lieu nhi phan.
 const encodeBase64 = (data: any) => {
   const encodedData = base64.fromByteArray(Buffer.from(data))
-  console.log('Encoded:', encodedData)
+  // console.log('Encoded:', encodedData)
   return encodedData
 }
 const decodeBase64 = (encodedData: any) => {
   const decodedData = Buffer.from(base64.toByteArray(encodedData)).toString('utf8')
-  console.log('Decoded:', decodedData)
+  // console.log('Decoded:', decodedData)
 }
 
 @Module({ dynamic: true, store, name: 'user' })

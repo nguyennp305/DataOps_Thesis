@@ -15,7 +15,8 @@ const roles: IRoleData[] = [
     key: 'editor',
     name: 'editor',
     description: 'Normal Editor. Can see all pages except permission page',
-    routes: routes.filter(i => i.path !== '/permission') // Just a mock
+    // routes: routes.filter(i => i.path !== '/permission') // Just a mock
+    routes: filterRoutesByRoleEditor(routes, 'editor') // Just a mock
   },
   {
     key: 'visitor',
@@ -34,6 +35,42 @@ const roles: IRoleData[] = [
     }]
   }
 ]
+
+// This function is filter routes by role editor. It will return a new array of routes that only contains routes that the role can access.
+function filterRoutesByRoleEditor(routes: any[], role: string): any[] {
+  return routes.reduce((acc, route) => {
+    if (route.meta && route.meta.roles && route.meta.roles.includes(role)) {
+      // Route matches the role condition
+      const newRoute = { ...route }
+      if (route.children) {
+        newRoute.children = filterRoutesByRoleEditor(route.children, role)
+      }
+      acc.push(newRoute)
+    } else if (!route.meta || !route.meta.roles) {
+      // Route doesn't have meta or meta.roles defined, allow it
+      const newRoute = { ...route }
+      if (route.children) {
+        newRoute.children = filterRoutesByRoleEditor(route.children, role)
+      }
+      acc.push(newRoute)
+    } else if (route.meta.roles && !route.meta.roles.includes(role)) {
+      // Route has meta.roles but doesn't include the required role, skip it
+      if (route.children) {
+        const filteredChildren = filterRoutesByRoleEditor(route.children, role)
+        if (filteredChildren.length > 0) {
+          acc.push({
+            ...route,
+            children: filteredChildren
+          })
+        }
+      }
+    }
+    return acc
+  }, [] as any[])
+}
+
+// const filteredRoutesEditor = filterRoutesByRoleEditor(routes, 'editor')
+// console.log('filteredRoutesEditor', filteredRoutesEditor)
 
 export const getRoles = (req: Request, res: Response) => {
   return res.json({
@@ -55,7 +92,14 @@ export const createRole = (req: Request, res: Response) => {
 }
 
 export const updateRole = (req: Request, res: Response) => {
+  // cap nhat lai cac role trong routes cua ca mock va fe. Hien nay doi roles trong direction khong hoat dong voi sidenav
   const { role } = req.body
+  console.log('updateRole', role)
+  roles.forEach((item, index) => {
+    if (item.key === role.key) {
+      roles[index] = role
+    }
+  })
   return res.json({
     code: 20000,
     data: {
