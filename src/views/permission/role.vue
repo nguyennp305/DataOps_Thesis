@@ -121,6 +121,8 @@ import { Component, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { Tree } from 'element-ui'
 import { getRoutes, getRoles, createRole, deleteRole, updateRole } from '@/api/roles'
+import { asyncRoutes } from '@/router'
+import { PermissionModule } from '@/store/modules/permission'
 
 interface IRole {
   key: number
@@ -133,6 +135,7 @@ interface IRoutesTreeData {
   children: IRoutesTreeData[]
   title: string
   path: string
+  disabled?: boolean
 }
 
 const defaultRole: IRole = {
@@ -159,7 +162,20 @@ export default class extends Vue {
   }
 
   get routesTreeData() {
-    return this.generateTreeData(this.reshapedRoutes)
+    // add disabled property to routes defined in constantRoutes
+    const data = this.generateTreeData(this.reshapedRoutes)
+    data.forEach(route => {
+      if ((route.path === '/dashboard' || route.path === '/guide/index') && route.children?.length === 0) {
+        route.disabled = true
+      } else if (route.children?.length > 0) {
+        route.children.forEach(child => {
+          if (child.path === '/permission/directive') {
+            child.disabled = true
+          }
+        })
+      }
+    })
+    return data
   }
 
   created() {
@@ -240,13 +256,16 @@ export default class extends Vue {
 
   private handleCreateRole() {
     this.role = Object.assign({}, defaultRole)
+    // default cac path co san khi tao moi role.
+    const treeDataKeys = ['/dashboard', '/guide/index', '/permission/directive']
     if (this.$refs.tree) {
-      (this.$refs.tree as Tree).setCheckedKeys([])
+      (this.$refs.tree as Tree).setCheckedKeys(treeDataKeys)
     }
     this.dialogType = 'new'
     this.dialogVisible = true
   }
 
+  // cap nhat trong data mock. Chua cap nhat trong routest FE
   private handleEdit(scope: any) {
     this.dialogType = 'edit'
     this.dialogVisible = true
@@ -303,6 +322,8 @@ export default class extends Vue {
 
     if (isEdit) {
       await updateRole(this.role.key, { role: this.role })
+      // update routes in PermissionModule (FE)
+      PermissionModule.updateGenerateRoutes(this.role.routes)
       for (let index = 0; index < this.rolesList.length; index++) {
         if (this.rolesList[index].key === this.role.key) {
           this.rolesList.splice(index, 1, Object.assign({}, this.role))

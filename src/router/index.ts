@@ -204,6 +204,9 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/icon',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     children: [
       {
         path: 'index',
@@ -212,6 +215,7 @@ export const asyncRoutes: RouteConfig[] = [
         meta: {
           title: 'icons',
           icon: 'icon',
+          roles: ['admin'],
           noCache: true
         }
       }
@@ -228,7 +232,8 @@ export const asyncRoutes: RouteConfig[] = [
     redirect: '/example/list',
     meta: {
       title: 'example',
-      icon: 'example'
+      icon: 'example',
+      roles: ['admin']
     },
     children: [
       {
@@ -237,7 +242,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'CreateArticle',
         meta: {
           title: 'createArticle',
-          icon: 'edit'
+          icon: 'edit',
+          roles: ['admin']
         }
       },
       {
@@ -246,6 +252,7 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'EditArticle',
         meta: {
           title: 'editArticle',
+          roles: ['admin'],
           noCache: true,
           activeMenu: '/example/list',
           hidden: true
@@ -257,7 +264,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'ArticleList',
         meta: {
           title: 'articleList',
-          icon: 'list'
+          icon: 'list',
+          roles: ['admin']
         }
       }
     ]
@@ -265,6 +273,9 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/tab',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     children: [
       {
         path: 'index',
@@ -272,7 +283,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Tab',
         meta: {
           title: 'tab',
-          icon: 'tab'
+          icon: 'tab',
+          roles: ['admin']
         }
       }
     ]
@@ -283,7 +295,8 @@ export const asyncRoutes: RouteConfig[] = [
     redirect: 'noredirect',
     meta: {
       title: 'errorPages',
-      icon: '404'
+      icon: '404',
+      roles: ['admin']
     },
     children: [
       {
@@ -292,6 +305,7 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Page401',
         meta: {
           title: 'page401',
+          roles: ['admin'],
           noCache: true
         }
       },
@@ -301,6 +315,7 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Page404',
         meta: {
           title: 'page404',
+          roles: ['admin'],
           noCache: true
         }
       }
@@ -309,6 +324,9 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/error-log',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     redirect: 'noredirect',
     children: [
       {
@@ -317,7 +335,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'ErrorLog',
         meta: {
           title: 'errorLog',
-          icon: 'bug'
+          icon: 'bug',
+          roles: ['admin']
         }
       }
     ]
@@ -328,32 +347,33 @@ export const asyncRoutes: RouteConfig[] = [
     redirect: '/excel/export-excel',
     meta: {
       title: 'excel',
-      icon: 'excel'
+      icon: 'excel',
+      roles: ['admin']
     },
     children: [
       {
         path: 'export-excel',
         component: () => import(/* webpackChunkName: "export-excel" */ '@/views/excel/export-excel.vue'),
         name: 'ExportExcel',
-        meta: { title: 'exportExcel' }
+        meta: { title: 'exportExcel', roles: ['admin'] }
       },
       {
         path: 'export-selected-excel',
         component: () => import(/* webpackChunkName: "select-excel" */ '@/views/excel/select-excel.vue'),
         name: 'SelectExcel',
-        meta: { title: 'selectExcel' }
+        meta: { title: 'selectExcel', roles: ['admin'] }
       },
       {
         path: 'export-merge-header',
         component: () => import(/* webpackChunkName: "merge-header" */ '@/views/excel/merge-header.vue'),
         name: 'MergeHeader',
-        meta: { title: 'mergeHeader' }
+        meta: { title: 'mergeHeader', roles: ['admin'] }
       },
       {
         path: 'upload-excel',
         component: () => import(/* webpackChunkName: "upload-excel" */ '@/views/excel/upload-excel.vue'),
         name: 'UploadExcel',
-        meta: { title: 'uploadExcel' }
+        meta: { title: 'uploadExcel', roles: ['admin'] }
       }
     ]
   },
@@ -364,6 +384,7 @@ export const asyncRoutes: RouteConfig[] = [
     meta: {
       title: 'zip',
       icon: 'zip',
+      roles: ['admin'],
       alwaysShow: true // will always show the root menu
     },
     children: [
@@ -371,13 +392,16 @@ export const asyncRoutes: RouteConfig[] = [
         path: 'download',
         component: () => import(/* webpackChunkName: "zip" */ '@/views/zip/index.vue'),
         name: 'ExportZip',
-        meta: { title: 'exportZip' }
+        meta: { title: 'exportZip', roles: ['admin'] }
       }
     ]
   },
   {
     path: '/pdf',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     redirect: '/pdf/index',
     children: [
       {
@@ -386,7 +410,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'PDF',
         meta: {
           title: 'pdf',
-          icon: 'pdf'
+          icon: 'pdf',
+          roles: ['admin']
         }
       }
     ]
@@ -394,11 +419,14 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/pdf-download-example',
     component: () => import(/* webpackChunkName: "pdf-download-example" */ '@/views/pdf/download.vue'),
-    meta: { hidden: true }
+    meta: { hidden: true, roles: ['admin'] }
   },
   {
     path: '/theme',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     redirect: 'noredirect',
     children: [
       {
@@ -407,7 +435,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Theme',
         meta: {
           title: 'theme',
-          icon: 'theme'
+          icon: 'theme',
+          roles: ['admin']
         }
       }
     ]
@@ -415,6 +444,9 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/clipboard',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     redirect: 'noredirect',
     children: [
       {
@@ -423,7 +455,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Clipboard',
         meta: {
           title: 'clipboard',
-          icon: 'clipboard'
+          icon: 'clipboard',
+          roles: ['admin']
         }
       }
     ]
@@ -431,6 +464,9 @@ export const asyncRoutes: RouteConfig[] = [
   {
     path: '/i18n',
     component: Layout,
+    meta: {
+      roles: ['admin']
+    },
     children: [
       {
         path: 'index',
@@ -438,7 +474,8 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'I18n',
         meta: {
           title: 'i18n',
-          icon: 'international'
+          icon: 'international',
+          roles: ['admin']
         }
       }
     ]
@@ -447,13 +484,14 @@ export const asyncRoutes: RouteConfig[] = [
     path: 'https://github.com',
     meta: {
       title: 'externalLink',
-      icon: 'link'
+      icon: 'link',
+      roles: ['admin']
     }
   },
   {
     path: '*',
     redirect: '/404',
-    meta: { hidden: true }
+    meta: { hidden: true, roles: ['admin'] }
   }
 ]
 

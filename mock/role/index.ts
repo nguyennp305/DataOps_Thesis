@@ -92,9 +92,7 @@ export const createRole = (req: Request, res: Response) => {
 }
 
 export const updateRole = (req: Request, res: Response) => {
-  // cap nhat lai cac role trong routes cua ca mock va fe. Hien nay doi roles trong direction khong hoat dong voi sidenav
   const { role } = req.body
-  console.log('updateRole', role)
   roles.forEach((item, index) => {
     if (item.key === role.key) {
       roles[index] = role

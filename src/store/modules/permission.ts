@@ -51,6 +51,12 @@ class Permission extends VuexModule implements IPermissionState {
     }
     this.SET_ROUTES(accessedRoutes)
   }
+
+  @Action
+  public updateGenerateRoutes(routesCompareToUpdate: any[]) {
+    console.log('PermissionModule.needUpdateGenerateRoutes', this.routes)
+    console.log('routesCompareToUpdate', routesCompareToUpdate)
+  }
 }
 
 export const PermissionModule = getModule(Permission)

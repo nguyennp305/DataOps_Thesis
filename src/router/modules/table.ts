@@ -8,32 +8,33 @@ const tableRoutes: RouteConfig = {
   name: 'Table',
   meta: {
     title: 'table',
-    icon: 'table'
+    icon: 'table',
+    roles: ['admin']
   },
   children: [
     {
       path: 'dynamic-table',
       component: () => import(/* webpackChunkName: "dynamic-table" */ '@/views/table/dynamic-table/index.vue'),
       name: 'DynamicTable',
-      meta: { title: 'dynamicTable' }
+      meta: { title: 'dynamicTable', roles: ['admin'] }
     },
     {
       path: 'draggable-table',
       component: () => import(/* webpackChunkName: "draggable-table" */ '@/views/table/draggable-table.vue'),
       name: 'DraggableTable',
-      meta: { title: 'draggableTable' }
+      meta: { title: 'draggableTable', roles: ['admin'] }
     },
     {
       path: 'inline-edit-table',
       component: () => import(/* webpackChunkName: "inline-edit-table" */ '@/views/table/inline-edit-table.vue'),
       name: 'InlineEditTable',
-      meta: { title: 'inlineEditTable' }
+      meta: { title: 'inlineEditTable', roles: ['admin'] }
     },
     {
       path: 'complex-table',
       component: () => import(/* webpackChunkName: "complex-table" */ '@/views/table/complex-table.vue'),
       name: 'ComplexTable',
-      meta: { title: 'complexTable' }
+      meta: { title: 'complexTable', roles: ['admin'] }
     }
   ]
 }

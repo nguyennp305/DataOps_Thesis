@@ -8,7 +8,8 @@ const chartsRouter: RouteConfig = {
   name: 'Charts',
   meta: {
     title: 'charts',
-    icon: 'chart'
+    icon: 'chart',
+    roles: ['admin']
   },
   children: [
     {
@@ -17,6 +18,7 @@ const chartsRouter: RouteConfig = {
       name: 'BarChartDemo',
       meta: {
         title: 'barChart',
+        roles: ['admin'],
         noCache: true
       }
     },
@@ -26,6 +28,7 @@ const chartsRouter: RouteConfig = {
       name: 'LineChartDemo',
       meta: {
         title: 'lineChart',
+        roles: ['admin'],
         noCache: true
       }
     },
@@ -35,6 +38,7 @@ const chartsRouter: RouteConfig = {
       name: 'MixedChartDemo',
       meta: {
         title: 'mixedChart',
+        roles: ['admin'],
         noCache: true
       }
     }
