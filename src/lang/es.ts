@@ -100,7 +100,7 @@ export default {
     cancel: 'Cancelar'
   },
   guide: {
-    description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',
+    description: 'In here, steps are only active when header status is non-fixedHeader (false) .The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',
     button: 'Ver guía'
   },
   components: {
