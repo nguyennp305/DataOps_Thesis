@@ -25,12 +25,29 @@ const roles: IRoleData[] = [
     routes: [{
       path: '',
       redirect: 'dashboard',
-      children: [
+      children: [...constantRoutes, ...[
         {
-          path: 'dashboard',
-          name: 'Dashboard',
-          meta: { title: 'dashboard', icon: 'dashboard' }
+          path: '/permission',
+          component: 'Layout',
+          redirect: '/permission/index',
+          meta: {
+            title: 'permission',
+            icon: 'lock',
+            roles: ['admin', 'editor'],
+            alwaysShow: true
+          },
+          children: [
+            {
+              path: 'directive',
+              component: 'views/permission/directive',
+              name: 'DirectivePermission',
+              meta: {
+                title: 'directivePermission'
+              }
+            }
+          ]
         }
+      ]
       ]
     }]
   }
@@ -69,8 +86,7 @@ function filterRoutesByRoleEditor(routes: any[], role: string): any[] {
   }, [] as any[])
 }
 
-// const filteredRoutesEditor = filterRoutesByRoleEditor(routes, 'editor')
-// console.log('filteredRoutesEditor', filteredRoutesEditor)
+// console.log('filteredRoutesEditor', filterRoutesByRoleEditor(routes, 'editor'))
 
 export const getRoles = (req: Request, res: Response) => {
   return res.json({
