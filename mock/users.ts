@@ -1,7 +1,6 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 import { IUserData } from '../src/api/types'
-import base64 from 'base64-js'
 
 const userList: IUserData[] = [
   {
@@ -44,18 +43,6 @@ for (let i = 2; i < userCount; i++) {
   })
 }
 
-// base64 ma hoa tu text sang du lieu nhi phan.
-const encodeBase64 = (data: any) => {
-  const encodedData = base64.fromByteArray(Buffer.from(data))
-  // console.log('Encoded:', encodedData)
-  return encodedData
-}
-const decodeBase64 = (encodedData: any) => {
-  const decodedData = Buffer.from(base64.toByteArray(encodedData)).toString('utf8')
-  // console.log('Decoded:', decodedData)
-  return decodedData
-}
-
 export const register = (req: Request, res: Response) => {
   return res.json({
     code: 20000
@@ -69,7 +56,7 @@ export const login = (req: Request, res: Response) => {
       return res.json({
         code: 20000,
         data: {
-          accessToken: encodeBase64(username + '-token') // admin-token
+          accessToken: username + '-token'
         }
       })
     }
@@ -108,8 +95,7 @@ export const getUserInfo = (req: Request, res: Response) => {
       message: 'Token is missing'
     })
   }
-  const decodedToken = decodeBase64(token)
-  const user = userList.find(user => (user.username + '-token') === decodedToken)
+  const user = userList.find(user => (user.username + '-token') === token)
   if (!user) {
     return res.status(401).json({
       code: 40100,
