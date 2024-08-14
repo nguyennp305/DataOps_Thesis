@@ -25,18 +25,6 @@ const componentsRouter: RouteConfig = {
       meta: { title: 'markdown', roles: ['admin'] }
     },
     {
-      path: 'json-editor',
-      component: () => import(/* webpackChunkName: "json-editor" */ '@/views/components-demo/json-editor.vue'),
-      name: 'JsonEditorDemo',
-      meta: { title: 'jsonEditor', roles: ['admin'] }
-    },
-    {
-      path: 'split-pane',
-      component: () => import(/* webpackChunkName: "split-pane" */ '@/views/components-demo/split-pane.vue'),
-      name: 'SplitPaneDemo',
-      meta: { title: 'splitPane', roles: ['admin'] }
-    },
-    {
       path: 'avatar-upload',
       component: () => import(/* webpackChunkName: "avatar-upload" */ '@/views/components-demo/avatar-upload.vue'),
       name: 'AvatarUploadDemo',
@@ -65,12 +53,6 @@ const componentsRouter: RouteConfig = {
       component: () => import(/* webpackChunkName: "component-mixin" */ '@/views/components-demo/mixin.vue'),
       name: 'ComponentMixinDemo',
       meta: { title: 'componentMixin', roles: ['admin'] }
-    },
-    {
-      path: 'back-to-top',
-      component: () => import(/* webpackChunkName: "back-to-top" */ '@/views/components-demo/back-to-top.vue'),
-      name: 'BackToTopDemo',
-      meta: { title: 'backToTop', roles: ['admin'] }
     },
     {
       path: 'draggable-dialog',

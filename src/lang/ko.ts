@@ -53,7 +53,6 @@ export default {
     errorPages: '에러 페이지',
     page401: '401',
     page404: '404',
-    errorLog: '에러 로그',
     excel: '엑셀',
     exportExcel: '엑셀 내보내기',
     selectExcel: '엑셀 선택',
@@ -63,7 +62,6 @@ export default {
     pdf: 'PDF',
     exportZip: 'Export Zip',
     theme: '테마',
-    clipboard: 'Clipboard',
     i18n: '언어',
     externalLink: '외부 링크',
     profile: '프로필'
@@ -140,11 +138,6 @@ export default {
   },
   example: {
     warning: 'keep-alive의 \'include \'는 (는) 현재 경로 기반 캐싱을 지원하지 않으므로 구성 요소 이름을 기반으로 캐시되기 때문에 keep-alive로 페이지를 만들고 편집 할 수 없습니다. 비슷한 캐싱 효과를 얻으려면 localStorage와 같은 브라우저 캐싱 구성표를 사용할 수 있습니다. 또는 keep-alive \' include \'를 사용하여 모든 페이지를 직접 캐시하지 마십시오. 자세히보다'
-  },
-  errorLog: {
-    tips: '오른쪽 상단에있는 버그 아이콘을 클릭하십시오',
-    description: '이제 관리 시스템은 기본적으로 스파의 형태이며 사용자 경험을 향상 시키지만 페이지 문제의 가능성을 증가시킵니다. 작은 태만으로 인해 전체 페이지 교착 상태가 발생할 수 있습니다. 다행히 Vue는 오류를 처리하거나 예외를보고 할 수있는 예외 처리를 포착하는 방법을 제공합니다.',
-    documentation: '문서 소개'
   },
   excel: {
     export: '내보내기',

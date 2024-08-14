@@ -53,7 +53,6 @@ export default {
     errorPages: 'エラーページ',
     page401: '401',
     page404: '404',
-    errorLog: 'エラーログ',
     excel: 'Excel',
     exportExcel: '一括エクスポート',
     selectExcel: '複数選択エクスポート',
@@ -63,7 +62,6 @@ export default {
     pdf: 'PDF',
     exportZip: 'Export Zip',
     theme: 'テーマ変更',
-    clipboard: 'Clipboard',
     i18n: '多言語',
     externalLink: '外部リンク',
     profile: 'プロフィール'
@@ -140,11 +138,6 @@ export default {
   },
   example: {
     warning: '新規作成と編集画面は keep-alive を使えないです。keep-alive の include はrouteのキャッシュは使えないです。そのため、component name を使ってキャッシュさせるようにします。このようなキャッシュ機能を作りたい場合，localStorageを使う手があります。もしくは keep-alive の includeを使って、全ページキャッシュする方法はあります。'
-  },
-  errorLog: {
-    tips: '右上のbugアイコンをクリックしてください。',
-    description: '管理画面はspaを使う場合が多い、ユーザ体現向上はできますが、想定外エラーが発生する場合があります。Vueはそのエラーハンドリング機能を提供し、エラーレポートができます。',
-    documentation: 'ドキュメント'
   },
   excel: {
     export: 'エクスポート',

@@ -322,26 +322,6 @@ export const asyncRoutes: RouteConfig[] = [
     ]
   },
   {
-    path: '/error-log',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'log',
-        component: () => import(/* webpackChunkName: "error-log" */ '@/views/error-log/index.vue'),
-        name: 'ErrorLog',
-        meta: {
-          title: 'errorLog',
-          icon: 'bug',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
     path: '/excel',
     component: Layout,
     redirect: '/excel/export-excel',
@@ -436,26 +416,6 @@ export const asyncRoutes: RouteConfig[] = [
         meta: {
           title: 'theme',
           icon: 'theme',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/clipboard',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "clipboard" */ '@/views/clipboard/index.vue'),
-        name: 'Clipboard',
-        meta: {
-          title: 'clipboard',
-          icon: 'clipboard',
           roles: ['admin']
         }
       }

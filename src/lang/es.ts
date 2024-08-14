@@ -53,7 +53,6 @@ export default {
     errorPages: 'Páginas de error',
     page401: '401',
     page404: '404',
-    errorLog: 'Registro de errores',
     excel: 'Excel',
     exportExcel: 'Exportar a Excel',
     selectExcel: 'Export seleccionado',
@@ -63,7 +62,6 @@ export default {
     pdf: 'PDF',
     exportZip: 'Exportar a Zip',
     theme: 'Tema',
-    clipboard: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'Enlace externo',
     profile: 'Profile'
@@ -140,11 +138,6 @@ export default {
   },
   example: {
     warning: 'Creating and editing pages cannot be cached by keep-alive because keep-alive include does not currently support caching based on routes, so it is currently cached based on component name. If you want to achieve a similar caching effect, you can use a browser caching scheme such as localStorage. Or do not use keep-alive include to cache all pages directly. See details'
-  },
-  errorLog: {
-    tips: 'Please click the bug icon in the upper right corner',
-    description: 'Now the management system are basically the form of the spa, it enhances the user experience, but it also increases the possibility of page problems, a small negligence may lead to the entire page deadlock. Fortunately Vue provides a way to catch handling exceptions, where you can handle errors or report exceptions.',
-    documentation: 'Documento de introducción'
   },
   excel: {
     export: 'Exportar',

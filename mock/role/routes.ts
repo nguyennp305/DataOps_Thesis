@@ -187,18 +187,6 @@ export const asyncRoutes = [
         meta: { title: 'markdown', roles: ['admin'] }
       },
       {
-        path: 'json-editor',
-        component: 'views/components-demo/json-editor',
-        name: 'JsonEditorDemo',
-        meta: { title: 'jsonEditor', roles: ['admin'] }
-      },
-      {
-        path: 'split-pane',
-        component: 'views/components-demo/split-pane',
-        name: 'SplitPaneDemo',
-        meta: { title: 'splitPane', roles: ['admin'] }
-      },
-      {
         path: 'avatar-upload',
         component: 'views/components-demo/avatar-upload',
         name: 'AvatarUploadDemo',
@@ -227,12 +215,6 @@ export const asyncRoutes = [
         component: 'views/components-demo/mixin',
         name: 'ComponentMixinDemo',
         meta: { title: 'componentMixin', roles: ['admin'] }
-      },
-      {
-        path: 'back-to-top',
-        component: 'views/components-demo/back-to-top',
-        name: 'BackToTopDemo',
-        meta: { title: 'backToTop', roles: ['admin'] }
       },
       {
         path: 'draggable-dialog',
@@ -499,26 +481,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/error-log',
-    component: 'Layout',
-    meta: {
-      roles: ['admin']
-    },
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'log',
-        component: 'views/error-log/index',
-        name: 'ErrorLog',
-        meta: {
-          title: 'errorLog',
-          icon: 'bug',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
     path: '/excel',
     component: 'Layout',
     redirect: '/excel/export-excel',
@@ -614,26 +576,6 @@ export const asyncRoutes = [
         meta: {
           title: 'theme',
           icon: 'theme',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/clipboard',
-    component: 'Layout',
-    meta: {
-      roles: ['admin']
-    },
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'index',
-        component: 'views/clipboard/index',
-        name: 'Clipboard',
-        meta: {
-          title: 'clipboard',
-          icon: 'clipboard',
           roles: ['admin']
         }
       }

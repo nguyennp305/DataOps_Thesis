@@ -53,7 +53,6 @@ export default {
     errorPages: 'Pagine di Errore',
     page401: '401',
     page404: '404',
-    errorLog: 'Registro Errori',
     excel: 'Excel',
     exportExcel: 'Esporta Excel',
     selectExcel: 'Esporta Selezionato',
@@ -63,7 +62,6 @@ export default {
     pdf: 'PDF',
     exportZip: 'Esporta Zip',
     theme: 'Tema',
-    clipboard: 'Appunti',
     i18n: 'I18n',
     externalLink: 'Link Esterno',
     profile: 'Profilo'
@@ -140,11 +138,6 @@ export default {
   },
   example: {
     warning: 'Creare e modificare pagine non può essere tenuto in cache da keep-alive, perchè l\'include di keep-alive attualmente non supporta la cache basata sugli indirizzi, per questo ora viene utilizzata la cache basandosi sul nome del componente. Se vuoi utilizzare uno schema di caching basato sul browser come localStorage. O non usare l\'include di keep-alive per mettere le pagine in cache direttamente. Vedi dettagli'
-  },
-  errorLog: {
-    tips: 'Per favore clicca l\'icona dell\'insetto nell\'angolo in alto a sinistra',
-    description: 'Ora il sistema di gestione è fondamentalmente il form della spa, aumenta l\'esperienza utente, ma incrementa anche le possibilità di problemi nelle pagine, una piccola negligenza può portare al blocco della pagina. Fortunatamente Vue offre un modo di catturare le eccezioni, dove puoi manipolare gli errori o riportare un\'eccezione.',
-    documentation: 'Introduzione documentazione'
   },
   excel: {
     export: 'Esporta',
