@@ -3,15 +3,17 @@ import compression from 'compression'
 import morgan from 'morgan'
 import cors from 'cors'
 import http from 'http'
-import path from 'path'
-import yaml from 'yamljs'
+// import path from 'path'
+// import yaml from 'yamljs'
 import * as api from './api'
-import { accessTokenAuth } from './security'
-import { connector } from 'swagger-routes-express'
-import swaggerUi from 'swagger-ui-express'
+// import { accessTokenAuth } from './security'
+// import { connector, summarise } from 'swagger-routes-express'
 
 const app = express()
 const port = 9528
+
+// Create router
+const router = express.Router()
 
 // Compression
 app.use(compression())
@@ -21,10 +23,12 @@ app.use(morgan('dev'))
 app.use(cors())
 // POST, PUT, DELETE body parser
 app.use(express.json({ limit: '20mb' }))
-app.use(express.urlencoded({
-  limit: '20mb',
-  extended: false
-}))
+app.use(
+  express.urlencoded({
+    limit: '20mb',
+    extended: false
+  })
+)
 // No cache
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
@@ -33,20 +37,23 @@ app.use((req, res, next) => {
   next()
 })
 
-// Read and swagger config file
-const apiDefinition = yaml.load(path.resolve(__dirname, 'swagger.yml'))
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDefinition))
-// Create mock functions based on swaggerConfig
-const options = {
-  security: {
-    AccessTokenAuth: accessTokenAuth
-  }
-}
-const connectSwagger = connector(api, apiDefinition, options)
-connectSwagger(app)
-// Print swagger router api summary
-// const apiSummary = summarise(apiDefinition)
-// console.log(apiSummary)
+// Manually define routes using the imported APIs
+// users:
+router.get('/users', api.getUsers)
+router.post('/users/info', api.getUserInfo)
+router.get('/users/:username', api.getUserByName)
+router.put('/users/:username', api.updateUser)
+router.delete('/users/:username', api.deleteUser)
+router.post('/users/login', api.login)
+router.post('/users/logout', api.logout)
+router.post('/users/register', api.register)
+// enterprise:
+router.get('/enterprises', api.getEnterprises)
+router.delete('/enterprises/:id', api.deleteEnterprise)
+router.put('/enterprises/:id', api.updateEnterprise)
+
+// Use the router with the prefix
+app.use('/mock-api/v1', router)
 
 // Catch 404 error
 app.use((req, res) => {
@@ -61,11 +68,7 @@ app.use((req, res) => {
 const server = http.createServer(app)
 
 // Listen on provided port, on all network interfaces.
-// Start the server
-server.listen(port, () => {
-  console.log(`Mock server running at http://localhost:${port}`)
-  console.log(`Swagger UI available at http://localhost:${port}/api-docs`)
-})
+server.listen(port)
 server.on('error', onError)
 console.log('Mock server started on port ' + port + '!')
 
@@ -78,7 +81,10 @@ function onError(error: any) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error('Express ERROR (app) : %s requires elevated privileges', bind)
+      console.error(
+        'Express ERROR (app) : %s requires elevated privileges',
+        bind
+      )
       process.exit(1)
     case 'EADDRINUSE':
       console.error('Express ERROR (app) : %s is already in use', bind)

@@ -66,7 +66,7 @@ export const updateEnterprise = (req: Request, res: Response) => {
   }
 }
 
-export const deleteEnterpriseByID = (req: Request, res: Response) => {
+export const deleteEnterprise = (req: Request, res: Response) => {
   const { id } = req.params
   enterpriseList = enterpriseList.filter((item) => parseInt(item.id) !== parseInt(id))
   console.log('enterpriseList-enterpriseList', enterpriseList.length, id)
