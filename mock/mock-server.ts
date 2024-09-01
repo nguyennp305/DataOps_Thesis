@@ -38,7 +38,8 @@ app.use((req, res, next) => {
 })
 
 // Manually define routes using the imported APIs
-// users:
+// users:import { getRoles } from './../src/api/roles';
+
 router.get('/users', api.getUsers)
 router.post('/users/info', api.getUserInfo)
 router.get('/users/:username', api.getUserByName)
@@ -47,6 +48,21 @@ router.delete('/users/:username', api.deleteUser)
 router.post('/users/login', api.login)
 router.post('/users/logout', api.logout)
 router.post('/users/register', api.register)
+// transactions:
+router.get('/transactions', api.getTransactions)
+// articles:
+router.get('/articles', api.getArticles)
+router.get('/articles/:id', api.getArticle)
+router.post('/articles', api.createArticle)
+router.put('/articles/:id', api.updateArticle)
+router.delete('/articles/:id', api.deleteArticle)
+router.get('/pageviews', api.getPageviews)
+// getRoles:
+router.get('/roles', api.getRoles)
+router.post('/roles', api.createRole)
+router.put('/roles/:id', api.updateRole)
+router.delete('/roles/:id', api.deleteRole)
+router.get('/routes', api.getRoutes)
 // enterprise:
 router.get('/enterprises', api.getEnterprises)
 router.delete('/enterprises/:id', api.deleteEnterprise)

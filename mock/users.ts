@@ -15,15 +15,15 @@ const userList: IUserData[] = [
     roles: ['admin']
   },
   {
-    id: 1,
-    username: 'editor',
+    id: 2,
+    username: 'admin_project',
     password: 'any',
-    name: 'Normal Editor',
+    name: 'Normal Admin Project',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    introduction: 'I am an editor',
+    introduction: 'I am an admin project',
     email: 'editor@test.com',
     phone: '1234567890',
-    roles: ['editor']
+    roles: ['admin_project']
   }
 ]
 const userCount = 100

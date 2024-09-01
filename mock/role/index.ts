@@ -12,11 +12,11 @@ const roles: IRoleData[] = [
     routes: routes
   },
   {
-    key: 'editor',
-    name: 'editor',
-    description: 'Normal Editor. Can see all pages except permission page',
+    key: 'admin_project',
+    name: 'admin_project',
+    description: 'Normal Admin Project. Can see all pages except permission page',
     // routes: routes.filter(i => i.path !== '/permission') // Just a mock
-    routes: filterRoutesByRoleEditor(routes, 'editor') // Just a mock
+    routes: filterRoutesByRoleAdminProject(routes, 'admin_project') // Just a mock
   },
   {
     key: 'visitor',
@@ -33,7 +33,7 @@ const roles: IRoleData[] = [
           meta: {
             title: 'permission',
             icon: 'lock',
-            roles: ['admin', 'editor'],
+            roles: ['admin', 'admin_project'],
             alwaysShow: true
           },
           children: [
@@ -53,27 +53,27 @@ const roles: IRoleData[] = [
   }
 ]
 
-// This function is filter routes by role editor. It will return a new array of routes that only contains routes that the role can access.
-function filterRoutesByRoleEditor(routes: any[], role: string): any[] {
+// This function is filter routes by role admin_project. It will return a new array of routes that only contains routes that the role can access.
+function filterRoutesByRoleAdminProject(routes: any[], role: string): any[] {
   return routes.reduce((acc, route) => {
     if (route.meta && route.meta.roles && route.meta.roles.includes(role)) {
       // Route matches the role condition
       const newRoute = { ...route }
       if (route.children) {
-        newRoute.children = filterRoutesByRoleEditor(route.children, role)
+        newRoute.children = filterRoutesByRoleAdminProject(route.children, role)
       }
       acc.push(newRoute)
     } else if (!route.meta || !route.meta.roles) {
       // Route doesn't have meta or meta.roles defined, allow it
       const newRoute = { ...route }
       if (route.children) {
-        newRoute.children = filterRoutesByRoleEditor(route.children, role)
+        newRoute.children = filterRoutesByRoleAdminProject(route.children, role)
       }
       acc.push(newRoute)
     } else if (route.meta.roles && !route.meta.roles.includes(role)) {
       // Route has meta.roles but doesn't include the required role, skip it
       if (route.children) {
-        const filteredChildren = filterRoutesByRoleEditor(route.children, role)
+        const filteredChildren = filterRoutesByRoleAdminProject(route.children, role)
         if (filteredChildren.length > 0) {
           acc.push({
             ...route,
@@ -85,8 +85,6 @@ function filterRoutesByRoleEditor(routes: any[], role: string): any[] {
     return acc
   }, [] as any[])
 }
-
-// console.log('filteredRoutesEditor', filterRoutesByRoleEditor(routes, 'editor'))
 
 export const getRoles = (req: Request, res: Response) => {
   return res.json({

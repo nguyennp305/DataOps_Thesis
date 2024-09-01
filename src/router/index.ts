@@ -21,7 +21,7 @@ Vue.use(VueRouter)
                                  detail see : https://vuejs.org/v2/guide/components-dynamic-async.html#keep-alive-with-Dynamic-Components
   redirect:                      if set to 'noredirect', no redirect action will be trigger when clicking the breadcrumb
   meta: {
-    roles: ['admin', 'editor']   will control the page roles (allow setting multiple roles)
+    roles: ['admin', 'admin_project']   will control the page roles (allow setting multiple roles)
     title: 'title'               the name showed in subMenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon showed in the sidebar
     hidden: true                 if true, this route will not show in the sidebar (default is false)
@@ -149,7 +149,7 @@ export const asyncRoutes: RouteConfig[] = [
     meta: {
       title: 'permission',
       icon: 'lock',
-      roles: ['admin', 'editor'], // you can set roles in root nav
+      roles: ['admin', 'admin_project'], // you can set roles in root nav
       alwaysShow: true // will always show the root menu
     },
     children: [
