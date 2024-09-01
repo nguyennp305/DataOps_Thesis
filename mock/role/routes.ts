@@ -1,5 +1,7 @@
 // Just a mock data
 
+import { name } from 'faker'
+
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -119,6 +121,27 @@ export const asyncRoutes = [
         name: 'RolePermission',
         meta: {
           title: 'rolePermission',
+          roles: ['admin']
+        }
+      }
+    ]
+  },
+  {
+    path: '/user-management',
+    component: 'Layout',
+    redirect: '/user-management/user-list',
+    meta: {
+      title: 'userManagement',
+      icon: 'peoples',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'user-list',
+        component: 'views/user-management/index',
+        name: 'UserList',
+        meta: {
+          title: 'userList',
           roles: ['admin']
         }
       }

@@ -183,6 +183,28 @@ export const asyncRoutes: RouteConfig[] = [
     ]
   },
   {
+    path: '/user-management',
+    component: Layout,
+    redirect: '/user-management/user-list',
+    meta: {
+      title: 'userManagement',
+      icon: 'peoples',
+      roles: ['admin'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'user-list',
+        component: () => import('@/views/user-management/index.vue'),
+        name: 'UserList',
+        meta: {
+          title: 'userList',
+          roles: ['admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/organization',
     component: Layout,
     meta: {
