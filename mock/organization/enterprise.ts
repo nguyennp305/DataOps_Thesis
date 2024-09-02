@@ -1,5 +1,8 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
+// import axios from 'axios'
+
+const BASE_URL = 'http://localhost:8089/api/'
 
 let enterpriseList: any[] = []
 const enterpriseCount = 100
@@ -16,7 +19,30 @@ for (let i = 0; i < enterpriseCount; i++) {
   })
 }
 
-export const getEnterprises = (req: Request, res: Response) => {
+export const getEnterprises = async(req: Request, res: Response) => {
+  // const { page = 0, size = 10, word, startDate, enbDate } = req.query
+  // const url = BASE_URL + 'enterprise'
+  // let params = `?page=${page}&size=${size}`
+  // if (word) {
+  //   params += `&word=${word}`
+  // }
+  // if (startDate) {
+  //   params += `&startDate=${startDate}`
+  // }
+  // if (enbDate) {
+  //   params += `&enbDate=${enbDate}`
+  // }
+  // const response = await axios.get(url + params)
+  //   return res.json({
+  //     code: 20000,
+  //     data: {
+  //       items: response.data.data,
+  //       total: response.data.total,
+  //       limit: parseInt(size.toString()),
+  //       page: parseInt(page.toString()),
+  //     },
+  //   });
+
   const { page = 1, limit = 10, title, status, type, author, reviewer, sort } = req.query
   let mockList = enterpriseList.filter(item => {
     if (title && item.title.indexOf(title as string) < 0) return false

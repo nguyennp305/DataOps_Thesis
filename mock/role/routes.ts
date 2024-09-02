@@ -150,7 +150,10 @@ export const asyncRoutes = [
   {
     path: '/organization',
     component: 'Layout',
+    redirect: '/organization/enterprise',
     meta: {
+      title: 'enterpriseManagement',
+      icon: 'enterprise',
       roles: ['admin']
     },
     children: [
@@ -160,7 +163,6 @@ export const asyncRoutes = [
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          icon: 'user',
           roles: ['admin']
         }
       }

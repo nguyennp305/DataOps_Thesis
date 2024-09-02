@@ -208,7 +208,10 @@ export const asyncRoutes: RouteConfig[] = [
     path: '/organization',
     component: Layout,
     meta: {
-      roles: ['admin']
+      title: 'enterpriseManagement',
+      icon: 'enterprise',
+      roles: ['admin'],
+      alwaysShow: true
     },
     children: [
       {
@@ -217,7 +220,6 @@ export const asyncRoutes: RouteConfig[] = [
         name: 'Enterprise',
         meta: {
           title: 'enterprise',
-          icon: 'enterprise',
           roles: ['admin']
         }
       }

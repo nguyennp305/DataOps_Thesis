@@ -32,6 +32,7 @@ service.interceptors.response.use(
     // code == 50003: access token expired
     // code == 50004: invalid user (user not exist)
     // code == 50005: username or password is incorrect
+    // code == 50006: User with given username already exists
     // You can change this part for your own usage.
     const res = response.data
     if (res.code !== 20000) {
