@@ -9,17 +9,27 @@ export const getListEnterprise = async(params: any) => {
   return response
 }
 
-export const deleteEnterprise = (id: number) => {
+export const deleteEnterprise = (params: any) => {
   request({
-    url: `/enterprises/${id}`,
-    method: 'delete'
+    url: `/enterprises/${params.id}`,
+    method: 'delete',
+    params
   })
 }
 
-export const updateEnterprise = (id: number, data: any) => {
+export const updateEnterpriseById = (data: any) => {
   request({
-    url: `/enterprises/${id}`,
+    url: `/enterprises/${data.id}`,
     method: 'put',
+    data
+  })
+}
+
+export const createEnterprise = (data: any) => {
+  console.log('createEnterpriselocal', data)
+  request({
+    url: '/enterprises',
+    method: 'post',
     data
   })
 }

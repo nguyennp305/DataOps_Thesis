@@ -166,12 +166,12 @@ export default {
     },
     handleModalConfirm() {
       if (this.isEdit) {
-        this.updateEnterprise()
+        this.updateUserModal()
       } else {
-        this.createEnterprise()
+        this.createUserModal()
       }
     },
-    updateEnterprise() {
+    updateUserModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
           await updateUserById(this.dataForm)
@@ -182,6 +182,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.$emit('update:reload-table')
               this.$emit('update:visible', false)
             })
             .catch((err) => {
@@ -192,7 +193,7 @@ export default {
         }
       })
     },
-    createEnterprise() {
+    createUserModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
           await createUser(this.dataForm)
@@ -203,6 +204,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.$emit('update:reload-table')
               this.$emit('update:visible', false)
             })
             .catch((err) => {

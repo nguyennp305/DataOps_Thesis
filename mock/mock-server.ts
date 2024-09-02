@@ -71,7 +71,8 @@ router.get('/routes', api.getRoutes)
 // enterprise:
 router.get('/enterprises', api.getEnterprises)
 router.delete('/enterprises/:id', api.deleteEnterprise)
-router.put('/enterprises/:id', api.updateEnterprise)
+router.put('/enterprises/:id', api.updateEnterpriseById)
+router.post('/enterprises', api.createEnterprise)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)

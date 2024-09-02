@@ -12,46 +12,22 @@
       :model="dataForm"
       label-position="top"
     >
-      <el-form-item :label="$t('table.title')" prop="title">
-        <el-input v-model="dataForm.title" :placeholder="$t('table.title')" />
+      <el-form-item :label="$t('login.email')" prop="email">
+        <el-input v-model="dataForm.email" :placeholder="$t('login.email')" />
       </el-form-item>
 
-      <el-form-item :label="$t('table.author')" prop="author">
-        <el-input v-model="dataForm.author" :placeholder="$t('table.author')" />
+      <el-form-item :label="$t('route.enterpriseName')" prop="name">
+        <el-input
+          v-model="dataForm.name"
+          :placeholder="$t('route.enterpriseName')"
+        />
       </el-form-item>
 
-      <el-form-item :label="$t('table.reviewer')" prop="reviewer">
-        <el-input v-model="dataForm.reviewer" :placeholder="$t('table.reviewer')" />
-      </el-form-item>
-
-      <el-form-item :label="$t('table.status')" prop="status">
-        <el-select
-          v-model="dataForm.status"
-          :placeholder="$t('table.status')"
-          clearable
-        >
-          <el-option
-            v-for="item in statusOptions"
-            :key="item.key"
-            :label="item.displayName"
-            :value="item.key"
-          />
-      </el-select>
-      </el-form-item>
-
-      <el-form-item :label="$t('table.type')" prop="type">
-        <el-select
-          v-model="dataForm.type"
-          :placeholder="$t('table.type')"
-          clearable
-        >
-          <el-option
-            v-for="item in calendarTypeOptions"
-            :key="item.key"
-            :label="item.displayName+'('+item.key+')'"
-            :value="item.key"
-          />
-      </el-select>
+      <el-form-item :label="$t('table.description')" prop="description">
+        <el-input
+          v-model="dataForm.description"
+          :placeholder="$t('table.description')"
+        />
       </el-form-item>
     </el-form>
   </modal>
@@ -60,13 +36,16 @@
 <script>
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
+import {
+  createEnterprise,
+  updateEnterpriseById
+} from '@/api/organization/enterprise'
 
 const defaultDataForm = {
-  title: '',
-  author: '',
-  reviewer: '',
-  status: '',
-  type: ''
+  name: '',
+  email: '',
+  description: '',
+  id: null
 }
 
 export default {
@@ -91,23 +70,22 @@ export default {
     return {
       dataForm: cloneDeep(defaultDataForm),
       rules: {
-        title: [{ required: true, message: 'Title is required', trigger: 'blur' }],
-        author: [{ required: true, message: 'Author is required', trigger: 'blur' }],
-        reviewer: [{ required: true, message: 'reviewer is required', trigger: 'blur' }],
-        status: [{ required: true, message: 'status is required', trigger: 'blur' }],
-        type: [{ required: true, message: 'type is required', trigger: 'blur' }]
+        name: [
+          {
+            required: true,
+            message: 'Name Enterprise is required',
+            trigger: 'blur'
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: 'Email Enterprise is required',
+            trigger: 'blur'
+          }
+        ]
       },
-      calendarTypeOptions: [
-        { key: 'CN', displayName: 'China' },
-        { key: 'US', displayName: 'USA' },
-        { key: 'JP', displayName: 'Japan' },
-        { key: 'EU', displayName: 'Eurozone' }
-      ],
-      statusOptions: [
-        { key: 'published', displayName: 'Published' },
-        { key: 'draft', displayName: 'Draft' },
-        { key: 'deleted', displayName: 'Deleted' }
-      ]
+      rolesTypeOptions: []
     }
   },
   watch: {
@@ -130,38 +108,52 @@ export default {
       })
     },
     handleModalClose() {
-      console.log('handleModalClose')
       this.dataForm = cloneDeep(defaultDataForm)
       this.clearValidate()
       this.$emit('update:visible', false)
     },
     handleModalCancel() {
-      console.log('handleModalCancel')
       this.$emit('update:visible', false)
     },
     handleModalConfirm() {
-      console.log('handleModalConfirm')
       if (this.isEdit) {
-        this.updateEnterprise()
+        this.updateEnterpriseModal()
       } else {
-        this.createEnterprise()
+        this.createEnterpriseModal()
       }
     },
-    updateEnterprise() {
-      this.$refs.dataFormRef.validate((valid) => {
+    updateEnterpriseModal() {
+      this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
+          await updateEnterpriseById(this.dataForm)
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.$emit('update:reload-table')
           this.$emit('update:visible', false)
         } else {
-          console.log('Form updateEnterprise is invalid')
+          console.log('Form update is invalid')
         }
       })
     },
-    createEnterprise() {
-      this.$refs.dataFormRef.validate((valid) => {
+    createEnterpriseModal() {
+      this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
+          await createEnterprise(this.dataForm)
+
+          this.$notify({
+            title: 'Success',
+            message: 'Create Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.$emit('update:reload-table')
           this.$emit('update:visible', false)
         } else {
-          console.log('Form createEnterprise is invalid')
+          console.log('Form create is invalid')
         }
       })
     }

@@ -1,6 +1,5 @@
 import { Response, Request } from 'express'
 import axios from 'axios'
-import data from './../../src/views/pdf/content'
 
 const BASE_URL = 'http://localhost:8089/api/'
 

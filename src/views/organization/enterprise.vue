@@ -2,73 +2,67 @@
   <div class="app-container">
     <filter-search
       :listQuery="listQuery"
-      :showReviewer.sync="showReviewer"
-      :showStatus.sync="showStatus"
+      :showCreatedAt.sync="showCreatedAt"
+      :showCreatedBy.sync="showCreatedBy"
       :downloadLoading="downloadLoading"
       @filter="handleFilter"
       @create="handleCreate"
-      @download="handleDownload"
       @update:listQuery="updateListQuery"
-      @update:showReviewer="updateShowReviewer"
-      @update:showStatus="updateShowStatus"
+      @update:showCreatedAt="updateShowCreatedAt"
+      @update:showCreatedBy="updateShowCreatedBy"
       @update:tableKey="updateTableKey"
     />
-
     <datatable
       :loading="listLoading"
       :data="list"
       :total="total"
       :tableKey="tableKey"
       :listQuery="listQuery"
-      :showReviewer="showReviewer"
-      :showStatus="showStatus"
-      @sort-change="sortChange"
-      @update="handleUpdate"
+      :showCreatedAt="showCreatedAt"
+      :showCreatedBy="showCreatedBy"
+      @update="handleClickButtonUpdate"
       @delete="handleDelete"
       @pagination="getList"
     />
-
     <enterprise-modal
       :visible="visible"
       :isEdit="isEditModal"
       :data="propDataItem"
       @update:visible="handleUpdateVisible"
+      @update:reload-table="reloadTable"
     />
   </div>
 </template>
 
 <script>
 // import component
-import Datatable from '@/views/organization/components/enterprise/datatable'
-import FilterSearch from '@/views/organization/components/enterprise/filter-search'
-import enterpriseModal from '@/components/Modal/enterpriseModal'
+import Datatable from '@/views/organization/components/datatable'
+import FilterSearch from '@/views/organization/components/filter-search'
+import EnterpriseModal from '@/components/Modal/enterpriseModal.vue'
 // import function call api.
 import { getListEnterprise, deleteEnterprise } from '@/api/organization/enterprise'
-
 export default {
+  name: 'Enterprise',
   components: {
     Datatable,
     FilterSearch,
-    enterpriseModal
+    EnterpriseModal
   },
   data() {
     return {
-      tableKey: 0,
       listLoading: true,
       list: [],
       total: 0,
+      tableKey: 0,
       listQuery: {
         page: 1,
-        limit: 10,
-        title: undefined,
-        type: undefined,
-        author: undefined,
-        reviewer: undefined,
-        status: undefined,
-        sort: '+id'
+        size: 10,
+        word: undefined,
+        startDate: undefined,
+        enbDate: undefined
       },
-      showReviewer: false,
-      showStatus: false,
+      showCreatedAt: false,
+      showCreatedBy: false,
       downloadLoading: false,
       visible: false,
       isEditModal: false,
@@ -88,25 +82,11 @@ export default {
         this.listLoading = false
       }, 0.5 * 1000)
     },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
-    handleUpdate(row) {
+    handleClickButtonUpdate(row) {
       this.propDataItem = row
       this.isEditModal = true
       this.visible = true
@@ -116,13 +96,19 @@ export default {
       this.visible = newVal
     },
     handleDelete(row) {
-      this.$confirm('Confirm to remove this enterprise?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      })
+      this.$confirm(
+        'Confirm to remove this enterprise? (not multiple language)',
+        'Warning',
+        {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
         .then(async() => {
-          await deleteEnterprise(row.id)
+          await deleteEnterprise({
+            id: row.id
+          })
           this.list = this.list.filter((item) => item.id !== row.id)
           this.$notify({
             title: 'Success',
@@ -130,31 +116,52 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.reloadTable()
         })
-        .catch(err => { console.error(err) })
+        .catch((err) => {
+          console.error(err)
+        })
     },
     handleCreate() {
       this.propDataItem = null
       this.isEditModal = false
       this.visible = true
     },
-    handleDownload() {
-      this.downloadLoading = true
-      console.log('handleDownload')
-      this.downloadLoading = false
-    },
     updateListQuery(newListQuery) {
       this.listQuery = newListQuery
     },
-    updateShowReviewer(newVal) {
-      this.showReviewer = newVal
+    updateShowCreatedAt(newVal) {
+      this.showCreatedAt = newVal
     },
-    updateShowStatus(newVal) {
-      this.showStatus = newVal
+    updateShowCreatedBy(newVal) {
+      this.showCreatedBy = newVal
     },
     updateTableKey(newVal) {
       this.tableKey = newVal
+    },
+    reloadTable() {
+      this.handleFilter()
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.field-label {
+  vertical-align: middle;
+}
+
+.box-card {
+  width: 400px;
+  max-width: 100%;
+  margin: 20px auto;
+}
+
+.block {
+  padding: 30px 24px;
+}
+
+.tag-item {
+  margin-right: 15px;
+}
+</style>

@@ -30,6 +30,7 @@
       :isEdit="isEditModal"
       :data="propDataItem"
       @update:visible="handleUpdateVisible"
+      @update:reload-table="reloadTable"
     />
   </div>
 </template>
@@ -96,7 +97,6 @@ export default {
     handleUpdateVisible(newVal) {
       this.propDataItem = null
       this.visible = newVal
-      this.reloadTable()
     },
     handleDelete(row) {
       this.$confirm(
@@ -119,6 +119,7 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.reloadTable()
         })
         .catch((err) => {
           console.error(err)
