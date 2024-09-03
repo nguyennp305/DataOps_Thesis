@@ -226,6 +226,27 @@ export const asyncRoutes: RouteConfig[] = [
     ]
   },
   {
+    path: '/project',
+    component: Layout,
+    meta: {
+      title: 'projectManagement',
+      icon: 'skill',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/project-management/index.vue'),
+        name: 'Project',
+        meta: {
+          title: 'project',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     meta: {

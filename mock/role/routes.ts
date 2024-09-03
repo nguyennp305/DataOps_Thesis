@@ -169,6 +169,27 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/project',
+    component: 'Layout',
+    redirect: '/project/list',
+    meta: {
+      title: 'projectManagement',
+      icon: 'skill',
+      roles: ['admin', 'admin_project']
+    },
+    children: [
+      {
+        path: 'list',
+        component: 'views/project-management/index.vue',
+        name: 'Project',
+        meta: {
+          title: 'project',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: 'Layout',
     meta: {
