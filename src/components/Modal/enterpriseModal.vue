@@ -126,14 +126,19 @@ export default {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
           await updateEnterpriseById(this.dataForm)
-          this.$notify({
-            title: 'Success',
-            message: 'Update Successfully',
-            type: 'success',
-            duration: 2000
-          })
-          this.$emit('update:reload-table')
-          this.$emit('update:visible', false)
+            .then((res) => {
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
         } else {
           console.log('Form update is invalid')
         }
