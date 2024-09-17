@@ -8,6 +8,7 @@ export const getProjectList = async(req: Request, res: Response) => {
     page = 1,
     size = 10,
     name,
+    description,
     memberId,
     createTimeFrom,
     createTimeTo,
@@ -21,6 +22,9 @@ export const getProjectList = async(req: Request, res: Response) => {
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
   if (name) {
     params += `&name=${name}`
+  }
+  if (description) {
+    params += `&description=${description}`
   }
   if (memberId) {
     params += `&memberId=${memberId}`

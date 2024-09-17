@@ -26,7 +26,20 @@
         />
       </el-form-item>
 
-      <el-form-item :label="$t('table.startTime')" prop="startDate">
+      <el-form-item
+        :label="$t('table.startTime') + ' - ' + $t('table.endTime')"
+        prop="rangeDate"
+      >
+        <date-range-picker
+          v-model="rangeDate"
+          class="date-range-picker"
+          type="datetimerange"
+          format="dd/MM/yyyy HH:mm:ss"
+        >
+        </date-range-picker>
+      </el-form-item>
+
+      <!-- <el-form-item :label="$t('table.startTime')" prop="startDate">
         <el-input
           v-model="dataForm.startDate"
           :placeholder="$t('table.startTime')"
@@ -38,7 +51,7 @@
           v-model="dataForm.endDate"
           :placeholder="$t('table.endTime')"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item :label="$t('route.enterprise')" prop="enterpriseId">
         <el-select
@@ -54,12 +67,36 @@
             :value="item.key"
           />
           <pagination
-          v-show="totalItemsEnterpriseTypeOptions > 0"
-          :total="totalItemsEnterpriseTypeOptions"
-          :page.sync="listQueryntEnterpriseTypeOptions.page"
-          :limit.sync="listQueryntEnterpriseTypeOptions.size"
-          @pagination="fetchDataGetEnterprises"
-        />
+            v-show="totalItemsEnterpriseTypeOptions > 0"
+            :total="totalItemsEnterpriseTypeOptions"
+            :page.sync="listQueryntEnterpriseTypeOptions.page"
+            :limit.sync="listQueryntEnterpriseTypeOptions.size"
+            @pagination="fetchDataGetEnterprises"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item :label="$t('table.members')" prop="members">
+        <el-select
+          v-model="dataForm.memberIds"
+          :placeholder="$t('table.members')"
+          multiple
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="item in usersTypeOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+          <pagination
+            v-show="totalItemsUsersTypeOptions > 0"
+            :total="totalItemsUsersTypeOptions"
+            :page.sync="listQueryntUsersTypeOptions.page"
+            :limit.sync="listQueryntUsersTypeOptions.size"
+            @pagination="fetchDataGetUsers"
+          />
         </el-select>
       </el-form-item>
     </el-form>
@@ -69,18 +106,18 @@
 <script>
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
-import {
-  getAllRoles,
-  createUser,
-  updateUserById
-} from '@/api/user-management/user-list'
+import { createUser, updateUserById, getUserList } from '@/api/user-management/user-list'
 import { getListEnterprise } from '@/api/organization/enterprise'
+
 import Pagination from '@/components/Pagination/index.vue'
+import DateRangePicker from '@/components/DateRangePicker/index.vue'
+import moment from 'moment'
+
 const defaultDataForm = {
   name: '',
   description: '',
   enterpriseId: null,
-  memberIds: null,
+  memberIds: [],
   startDate: null,
   endDate: null,
   id: null
@@ -89,7 +126,8 @@ const defaultDataForm = {
 export default {
   components: {
     Modal,
-    Pagination
+    Pagination,
+    DateRangePicker
   },
   props: {
     visible: {
@@ -125,20 +163,27 @@ export default {
             message: 'Enterprise is required',
             trigger: 'blur'
           }
-        ],
-        memberIds: [
-          { required: true, message: 'members is required', trigger: 'blur' }
-        ],
-        startDate: [
-          { required: true, message: 'StartDate is required', trigger: 'blur' }
-        ],
-        endDate: [
-          { required: true, message: 'EndDate is required', trigger: 'blur' }
         ]
+        // memberIds: [
+        //   { required: true, message: "members is required", trigger: "blur" },
+        // ],
+        // startDate: [
+        //   { required: true, message: 'StartDate is required', trigger: 'blur' }
+        // ],
+        // endDate: [
+        //   { required: true, message: 'EndDate is required', trigger: 'blur' }
+        // ]
       },
+      rangeDate: [null, null],
       enterpriseTypeOptions: [],
       totalItemsEnterpriseTypeOptions: 0,
       listQueryntEnterpriseTypeOptions: {
+        page: 1,
+        size: 10
+      },
+      usersTypeOptions: [],
+      totalItemsUsersTypeOptions: 0,
+      listQueryntUsersTypeOptions: {
         page: 1,
         size: 10
       }
@@ -159,6 +204,7 @@ export default {
   },
   created() {
     this.fetchDataGetEnterprises()
+    this.fetchDataGetUsers()
   },
   methods: {
     async fetchDataGetEnterprises() {
@@ -171,6 +217,17 @@ export default {
       }))
       this.enterpriseTypeOptions = newArray
       this.totalItemsEnterpriseTypeOptions = data.total
+    },
+    async fetchDataGetUsers() {
+      const { data } = await getUserList(
+        this.listQueryntUsersTypeOptions
+      )
+      const newArray = data.items.map((item) => ({
+        key: item.id,
+        displayName: item.username
+      }))
+      this.usersTypeOptions = newArray
+      this.totalItemsUsersTypeOptions = data.total
     },
     clearValidate() {
       this.$nextTick(() => {
@@ -193,44 +250,55 @@ export default {
       }
     },
     updateUserModal() {
-      this.$refs.dataFormRef.validate(async(valid) => {
-        if (valid) {
-          await updateUserById(this.dataForm)
-            .then((res) => {
-              this.$notify({
-                title: 'Success',
-                message: 'Update Successfully',
-                type: 'success',
-                duration: 2000
-              })
-              this.$emit('update:reload-table')
-              this.$emit('update:visible', false)
-            })
-            .catch((err) => {
-              console.log('err', err)
-            })
-        } else {
-          console.log('Form updateEnterprise is invalid')
-        }
-      })
+      // this.$refs.dataFormRef.validate(async(valid) => {
+      //   if (valid) {
+      //     await updateUserById(this.dataForm)
+      //       .then((res) => {
+      //         this.$notify({
+      //           title: 'Success',
+      //           message: 'Update Successfully',
+      //           type: 'success',
+      //           duration: 2000
+      //         })
+      //         this.$emit('update:reload-table')
+      //         this.$emit('update:visible', false)
+      //       })
+      //       .catch((err) => {
+      //         console.log('err', err)
+      //       })
+      //   } else {
+      //     console.log('Form updateEnterprise is invalid')
+      //   }
+      // })
     },
     createUserModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
-          await createUser(this.dataForm)
-            .then((res) => {
-              this.$notify({
-                title: 'Success',
-                message: 'Create Successfully',
-                type: 'success',
-                duration: 2000
-              })
-              this.$emit('update:reload-table')
-              this.$emit('update:visible', false)
-            })
-            .catch((err) => {
-              console.log('err', err)
-            })
+          const UTCFromDate = moment.utc(this.rangeDate[0])
+          const localFromDate = moment(UTCFromDate).local()
+          const UTCToDate = moment.utc(this.rangeDate[1])
+          const localToDate = moment(UTCToDate).local()
+          this.dataForm.startDate = this.rangeDate[0]
+            ? localFromDate.format('DD/MM/yyyy HH:mm:ss').toString()
+            : null
+          this.dataForm.endDate = this.rangeDate[1]
+            ? localToDate.format('DD/MM/yyyy HH:mm:ss').toString()
+            : null
+          console.log('createUserModal', this.dataForm)
+          // await createUser(this.dataForm)
+          //   .then((res) => {
+          //     this.$notify({
+          //       title: 'Success',
+          //       message: 'Create Successfully',
+          //       type: 'success',
+          //       duration: 2000
+          //     })
+          //     this.$emit('update:reload-table')
+          //     this.$emit('update:visible', false)
+          //   })
+          //   .catch((err) => {
+          //     console.log('err', err)
+          //   })
         } else {
           console.log('Form createEnterprise is invalid')
         }
@@ -242,4 +310,9 @@ export default {
 
 <style lang="scss" scoped>
 /* Add your styles here */
+.date-range-picker {
+  width: 100%;
+}
 </style>
+<!-- ngày 18/-9/2024
+Đã xong khởi tạo data create project. hiện tại chưa thực hiện ghép API -->

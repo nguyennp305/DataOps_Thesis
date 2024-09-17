@@ -8,6 +8,13 @@
         />
       </labeling-slot>
 
+      <labeling-slot :label="$t('table.description')">
+        <el-input
+          v-model="localListQuery.description"
+          :placeholder="$t('table.description')"
+        />
+      </labeling-slot>
+
       <labeling-slot :label="'MemberId(notMultiLang)'">
         <el-input
           v-model="localListQuery.memberId"

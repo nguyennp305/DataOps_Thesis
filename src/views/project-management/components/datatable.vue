@@ -41,16 +41,6 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.rolePermission')"
-        width="100px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.roleName }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
         :label="$t('table.startTime')"
         :align="'center'"
         min-width="150px"

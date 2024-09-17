@@ -59,6 +59,7 @@ export default {
         page: 1,
         size: 10,
         name: undefined,
+        description: undefined,
         memberId: undefined,
         createTimeFrom: undefined,
         createTimeTo: undefined,
