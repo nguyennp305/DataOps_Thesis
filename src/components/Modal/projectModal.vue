@@ -73,7 +73,7 @@
 
       <el-form-item :label="$t('table.members')" prop="members">
         <el-select
-          v-model="dataForm.memberIds"
+          v-model="userListSelected"
           :placeholder="$t('table.members')"
           multiple
           filterable
@@ -102,7 +102,10 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import { getUserList } from '@/api/user-management/user-list'
-import { createProject, updateProjectById } from '@/api/project-management/project-list'
+import {
+  createProject,
+  updateProjectById
+} from '@/api/project-management/project-list'
 import { getListEnterprise } from '@/api/organization/enterprise'
 import Pagination from '@/components/Pagination/index.vue'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
@@ -159,15 +162,6 @@ export default {
             trigger: 'blur'
           }
         ]
-        // memberIds: [
-        //   { required: true, message: "members is required", trigger: "blur" },
-        // ],
-        // startDate: [
-        //   { required: true, message: 'StartDate is required', trigger: 'blur' }
-        // ],
-        // endDate: [
-        //   { required: true, message: 'EndDate is required', trigger: 'blur' }
-        // ]
       },
       rangeDate: [null, null],
       enterpriseTypeOptions: [],
@@ -177,6 +171,7 @@ export default {
         size: 10
       },
       usersTypeOptions: [],
+      userListSelected: [],
       totalItemsUsersTypeOptions: 0,
       listQueryntUsersTypeOptions: {
         page: 1,
@@ -209,6 +204,19 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          if (newVal.members && newVal.members.length > 0) {
+            this.userListSelected = newVal.members.map((item) => item.id) // Tạo mảng mới
+          } else {
+            this.userListSelected = [] // Mảng trống nếu không có member
+          }
+          // if (newVal.startAt && newVal.endAt) {
+          //   this.rangeDate = [
+          //     moment("2021-11-10 23:50:00").valueOf(), // Giá trị ngày bắt đầu
+          //     moment("2021-11-10 23:50:00").valueOf(), // Giá trị ngày kết thúc
+          //   ];
+          // } else {
+          //   this.rangeDate = [null, null];
+          // }
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
           this.rangeDate = [null, null]
@@ -250,11 +258,14 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.rangeDate = [null, null]
+      this.userListSelected = []
       this.clearValidate()
       this.$emit('update:visible', false)
     },
     handleModalCancel() {
-      this.$emit('update:visible', false)
+      this.handleModalClose()
+      // this.$emit("update:visible", false);
     },
     handleModalConfirm() {
       if (this.isEdit) {
@@ -271,7 +282,7 @@ export default {
             endAt: this.convertToISOString(this.dataForm.endDate),
             enterpriseId: this.dataForm.enterpriseId,
             id: this.dataForm.id,
-            memberIds: this.dataForm.memberIds,
+            memberIds: this.userListSelected,
             name: this.dataForm.name,
             startAt: this.convertToISOString(this.dataForm.startDate)
           }
@@ -301,6 +312,7 @@ export default {
             ? this.rangeDate[0]
             : null
           this.dataForm.endDate = this.rangeDate[1] ? this.rangeDate[1] : null
+          this.dataForm.memberIds = this.userListSelected
           await createProject(this.dataForm)
             .then((res) => {
               this.$notify({
