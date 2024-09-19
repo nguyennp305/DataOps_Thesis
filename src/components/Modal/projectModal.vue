@@ -27,6 +27,7 @@
       </el-form-item>
 
       <el-form-item
+        v-if="!isEdit"
         :label="$t('table.startTime') + ' - ' + $t('table.endTime')"
         prop="rangeDate"
       >
@@ -39,19 +40,13 @@
         </date-range-picker>
       </el-form-item>
 
-      <!-- <el-form-item :label="$t('table.startTime')" prop="startDate">
-        <el-input
-          v-model="dataForm.startDate"
-          :placeholder="$t('table.startTime')"
-        />
+      <el-form-item
+        v-if="isEdit"
+        :label="$t('table.startTime') + ' - ' + $t('table.endTime')"
+        prop="rangeDate"
+      >
+        <div>{{ changeShowDateStartAt }} - {{ changeShowDateEndAt }}</div>
       </el-form-item>
-
-      <el-form-item :label="$t('table.endTime')" prop="endDate">
-        <el-input
-          v-model="dataForm.endDate"
-          :placeholder="$t('table.endTime')"
-        />
-      </el-form-item> -->
 
       <el-form-item :label="$t('route.enterprise')" prop="enterpriseId">
         <el-select
@@ -106,9 +101,9 @@
 <script>
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
-import { createUser, updateUserById, getUserList } from '@/api/user-management/user-list'
+import { getUserList } from '@/api/user-management/user-list'
+import { createProject, updateProjectById } from '@/api/project-management/project-list'
 import { getListEnterprise } from '@/api/organization/enterprise'
-
 import Pagination from '@/components/Pagination/index.vue'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import moment from 'moment'
@@ -189,6 +184,26 @@ export default {
       }
     }
   },
+  computed: {
+    changeShowDateStartAt() {
+      if (this.isEdit && this.dataForm.startAt) {
+        const UTCFromDate = moment.utc(this.dataForm.startAt)
+        const localFromDate = moment(UTCFromDate).local()
+        const fromDate = localFromDate.format('DD/MM/yyyy HH:mm:ss').toString()
+        return fromDate
+      }
+      return ''
+    },
+    changeShowDateEndAt() {
+      if (this.isEdit && this.dataForm.endAt) {
+        const UTCToDate = moment.utc(this.dataForm.endAt)
+        const localToDate = moment(UTCToDate).local()
+        const toDate = localToDate.format('DD/MM/yyyy HH:mm:ss').toString()
+        return toDate
+      }
+      return ''
+    }
+  },
   watch: {
     data: {
       handler(newVal) {
@@ -196,6 +211,7 @@ export default {
           this.dataForm = cloneDeep(newVal)
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
+          this.rangeDate = [null, null]
         }
         this.clearValidate()
       },
@@ -219,9 +235,7 @@ export default {
       this.totalItemsEnterpriseTypeOptions = data.total
     },
     async fetchDataGetUsers() {
-      const { data } = await getUserList(
-        this.listQueryntUsersTypeOptions
-      )
+      const { data } = await getUserList(this.listQueryntUsersTypeOptions)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.username
@@ -244,65 +258,71 @@ export default {
     },
     handleModalConfirm() {
       if (this.isEdit) {
-        this.updateUserModal()
+        this.updateProjectModal()
       } else {
-        this.createUserModal()
+        this.createProjectModal()
       }
     },
-    updateUserModal() {
-      // this.$refs.dataFormRef.validate(async(valid) => {
-      //   if (valid) {
-      //     await updateUserById(this.dataForm)
-      //       .then((res) => {
-      //         this.$notify({
-      //           title: 'Success',
-      //           message: 'Update Successfully',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //         this.$emit('update:reload-table')
-      //         this.$emit('update:visible', false)
-      //       })
-      //       .catch((err) => {
-      //         console.log('err', err)
-      //       })
-      //   } else {
-      //     console.log('Form updateEnterprise is invalid')
-      //   }
-      // })
-    },
-    createUserModal() {
+    updateProjectModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
-          const UTCFromDate = moment.utc(this.rangeDate[0])
-          const localFromDate = moment(UTCFromDate).local()
-          const UTCToDate = moment.utc(this.rangeDate[1])
-          const localToDate = moment(UTCToDate).local()
-          this.dataForm.startDate = this.rangeDate[0]
-            ? localFromDate.format('DD/MM/yyyy HH:mm:ss').toString()
-            : null
-          this.dataForm.endDate = this.rangeDate[1]
-            ? localToDate.format('DD/MM/yyyy HH:mm:ss').toString()
-            : null
-          console.log('createUserModal', this.dataForm)
-          // await createUser(this.dataForm)
-          //   .then((res) => {
-          //     this.$notify({
-          //       title: 'Success',
-          //       message: 'Create Successfully',
-          //       type: 'success',
-          //       duration: 2000
-          //     })
-          //     this.$emit('update:reload-table')
-          //     this.$emit('update:visible', false)
-          //   })
-          //   .catch((err) => {
-          //     console.log('err', err)
-          //   })
+          const dataUpdateProject = {
+            description: this.dataForm.description,
+            endAt: this.convertToISOString(this.dataForm.endDate),
+            enterpriseId: this.dataForm.enterpriseId,
+            id: this.dataForm.id,
+            memberIds: this.dataForm.memberIds,
+            name: this.dataForm.name,
+            startAt: this.convertToISOString(this.dataForm.startDate)
+          }
+          await updateProjectById(dataUpdateProject)
+            .then((res) => {
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
         } else {
-          console.log('Form createEnterprise is invalid')
+          console.log('Form update Project is invalid')
         }
       })
+    },
+    createProjectModal() {
+      this.$refs.dataFormRef.validate(async(valid) => {
+        if (valid) {
+          this.dataForm.startDate = this.rangeDate[0]
+            ? this.rangeDate[0]
+            : null
+          this.dataForm.endDate = this.rangeDate[1] ? this.rangeDate[1] : null
+          await createProject(this.dataForm)
+            .then((res) => {
+              this.$notify({
+                title: 'Success',
+                message: 'Create Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form create Project is invalid')
+        }
+      })
+    },
+    convertToISOString(dateString) {
+      const date = moment.parseZone(dateString)
+      return date.toISOString()
     }
   }
 }

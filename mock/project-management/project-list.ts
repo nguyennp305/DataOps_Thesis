@@ -62,3 +62,39 @@ export const deleteProjectById = async(req: Request, res: Response) => {
     data: response.data
   })
 }
+
+export const createProject = async(req: Request, res: Response) => {
+  const data = req.body
+  const url = BASE_URL + 'project'
+  await axios.post(url, data)
+    .then(response => {
+      return res.json({
+        code: 20000,
+        data: response.data
+      })
+    })
+    .catch(err => {
+      return res.json({
+        code: 50006,
+        message: err.response.data.message
+      })
+    })
+}
+
+export const updateProjectById = async(req: Request, res: Response) => {
+  const data = req.body
+  const url = BASE_URL + 'project'
+  await axios.put(url, data)
+    .then(response => {
+      return res.json({
+        code: 20000,
+        data: response.data
+      })
+    })
+    .catch(err => {
+      return res.json({
+        code: 50006,
+        message: err.response.data.message
+      })
+    })
+}
