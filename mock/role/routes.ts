@@ -133,7 +133,8 @@ export const asyncRoutes = [
     meta: {
       title: 'userManagement',
       icon: 'peoples',
-      roles: ['admin']
+      roles: ['admin'],
+      alwaysShow: true
     },
     children: [
       {
@@ -154,7 +155,8 @@ export const asyncRoutes = [
     meta: {
       title: 'enterpriseManagement',
       icon: 'enterprise',
-      roles: ['admin']
+      roles: ['admin'],
+      alwaysShow: true
     },
     children: [
       {
@@ -175,7 +177,8 @@ export const asyncRoutes = [
     meta: {
       title: 'projectManagement',
       icon: 'skill',
-      roles: ['admin', 'admin_project']
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
     },
     children: [
       {
@@ -184,6 +187,37 @@ export const asyncRoutes = [
         name: 'Project',
         meta: {
           title: 'project',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
+    path: '/label-management',
+    component: 'Layout',
+    redirect: '/label-management/label-group',
+    meta: {
+      title: 'labelManagement',
+      icon: 'qq',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'label-data',
+        component: '@/views/labeling-management/label-data.vue',
+        name: 'LabelData',
+        meta: {
+          title: 'labelData',
+          roles: ['admin', 'admin_project']
+        }
+      },
+      {
+        path: 'label-group',
+        component: '@/views/labeling-management/label-group.vue',
+        name: 'LabelGroup',
+        meta: {
+          title: 'labelGroup',
           roles: ['admin', 'admin_project']
         }
       }

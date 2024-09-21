@@ -247,6 +247,36 @@ export const asyncRoutes: RouteConfig[] = [
     ]
   },
   {
+    path: '/label-management',
+    component: Layout,
+    meta: {
+      title: 'labelManagement',
+      icon: 'qq',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'label-data',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/labeling-management/label-data.vue'),
+        name: 'LabelData',
+        meta: {
+          title: 'labelData',
+          roles: ['admin', 'admin_project']
+        }
+      },
+      {
+        path: 'label-group',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/labeling-management/label-group.vue'),
+        name: 'LabelGroup',
+        meta: {
+          title: 'labelGroup',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     meta: {
