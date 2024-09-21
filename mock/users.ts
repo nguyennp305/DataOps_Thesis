@@ -1,6 +1,9 @@
 import faker from 'faker'
 import { Response, Request } from 'express'
 import { IUserData } from '../src/api/types'
+import axios from 'axios'
+
+const BASE_URL = 'http://localhost:8089/api/'
 
 const userList: IUserData[] = [
   {
@@ -49,22 +52,44 @@ export const register = (req: Request, res: Response) => {
   })
 }
 
-export const login = (req: Request, res: Response) => {
-  const { username } = req.body
-  for (const user of userList) {
-    if (user.username === username) {
+export const login = async(req: Request, res: Response) => {
+  const url = BASE_URL + 'login'
+  const data = req.body
+  let newToken = ''
+  await axios.post(url, data)
+    .then(response => {
+    // moi set token trong truong hop admin
+      if (response.data.data.user.roleName.toLowerCase() === 'admin') {
+        newToken = response.data.data.user.roleName.toLowerCase() + '-token'
+      } else {
+        newToken = 'test' + '-token'
+      }
       return res.json({
         code: 20000,
-        data: {
-          accessToken: username + '-token'
-        }
+        data: { accessToken: newToken, idUserLogin: response.data.data.user.id }
       })
-    }
-  }
-  return res.status(400).json({
-    code: 50004,
-    messaege: 'Invalid User'
-  })
+    })
+    .catch(err => {
+      console.log('err', err)
+      return res.json({
+        code: 50006,
+        messaege: 'Invalid User'
+      })
+    })
+  // for (const user of userList) {
+  //   if (user.username === username) {
+  //     return res.json({
+  //       code: 20000,
+  //       data: {
+  //         accessToken: username + '-token'
+  //       }
+  //     })
+  //   }
+  // }
+  // return res.status(400).json({
+  //   code: 50004,
+  //   messaege: 'Invalid User'
+  // })
 }
 
 export const logout = (req: Request, res: Response) => {
@@ -87,21 +112,29 @@ export const getUsers = (req: Request, res: Response) => {
   })
 }
 
-export const getUserInfo = (req: Request, res: Response) => {
+export const getUserInfo = async(req: Request, res: Response) => {
   const token = req.header('X-Access-Token')
+  const idUserLogin = req.body.idUserLogin
   if (!token) {
     return res.status(400).json({
       code: 40000,
       message: 'Token is missing'
     })
   }
-  const user = userList.find(user => (user.username + '-token') === token)
+  let user = userList.find(user => (user.username + '-token') === token)
   if (!user) {
     return res.status(401).json({
       code: 40100,
       message: 'Unauthorized'
     })
   }
+  await axios.get(`${BASE_URL}user/${idUserLogin}`)
+    .then(response => {
+      user = { ...user, ...response.data.data }
+    })
+    .catch(err => {
+      console.log('err', err)
+    })
   return res.json({
     code: 20000,
     data: { user }

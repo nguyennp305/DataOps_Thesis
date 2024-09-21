@@ -16,7 +16,11 @@ export const setSize = (size: string) => Cookies.set(sizeKey, size)
 // User
 
 const tokenKey = 'session_token'
+const idUserLogin = 'id_user_login'
 
 export const getToken = () => Cookies.get(tokenKey)
 export const setToken = (token: string) => Cookies.set(tokenKey, token)
 export const removeToken = () => Cookies.remove(tokenKey)
+export const setIdUserLogin = (token: string) => Cookies.set(idUserLogin, token)
+export const removeIdUserLogin = () => Cookies.remove(idUserLogin)
+export const getIdUserLogin = () => Cookies.get(idUserLogin)

@@ -110,7 +110,7 @@ import { Route } from 'vue-router'
 import { Dictionary } from 'vue-router/types/router'
 import { Form as ElForm, Input } from 'element-ui'
 import { UserModule } from '@/store/modules/user'
-import { isValidUsername } from '@/utils/validate'
+// import { isValidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect/index.vue'
 import SocialSign from './components/SocialSignin.vue'
 
@@ -122,13 +122,13 @@ import SocialSign from './components/SocialSignin.vue'
   }
 })
 export default class extends Vue {
-  private validateUsername = (rule: any, value: string, callback: Function) => {
-    if (!isValidUsername(value)) {
-      callback(new Error('Please enter the correct user name'))
-    } else {
-      callback()
-    }
-  }
+  // private validateUsername = (rule: any, value: string, callback: Function) => {
+  //   if (!isValidUsername(value)) {
+  //     callback(new Error('Please enter the correct user name'))
+  //   } else {
+  //     callback()
+  //   }
+  // }
 
   private validatePassword = (rule: any, value: string, callback: Function) => {
     if (value.length < 6) {
@@ -141,8 +141,6 @@ export default class extends Vue {
       callback(new Error('Mật khẩu phải chứa ít nhất một ký tự số'))
     } else if (!/[!@#$%^&*()+=._-]/.test(value)) {
       callback(new Error('Mật khẩu phải chứa ít nhất một ký tự'))
-    } else if (value !== '123456aA@') {
-      callback(new Error('Mật khẩu không đúng. Vui lòng nhập lại'))
     } else {
       callback()
     }
@@ -154,7 +152,7 @@ export default class extends Vue {
   }
 
   private loginRules = {
-    username: [{ validator: this.validateUsername, trigger: 'blur' }],
+    // username: [{ validator: this.validateUsername, trigger: 'blur' }],
     password: [{ validator: this.validatePassword, trigger: 'blur' }]
   }
 

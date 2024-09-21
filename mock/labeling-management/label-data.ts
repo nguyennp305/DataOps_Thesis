@@ -38,48 +38,48 @@ export const getLabelDataList = async(req: Request, res: Response) => {
   })
 }
 
-// export const deleteProjectById = async(req: Request, res: Response) => {
-//   const { id } = req.query
-//   const url = BASE_URL + 'project/' + id
-//   const response = await axios.delete(url)
-//   return res.json({
-//     code: 20000,
-//     data: response.data
-//   })
-// }
+export const deleteLabelDataById = async(req: Request, res: Response) => {
+  const { id } = req.query
+  const url = BASE_URL + 'label/' + id
+  const response = await axios.delete(url)
+  return res.json({
+    code: 20000,
+    data: response.data
+  })
+}
 
-// export const createProject = async(req: Request, res: Response) => {
-//   const data = req.body
-//   const url = BASE_URL + 'project'
-//   await axios.post(url, data)
-//     .then(response => {
-//       return res.json({
-//         code: 20000,
-//         data: response.data
-//       })
-//     })
-//     .catch(err => {
-//       return res.json({
-//         code: 50006,
-//         message: err.response.data.message
-//       })
-//     })
-// }
+export const createLabelData = async(req: Request, res: Response) => {
+  const data = req.body
+  const url = BASE_URL + 'label'
+  await axios.post(url, data)
+    .then(response => {
+      return res.json({
+        code: 20000,
+        data: response.data
+      })
+    })
+    .catch(err => {
+      return res.json({
+        code: 50006,
+        message: err.response.data.message
+      })
+    })
+}
 
-// export const updateProjectById = async(req: Request, res: Response) => {
-//   const data = req.body
-//   const url = BASE_URL + 'project'
-//   await axios.put(url, data)
-//     .then(response => {
-//       return res.json({
-//         code: 20000,
-//         data: response.data
-//       })
-//     })
-//     .catch(err => {
-//       return res.json({
-//         code: 50006,
-//         message: err.response.data.message
-//       })
-//     })
-// }
+export const updateLabelDataById = async(req: Request, res: Response) => {
+  const data = req.body
+  const url = BASE_URL + 'label'
+  await axios.put(url, data)
+    .then(response => {
+      return res.json({
+        code: 20000,
+        data: response.data
+      })
+    })
+    .catch(err => {
+      return res.json({
+        code: 50006,
+        message: err.response.data.message
+      })
+    })
+}

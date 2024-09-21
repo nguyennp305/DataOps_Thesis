@@ -80,7 +80,10 @@ router.post('/projects', api.createProject)
 router.put('/projects/:id', api.updateProjectById)
 // labeling-management:
 // label-data:
-router.get('/label-data', api.getLabelDataList)
+router.get('/labels-data', api.getLabelDataList)
+router.delete('/labels-data/:id', api.deleteLabelDataById)
+router.post('/labels-data', api.createLabelData)
+router.put('/labels-data/:id', api.updateLabelDataById)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)

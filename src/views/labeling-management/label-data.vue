@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- <filter-search
+    <filter-search
       :listQuery="listQuery"
       :showCreatedAt.sync="showCreatedAt"
       :showCreatedBy.sync="showCreatedBy"
@@ -12,9 +12,8 @@
       @update:showCreatedAt="updateShowCreatedAt"
       @update:showCreatedBy="updateShowCreatedBy"
       @update:tableKey="updateTableKey"
-    /> -->
-    LabelData
-    <!-- <datatable
+    />
+    <datatable
       :loading="listLoading"
       :data="list"
       :total="total"
@@ -25,30 +24,30 @@
       @update="handleClickButtonUpdate"
       @delete="handleDelete"
       @pagination="getList"
-    /> -->
-    <!-- <project-modal
+    />
+    <label-data-modal
       :visible="visible"
       :isEdit="isEditModal"
       :data="propDataItem"
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
 // import component
-// import Datatable from '@/views/project-management/components/datatable'
-// import FilterSearch from '@/views/project-management/components/filter-search'
-// import ProjectModal from '@/components/Modal/projectModal'
+import Datatable from '@/views/labeling-management/component/label-data/datatable'
+import FilterSearch from '@/views/labeling-management/component/label-data/filter-search'
+import LabelDataModal from '@/components/Modal/labelDataModal'
 // import function call api.
-// import { getProjectList, deleteProjectById } from '@/api/project-management/project-list'
+import { getLabelDataList, deleteLabelDataById } from '@/api/labeling-management/label-data'
 export default {
   name: 'LabelData',
   components: {
-    // Datatable,
-    // FilterSearch,
-    // ProjectModal
+    Datatable,
+    FilterSearch,
+    LabelDataModal
   },
   data() {
     return {
@@ -61,14 +60,8 @@ export default {
         size: 10,
         name: undefined,
         description: undefined,
-        memberId: undefined,
-        createTimeFrom: undefined,
-        createTimeTo: undefined,
-        startTimeFrom: undefined,
-        startTimeTo: undefined,
-        endTimeFrom: undefined,
-        endTimeTo: undefined,
-        isDelete: undefined
+        createdBy: undefined,
+        projectId: undefined
       },
       showCreatedAt: false,
       showCreatedBy: false,
@@ -79,83 +72,83 @@ export default {
     }
   },
   created() {
-    // this.getList()
+    this.getList()
   },
   methods: {
-    // async getList() {
-    //   this.listLoading = true
-    //   const { data } = await getProjectList(this.listQuery)
-    //   this.list = data.items
-    //   this.total = data.total
-    //   setTimeout(() => {
-    //     this.listLoading = false
-    //   }, 0.5 * 1000)
-    // },
-    // handleFilter() {
-    //   this.listQuery.page = 1
-    //   this.getList()
-    // },
-    // handleClickButtonUpdate(row) {
-    //   this.propDataItem = row
-    //   this.isEditModal = true
-    //   this.visible = true
-    // },
-    // handleUpdateVisible(newVal) {
-    //   this.propDataItem = null
-    //   this.visible = newVal
-    // },
-    // handleDelete(row) {
-    //   this.$confirm(
-    //     'Confirm to remove this project? (not multiple language)',
-    //     'Warning',
-    //     {
-    //       confirmButtonText: 'Confirm',
-    //       cancelButtonText: 'Cancel',
-    //       type: 'warning'
-    //     }
-    //   )
-    //     .then(async() => {
-    //       await deleteProjectById({
-    //         id: row.id
-    //       })
-    //       this.list = this.list.filter((item) => item.id !== row.id)
-    //       this.$notify({
-    //         title: 'Success',
-    //         message: 'Delete Successfully',
-    //         type: 'success',
-    //         duration: 2000
-    //       })
-    //       this.reloadTable()
-    //     })
-    //     .catch((err) => {
-    //       console.error(err)
-    //     })
-    // },
-    // handleCreate() {
-    //   this.propDataItem = null
-    //   this.isEditModal = false
-    //   this.visible = true
-    // },
-    // handleDownload() {
-    //   this.downloadLoading = true
-    //   console.log('handleDownload')
-    //   this.downloadLoading = false
-    // },
-    // updateListQuery(newListQuery) {
-    //   this.listQuery = newListQuery
-    // },
-    // updateShowCreatedAt(newVal) {
-    //   this.showCreatedAt = newVal
-    // },
-    // updateShowCreatedBy(newVal) {
-    //   this.showCreatedBy = newVal
-    // },
-    // updateTableKey(newVal) {
-    //   this.tableKey = newVal
-    // },
-    // reloadTable() {
-    //   this.handleFilter()
-    // }
+    async getList() {
+      this.listLoading = true
+      const { data } = await getLabelDataList(this.listQuery)
+      this.list = data.items
+      this.total = data.total
+      setTimeout(() => {
+        this.listLoading = false
+      }, 0.5 * 1000)
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    handleClickButtonUpdate(row) {
+      this.propDataItem = row
+      this.isEditModal = true
+      this.visible = true
+    },
+    handleUpdateVisible(newVal) {
+      this.propDataItem = null
+      this.visible = newVal
+    },
+    handleDelete(row) {
+      this.$confirm(
+        'Confirm to remove this label data? (not multiple language)',
+        'Warning',
+        {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
+        .then(async() => {
+          await deleteLabelDataById({
+            id: row.id
+          })
+          this.list = this.list.filter((item) => item.id !== row.id)
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.reloadTable()
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
+    handleCreate() {
+      this.propDataItem = null
+      this.isEditModal = false
+      this.visible = true
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      console.log('handleDownload')
+      this.downloadLoading = false
+    },
+    updateListQuery(newListQuery) {
+      this.listQuery = newListQuery
+    },
+    updateShowCreatedAt(newVal) {
+      this.showCreatedAt = newVal
+    },
+    updateShowCreatedBy(newVal) {
+      this.showCreatedBy = newVal
+    },
+    updateTableKey(newVal) {
+      this.tableKey = newVal
+    },
+    reloadTable() {
+      this.handleFilter()
+    }
   }
 }
 </script>

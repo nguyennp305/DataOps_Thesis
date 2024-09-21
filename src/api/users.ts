@@ -33,12 +33,14 @@ export const deleteUser = (username: string) =>
     method: 'delete'
   })
 
-export const login = (data: any) =>
-  request({
+export const login = async(data: any) => {
+  const response = await request({
     url: '/users/login',
     method: 'post',
     data
   })
+  return response
+}
 
 export const logout = () =>
   request({

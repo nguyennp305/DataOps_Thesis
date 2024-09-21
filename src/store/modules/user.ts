@@ -1,6 +1,6 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import { login, logout, getUserInfo } from '@/api/users'
-import { getToken, setToken, removeToken } from '@/utils/cookies'
+import { getToken, setToken, removeToken, setIdUserLogin, removeIdUserLogin, getIdUserLogin } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
@@ -60,12 +60,14 @@ class User extends VuexModule implements IUserState {
     username = username.trim()
     const { data } = await login({ username, password })
     setToken(data.accessToken)
+    setIdUserLogin(data.idUserLogin)
     this.SET_TOKEN(data.accessToken)
   }
 
   @Action
   public ResetToken() {
     removeToken()
+    removeIdUserLogin()
     this.SET_TOKEN('')
     this.SET_ROLES([])
   }
@@ -75,7 +77,8 @@ class User extends VuexModule implements IUserState {
     if (this.token === '') {
       throw Error('GetUserInfo: token is undefined!')
     }
-    const { data } = await getUserInfo({ /* Your params here */ })
+    const idUserLoginReal = getIdUserLogin()
+    const { data } = await getUserInfo({ idUserLogin: idUserLoginReal })
     if (!data) {
       throw Error('Verification failed, please Login again.')
     }
@@ -116,6 +119,7 @@ class User extends VuexModule implements IUserState {
     }
     await logout()
     removeToken()
+    removeIdUserLogin()
     resetRouter()
 
     // Reset visited views and cached views

@@ -288,6 +288,7 @@ export default {
           }
           await updateProjectById(dataUpdateProject)
             .then((res) => {
+              console.log('res', res)
               this.$notify({
                 title: 'Success',
                 message: 'Update Successfully',
@@ -315,6 +316,7 @@ export default {
           this.dataForm.memberIds = this.userListSelected
           await createProject(this.dataForm)
             .then((res) => {
+              console.log('res', res)
               this.$notify({
                 title: 'Success',
                 message: 'Create Successfully',
@@ -346,5 +348,3 @@ export default {
   width: 100%;
 }
 </style>
-<!-- ngày 18/-9/2024
-Đã xong khởi tạo data create project. hiện tại chưa thực hiện ghép API -->

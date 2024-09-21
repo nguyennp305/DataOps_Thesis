@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import data from './../../views/pdf/content'
 
 export const getProjectList = (params: any) =>
   request({
