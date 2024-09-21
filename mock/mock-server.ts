@@ -84,6 +84,11 @@ router.get('/labels-data', api.getLabelDataList)
 router.delete('/labels-data/:id', api.deleteLabelDataById)
 router.post('/labels-data', api.createLabelData)
 router.put('/labels-data/:id', api.updateLabelDataById)
+// label-group:
+router.get('/labels-set', api.getLabelGroupList)
+router.delete('/labels-set/:id', api.deleteLabelGroupById)
+router.post('/labels-set', api.createLabelGroup)
+router.put('/labels-set/:id', api.updateLabelGroupById)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)

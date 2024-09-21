@@ -12,10 +12,10 @@
       :model="dataForm"
       label-position="top"
     >
-      <el-form-item :label="$t('route.labelNameData')" prop="name">
+      <el-form-item :label="$t('route.labelGroupName')" prop="name">
         <el-input
           v-model="dataForm.name"
-          :placeholder="$t('route.labelNameData')"
+          :placeholder="$t('route.labelGroupName')"
         />
       </el-form-item>
 
@@ -48,17 +48,42 @@
           />
         </el-select>
       </el-form-item>
+
+      <el-form-item :label="$t('route.labelNameData')" prop="labelIds">
+        <el-select
+          v-model="labelDataListSelected"
+          :placeholder="$t('route.labelNameData')"
+          multiple
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="item in labelDataOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+          <pagination
+            v-show="totalItemsLabelDataOptions > 0"
+            :total="totalItemsLabelDataOptions"
+            :page.sync="listQueryLabelDataOptions.page"
+            :limit.sync="listQueryLabelDataOptions.size"
+            @pagination="fetchDataGetLabelData"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
   </modal>
 </template>
 
 <script>
 import Modal from '@/components/Commons/modal.vue'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, update } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
-import { createLabelData, updateLabelDataById } from '@/api/labeling-management/label-data'
+import { createLabelGroup, updateLabelGroupById } from '@/api/labeling-management/label-group'
 import Pagination from '@/components/Pagination/index.vue'
 import { UserModule } from '@/store/modules/user'
+import { getLabelDataList } from '@/api/labeling-management/label-data'
 
 const defaultDataForm = {
   name: '',
@@ -113,6 +138,13 @@ export default {
       listQueryProjectOptions: {
         page: 1,
         size: 10
+      },
+      labelDataOptions: [],
+      labelDataListSelected: [],
+      totalItemsLabelDataOptions: 0,
+      listQueryLabelDataOptions: {
+        page: 1,
+        size: 10
       }
     }
   },
@@ -121,6 +153,12 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          if (newVal.labelIds && newVal.labelIds.length > 0) {
+            this.labelDataListSelected = newVal.labelIds.map((item) => item) // Tạo mảng mới
+            console.log('this.labelDataListSelected', this.labelDataListSelected)
+          } else {
+            this.labelDataListSelected = [] // Mảng trống nếu không có member
+          }
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
         }
@@ -131,8 +169,20 @@ export default {
   },
   created() {
     this.fetchDataGetProject()
+    this.fetchDataGetLabelData()
   },
   methods: {
+    async fetchDataGetLabelData() {
+      const { data } = await getLabelDataList(
+        this.listQueryLabelDataOptions
+      )
+      const newArray = data.items.map((item) => ({
+        key: item.id,
+        displayName: item.name
+      }))
+      this.labelDataOptions = newArray
+      this.totalItemsLabelDataOptions = data.total
+    },
     async fetchDataGetProject() {
       const { data } = await getProjectList(
         this.listQueryProjectOptions
@@ -160,16 +210,23 @@ export default {
     },
     handleModalConfirm() {
       if (this.isEdit) {
-        this.updateLabelDataModal()
+        this.updateLabelGroupModal()
       } else {
-        this.createLabelDataModal()
+        this.createLabelGroupModal()
       }
     },
-    updateLabelDataModal() {
+    updateLabelGroupModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
-          this.dataForm.updatedBy = UserModule.id
-          await updateLabelDataById(this.dataForm)
+          const dataUpdateLabelData = {
+            description: this.dataForm.description,
+            id: this.dataForm.id,
+            labelIds: this.labelDataListSelected,
+            name: this.dataForm.name,
+            projectId: this.dataForm.projectId,
+            updatedBy: UserModule.id
+          }
+          await updateLabelGroupById(dataUpdateLabelData)
             .then((res) => {
               console.log('res', res)
               this.$notify({
@@ -185,15 +242,22 @@ export default {
               console.log('err', err)
             })
         } else {
-          console.log('Form update LabelData is invalid')
+          console.log('Form update LabelGroup is invalid')
         }
       })
     },
-    createLabelDataModal() {
+    createLabelGroupModal() {
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
-          this.dataForm.createdBy = UserModule.id
-          await createLabelData(this.dataForm)
+          const dataCreateLabelData = {
+            description: this.dataForm.description,
+            id: this.dataForm.id,
+            labelIds: this.labelDataListSelected,
+            name: this.dataForm.name,
+            projectId: this.dataForm.projectId,
+            createdBy: UserModule.id
+          }
+          await createLabelGroup(dataCreateLabelData)
             .then((res) => {
               console.log('res', res)
               this.$notify({
@@ -209,7 +273,7 @@ export default {
               console.log('err', err)
             })
         } else {
-          console.log('Form create LabelData is invalid')
+          console.log('Form create LabelGroup is invalid')
         }
       })
     }

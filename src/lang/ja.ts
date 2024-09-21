@@ -61,6 +61,7 @@ export default {
     labelGroup: 'Label Group',
     labelData: 'Label Data',
     labelNameData: 'Label Name',
+    labelGroupName: 'Label Group Name',
     updatedAt: 'Updated At',
     updatedBy: 'Updated By',
     errorPages: 'エラーページ',
