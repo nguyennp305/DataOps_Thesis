@@ -50,7 +50,6 @@ export const deleteLabelGroupById = async(req: Request, res: Response) => {
 
 export const createLabelGroup = async(req: Request, res: Response) => {
   const data = req.body
-  console.log('createLabelGroup', data)
   const url = BASE_URL + 'label-set'
   await axios.post(url, data)
     .then(response => {
@@ -70,7 +69,6 @@ export const createLabelGroup = async(req: Request, res: Response) => {
 export const updateLabelGroupById = async(req: Request, res: Response) => {
   const data = req.body
   const url = BASE_URL + 'label-set'
-  console.log('updateLabelGroupById', data)
   await axios.put(url, data)
     .then(response => {
       return res.json({
