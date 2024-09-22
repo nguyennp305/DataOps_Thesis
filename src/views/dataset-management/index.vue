@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
-    Labeling Image
+    Dataset List
   </div>
 </template>
 
 <script>
 export default {
-  name: 'LabelingImage'
+  name: 'DatasetList'
 }
 </script>
 

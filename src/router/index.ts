@@ -273,6 +273,36 @@ export const asyncRoutes: RouteConfig[] = [
           title: 'labelGroup',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'labeling-image',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/labeling-management/index.vue'),
+        name: 'LabelingImage',
+        meta: {
+          title: 'labelingImage',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
+    path: '/dataset',
+    component: Layout,
+    meta: {
+      title: 'datasetManagement',
+      icon: 'tree',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/dataset-management/index.vue'),
+        name: 'Dataset',
+        meta: {
+          title: 'dataset',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },

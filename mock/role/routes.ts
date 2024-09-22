@@ -220,6 +220,37 @@ export const asyncRoutes = [
           title: 'labelGroup',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'labeling-image',
+        component: '@/views/labeling-management/index.vue',
+        name: 'LabelingImage',
+        meta: {
+          title: 'labelingImage',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
+    path: '/dataset',
+    component: 'Layout',
+    redirect: '/dataset/list',
+    meta: {
+      title: 'datasetManagement',
+      icon: 'tree',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'list',
+        component: 'views/dataset-management/index.vue',
+        name: 'Dataset',
+        meta: {
+          title: 'dataset',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },

@@ -155,7 +155,6 @@ export default {
           this.dataForm = cloneDeep(newVal)
           if (newVal.labelIds && newVal.labelIds.length > 0) {
             this.labelDataListSelected = newVal.labelIds.map((item) => item) // Tạo mảng mới
-            console.log('this.labelDataListSelected', this.labelDataListSelected)
           } else {
             this.labelDataListSelected = [] // Mảng trống nếu không có member
           }
@@ -201,6 +200,7 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.labelDataListSelected = []
       this.clearValidate()
       this.$emit('update:visible', false)
     },
