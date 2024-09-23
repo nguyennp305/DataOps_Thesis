@@ -13,8 +13,13 @@
         <button class="button" @click="cropImage">Crop image</button>
       </div>
       <div class="cropped-images">
-        <div v-for="(croppedImage, index) in data.croppedImages" :key="index" class="cropped-image">
-          <img :src="croppedImage" alt="Cropped Image" />
+        <div
+          v-for="(croppedImage, index) in data.croppedImages"
+          :key="index"
+          class="cropped-image"
+        >
+          <img :src="croppedImage.src" alt="Cropped Image" />
+          <p>{{ croppedImage.name }}</p> <!-- Hiển thị tên ngẫu nhiên -->
         </div>
       </div>
     </div>
@@ -24,6 +29,8 @@
 <script>
 import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
+import faker from 'faker' // Import faker
+
 export default {
   name: 'Menu2',
   components: {
@@ -43,11 +50,9 @@ export default {
   methods: {
     cropImage() {
       const result = this.$refs.cropper.getResult()
-      console.log('this.$refs.cropper.', this.$refs.cropper) // Xem result
-      console.log('result', result) // Xem result
-      console.log('result.canvas', result.canvas) // Xem canvas
       const croppedImage = result.canvas.toDataURL(this.data.image.type)
-      this.data.croppedImages.push(croppedImage)
+      const imageName = faker.random.word() // Tạo tên ngẫu nhiên
+      this.data.croppedImages.push({ src: croppedImage, name: imageName })
       console.log(this.data.croppedImages) // Xem mảng
     },
     uploadImage(event) {
@@ -72,6 +77,8 @@ export default {
   }
 }
 </script>
+
+<!-- đã có tên cho ảnh được crop -->
 
 <style lang="scss" scoped>
 .cropper {
