@@ -161,6 +161,7 @@ export default {
     isDelete: 'Is Delete',
     actions: 'Acciones',
     edit: 'Editar',
+    label: 'Label',
     publish: 'Publicar',
     draft: 'Draft',
     delete: 'Eliminar',

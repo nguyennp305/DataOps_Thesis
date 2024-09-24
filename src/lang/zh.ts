@@ -161,6 +161,7 @@ export default {
     isDelete: 'Is Delete',
     actions: '操作',
     edit: '编辑',
+    label: 'Label',
     publish: '发布',
     draft: '草稿',
     delete: '删除',

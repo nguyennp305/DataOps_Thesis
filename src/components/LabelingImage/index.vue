@@ -62,10 +62,10 @@
       </section>
       <section class="preview-area">
         <p>Preview</p>
-        <div class="preview" />
+        <div class="preview css-and-hover-image" />
         <p>Cropped Image</p>
         <div class="cropped-image">
-          <img v-if="cropImg" :src="cropImg" alt="Cropped Image" />
+          <img v-if="cropImg" :src="cropImg" alt="Cropped Image" class="css-and-hover-image" />
           <div v-else class="crop-placeholder" />
         </div>
       </section>
@@ -165,7 +165,7 @@ export default {
 <style scoped>
 .content {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 40px;
 }
 
@@ -221,5 +221,15 @@ textarea {
 
 .cropped-image img {
   max-width: 100%;
+}
+
+.css-and-hover-image {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 </style>

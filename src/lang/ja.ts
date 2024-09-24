@@ -161,6 +161,7 @@ export default {
     isDelete: 'Is Delete',
     actions: '操作',
     edit: '編集',
+    label: 'Label',
     publish: '公開',
     draft: '下書き',
     delete: 'キャンセル',
