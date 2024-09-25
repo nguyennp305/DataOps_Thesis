@@ -53,12 +53,12 @@
           <a href="#" role="button" @click.prevent="setCropBoxData">
             Set CropBox Data
           </a>
-          <a href="#" role="button" @click.prevent="showFileChooser">
+          <!-- <a href="#" role="button" @click.prevent="showFileChooser">
             Upload Image
-          </a>
+          </a> -->
         </div>
 
-        <textarea v-model="data" />
+        <textarea v-model="showData" />
       </section>
       <section class="preview-area">
         <p>Preview</p>
@@ -81,12 +81,44 @@ export default {
   components: {
     VueCropper
   },
+  props: {
+    imgUrl: {
+      type: String
+    },
+    labeledImages: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
-      imgSrc:
-        'https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png',
+      imgSrc: null,
       cropImg: '',
-      data: null
+      cropData: null,
+      cropBoxData: null,
+      showData: null,
+      localLabeledImages: []
+    }
+  },
+  watch: {
+    imgUrl: {
+      handler(newVal) {
+        this.imgSrc = newVal
+      },
+      immediate: true,
+      deep: true
+    },
+    labeledImages: {
+      handler(newVal) {
+        if (newVal && newVal.length > 0) {
+          this.localLabeledImages = newVal
+          console.log('this.localLabeledImages', this.localLabeledImages)
+        } else {
+          this.localLabeledImages = []
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -109,10 +141,12 @@ export default {
       dom.setAttribute('data-scale', scale)
     },
     getCropBoxData() {
-      this.data = JSON.stringify(this.$refs.cropper.getCropBoxData(), null, 4)
+      this.cropBoxData = JSON.stringify(this.$refs.cropper.getCropBoxData(), null, 4)
+      this.showData = this.cropBoxData
     },
     getData() {
-      this.data = JSON.stringify(this.$refs.cropper.getData(), null, 4)
+      this.cropData = JSON.stringify(this.$refs.cropper.getData(), null, 4)
+      this.showData = this.cropData
     },
     move(offsetX, offsetY) {
       this.$refs.cropper.move(offsetX, offsetY)
@@ -123,15 +157,17 @@ export default {
     rotate(deg) {
       this.$refs.cropper.rotate(deg)
     },
+    // Hàm này dùng để đặt dữ liệu liên quan đến crop box (hộp khung crop), tức là vùng hình chữ nhật mà bạn dùng để xác định khu vực sẽ crop.
+    // Hàm này thay đổi vị trí và kích thước của khung crop mà không thay đổi dữ liệu về ảnh.
     setCropBoxData() {
-      if (!this.data) return
-
-      this.$refs.cropper.setCropBoxData(JSON.parse(this.data))
+      if (!this.cropBoxData) return
+      this.$refs.cropper.setCropBoxData(JSON.parse(this.cropBoxData))
     },
+    // Hàm này dùng để đặt dữ liệu về khu vực crop của ảnh, tức là các thông số về vị trí, kích thước, và tỉ lệ của phần ảnh bạn đang muốn crop.
     setData() {
-      if (!this.data) return
+      if (!this.cropData) return
 
-      this.$refs.cropper.setData(JSON.parse(this.data))
+      this.$refs.cropper.setData(JSON.parse(this.cropData))
     },
     // setImage(e) {
     //   const file = e.target.files[0];
@@ -151,9 +187,9 @@ export default {
     //     alert("Sorry, FileReader API not supported");
     //   }
     // },
-    showFileChooser() {
-      this.$refs.input.click()
-    },
+    // showFileChooser() {
+    //   this.$refs.input.click()
+    // },
     zoom(percent) {
       this.$refs.cropper.relativeZoom(percent)
     }

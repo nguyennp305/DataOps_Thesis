@@ -16,11 +16,16 @@
         <el-input
           v-model="dataForm.name"
           :placeholder="$t('route.labelGroupName')"
+          disabled
         />
       </el-form-item>
 
       <el-form-item :label="$t('table.label')" prop="label">
-        <labeling-image-component />
+        <labeling-image-component
+          v-if="dataForm.imageUrl"
+          :imgUrl="dataForm.imageUrl"
+          :labeledImages="dataForm.labeledImages"
+        />
       </el-form-item>
     </el-form>
   </modal>
@@ -35,7 +40,7 @@ const defaultDataForm = {
   datasetId: null,
   description: '',
   id: null,
-  image: null,
+  imageUrl: null,
   labeledImages: [],
   name: '',
   projectId: null,

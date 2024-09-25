@@ -6,9 +6,11 @@ export const mockLabelingImageData = [
     id: 'id_0',
     imageUrl: 'https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png',
     labeledImages: [
-      {
-        data: 'json_0'
-      }
+      // {
+      //   cropData: null,
+      //   cropBoxData: null,
+      //   labelId: null
+      // }
     ],
     name: 'name_0',
     status: 'status_0',
@@ -22,9 +24,11 @@ export const mockLabelingImageData = [
     id: 'id_1',
     imageUrl: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191',
     labeledImages: [
-      {
-        data: 'json_1'
-      }
+      // {
+      //   cropData: null,
+      //   cropBoxData: null,
+      //   labelId: null
+      // }
     ],
     name: 'name_1',
     status: 'status_1',
