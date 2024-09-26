@@ -9,6 +9,7 @@ export const mockLabelingImageData = [
       // {
       //   cropData: null,
       //   cropBoxData: null,
+      //   cropImg: null,
       //   labelId: null
       // }
     ],
@@ -27,6 +28,7 @@ export const mockLabelingImageData = [
       // {
       //   cropData: null,
       //   cropBoxData: null,
+      //   cropImg: null,
       //   labelId: null
       // }
     ],

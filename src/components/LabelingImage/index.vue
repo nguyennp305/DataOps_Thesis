@@ -15,34 +15,40 @@
             ref="cropper"
             :aspect-ratio="NaN"
             :src="imgSrc"
+            :toggleDragModeOnDblclick="false"
+            :viewMode="1"
+            :zoomable="false"
+            :zoomOnTouch="false"
+            :zoomOnWheel="false"
+            :wheelZoomRatio="0"
             preview=".preview"
           />
           <!-- :aspect-ratio="NaN" // Không khóa tỷ lệ, cho phép crop tự do
           :view-mode="1" // Cho phép crop mà không vượt quá vùng ảnh -->
         </div>
         <div class="actions">
-          <a href="#" role="button" @click.prevent="zoom(0.2)"> Zoom In </a>
-          <a href="#" role="button" @click.prevent="zoom(-0.2)"> Zoom Out </a>
-          <a href="#" role="button" @click.prevent="move(-10, 0)">
+          <!-- <a href="#" role="button" @click.prevent="zoom(0.2)"> Zoom In </a>
+          <a href="#" role="button" @click.prevent="zoom(-0.2)"> Zoom Out </a> -->
+          <!-- <a href="#" role="button" @click.prevent="move(-10, 0)">
             Move Left
           </a>
           <a href="#" role="button" @click.prevent="move(10, 0)">
             Move Right
-          </a>
-          <a href="#" role="button" @click.prevent="move(0, -10)"> Move Up </a>
-          <a href="#" role="button" @click.prevent="move(0, 10)"> Move Down </a>
-          <a href="#" role="button" @click.prevent="rotate(90)">
+          </a> -->
+          <!-- <a href="#" role="button" @click.prevent="move(0, -10)"> Move Up </a>
+          <a href="#" role="button" @click.prevent="move(0, 10)"> Move Down </a> -->
+          <!-- <a href="#" role="button" @click.prevent="rotate(90)">
             Rotate +90deg
           </a>
           <a href="#" role="button" @click.prevent="rotate(-90)">
             Rotate -90deg
-          </a>
-          <a ref="flipX" href="#" role="button" @click.prevent="flipX">
+          </a> -->
+          <!-- <a ref="flipX" href="#" role="button" @click.prevent="flipX">
             Flip X
           </a>
           <a ref="flipY" href="#" role="button" @click.prevent="flipY">
             Flip Y
-          </a>
+          </a> -->
           <a href="#" role="button" @click.prevent="cropImage"> Crop </a>
           <a href="#" role="button" @click.prevent="reset"> Reset </a>
           <a href="#" role="button" @click.prevent="getData"> Get Data </a>
@@ -71,6 +77,7 @@
         <p>Cropped Image</p>
       </section>
     </div>
+    <hr />
   </div>
 </template>
 
@@ -85,10 +92,6 @@ export default {
   props: {
     imgUrl: {
       type: String
-    },
-    labeledImages: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -97,8 +100,7 @@ export default {
       cropImg: '',
       cropData: null,
       cropBoxData: null,
-      showData: null,
-      localLabeledImages: []
+      showData: null
     }
   },
   watch: {
@@ -108,39 +110,38 @@ export default {
       },
       immediate: true,
       deep: true
-    },
-    labeledImages: {
-      handler(newVal) {
-        if (newVal && newVal.length > 0) {
-          this.localLabeledImages = newVal
-          console.log('this.localLabeledImages', this.localLabeledImages)
-        } else {
-          this.localLabeledImages = []
-        }
-      },
-      immediate: true,
-      deep: true
     }
   },
   methods: {
     cropImage() {
       // get image data for post processing, e.g. upload or setting image src
       this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL()
+      this.getData()
+      this.getCropBoxData()
+      const newDataCropsImage = {
+        cropData: JSON.parse(this.cropData),
+        cropBoxData: JSON.parse(this.cropBoxData),
+        cropImg: this.cropImg
+        // containerData: JSON.parse(JSON.stringify(this.$refs.cropper.getContainerData(), null, 4)),
+        // imageData: JSON.parse(JSON.stringify(this.$refs.cropper.getImageData(), null, 4)),
+        // canvasData: JSON.parse(JSON.stringify(this.$refs.cropper.getCanvasData(), null, 4)),
+      }
+      this.$emit('update', newDataCropsImage)
     },
-    flipX() {
-      const dom = this.$refs.flipX
-      let scale = dom.getAttribute('data-scale')
-      scale = scale ? -scale : -1
-      this.$refs.cropper.scaleX(scale)
-      dom.setAttribute('data-scale', scale)
-    },
-    flipY() {
-      const dom = this.$refs.flipY
-      let scale = dom.getAttribute('data-scale')
-      scale = scale ? -scale : -1
-      this.$refs.cropper.scaleY(scale)
-      dom.setAttribute('data-scale', scale)
-    },
+    // flipX() {
+    //   const dom = this.$refs.flipX
+    //   let scale = dom.getAttribute('data-scale')
+    //   scale = scale ? -scale : -1
+    //   this.$refs.cropper.scaleX(scale)
+    //   dom.setAttribute('data-scale', scale)
+    // },
+    // flipY() {
+    //   const dom = this.$refs.flipY
+    //   let scale = dom.getAttribute('data-scale')
+    //   scale = scale ? -scale : -1
+    //   this.$refs.cropper.scaleY(scale)
+    //   dom.setAttribute('data-scale', scale)
+    // },
     getCropBoxData() {
       this.cropBoxData = JSON.stringify(this.$refs.cropper.getCropBoxData(), null, 4)
       this.showData = this.cropBoxData
@@ -149,15 +150,15 @@ export default {
       this.cropData = JSON.stringify(this.$refs.cropper.getData(), null, 4)
       this.showData = this.cropData
     },
-    move(offsetX, offsetY) {
-      this.$refs.cropper.move(offsetX, offsetY)
-    },
+    // move(offsetX, offsetY) {
+    //   this.$refs.cropper.move(offsetX, offsetY)
+    // },
     reset() {
       this.$refs.cropper.reset()
     },
-    rotate(deg) {
-      this.$refs.cropper.rotate(deg)
-    },
+    // rotate(deg) {
+    //   this.$refs.cropper.rotate(deg)
+    // },
     // Hàm này dùng để đặt dữ liệu liên quan đến crop box (hộp khung crop), tức là vùng hình chữ nhật mà bạn dùng để xác định khu vực sẽ crop.
     // Hàm này thay đổi vị trí và kích thước của khung crop mà không thay đổi dữ liệu về ảnh.
     setCropBoxData() {
@@ -169,7 +170,7 @@ export default {
       if (!this.cropData) return
 
       this.$refs.cropper.setData(JSON.parse(this.cropData))
-    },
+    }
     // setImage(e) {
     //   const file = e.target.files[0];
     //   if (file.type.indexOf("image/") === -1) {
@@ -191,9 +192,9 @@ export default {
     // showFileChooser() {
     //   this.$refs.input.click()
     // },
-    zoom(percent) {
-      this.$refs.cropper.relativeZoom(percent)
-    }
+    // zoom(percent) {
+    //   this.$refs.cropper.relativeZoom(percent)
+    // },
   }
 }
 </script>

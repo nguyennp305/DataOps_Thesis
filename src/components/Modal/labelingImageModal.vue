@@ -25,7 +25,18 @@
         <labeling-image-component
           v-if="dataForm.imageUrl"
           :imgUrl="dataForm.imageUrl"
+          @update="handleUpdateLabelingImageComponent"
+        />
+      </el-form-item>
+
+      <el-form-item :label="$t('route.table')" prop="table">
+        <table-labeling-image
+          v-if="dataForm.imageUrl"
+          :loading="listLoading"
+          :imgUrl="dataForm.imageUrl"
           :labeledImages="dataForm.labeledImages"
+          :tableKey="tableKey"
+          @update="handleUpdateLabelingImageInTable"
         />
       </el-form-item>
     </el-form>
@@ -36,6 +47,7 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import LabelingImageComponent from '@/components/LabelingImage/index'
+import tableLabelingImage from '@/components/LabelingImage/table-labeling-image'
 
 const defaultDataForm = {
   datasetId: null,
@@ -52,7 +64,8 @@ const defaultDataForm = {
 export default {
   components: {
     Modal,
-    LabelingImageComponent
+    LabelingImageComponent,
+    tableLabelingImage
   },
   props: {
     visible: {
@@ -66,14 +79,18 @@ export default {
   },
   data() {
     return {
-      dataForm: cloneDeep(defaultDataForm)
+      dataForm: cloneDeep(defaultDataForm),
+      listLoading: true,
+      tableKey: 0
     }
   },
   watch: {
     data: {
       handler(newVal) {
         if (newVal) {
+          this.listLoading = true
           this.dataForm = cloneDeep(newVal)
+          this.listLoading = false
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
         }
@@ -101,6 +118,15 @@ export default {
     },
     updateLabelingImageModal() {
       console.log('updateLabelingImageModal')
+    },
+    handleUpdateLabelingImageInTable() {
+      console.log('handleUpdateLabelingImageInTable')
+    },
+    updateTableKey(newVal) {
+      this.tableKey = newVal
+    },
+    handleUpdateLabelingImageComponent(data) {
+      this.dataForm.labeledImages.push(data)
     }
   }
 }
