@@ -2,7 +2,7 @@
   <modal
     :title="$t('table.label')"
     :visible.sync="visible"
-    :width="'80%'"
+    :width="'90%'"
     @close="handleModalClose"
     @cancel="handleModalCancel"
     @confirm="handleModalConfirm"
@@ -11,6 +11,7 @@
       ref="dataFormRef"
       :model="dataForm"
       label-position="top"
+      class="labeling-modal-form"
     >
       <el-form-item :label="$t('route.labelGroupName')" prop="name">
         <el-input
@@ -106,4 +107,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.labeling-modal-form {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 </style>

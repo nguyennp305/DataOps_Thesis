@@ -10,7 +10,7 @@
       style="width: 100%"
     >
       <el-table-column
-        :label="$t('route.projectName')"
+        :label="$t('route.labelNameData')"
         width="200px"
         :align="'center'"
       >
@@ -20,12 +20,12 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.enterprise')"
+        :label="$t('route.project')"
         width="200px"
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <el-tag>{{ row.enterprise.name }}</el-tag>
+          <img :src="row.imageUrl" />
         </template>
       </el-table-column>
 
@@ -41,49 +41,35 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('table.startTime')"
-        :align="'center'"
+        :label="$t('table.status')"
         min-width="150px"
+        max-width="300px"
+        :align="'center'"
       >
         <template slot-scope="{row}">
-          <span style="color: red">{{ row.startAt }}</span>
+          <el-tag>
+            {{ row.status }}
+          </el-tag>
         </template>
       </el-table-column>
 
       <el-table-column
-        :label="$t('table.endTime')"
+        :label="$t('route.updatedAt')"
         :align="'center'"
         min-width="150px"
       >
         <template slot-scope="{row}">
-          <span style="color: red">{{ row.endAt }}</span>
+          <span style="color: red">{{ row.updatedAt }}</span>
         </template>
       </el-table-column>
 
       <el-table-column
-        :label="$t('table.members')"
+        :label="$t('route.updatedBy')"
         :align="'center'"
         min-width="150px"
       >
         <template slot-scope="{row}">
-          <div v-if="row.members.length === 0">
-            <span style="color: red">{{ $t("table.noData") }}</span>
-          </div>
-          <div v-else>
-            <el-tag v-for="(member, index) in row.members" :key="index">
-              {{ member.username }}
-            </el-tag>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('table.delete')"
-        width="100px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.deleted }}</span>
+          <span style="color: red">{{ row.updatedBy }}</span>
         </template>
       </el-table-column>
 
@@ -116,10 +102,7 @@
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            {{ $t("table.edit") }}
-          </el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)">
-            {{ $t("table.delete") }}
+            {{ $t("table.label") }}
           </el-button>
         </template>
       </el-table-column>
@@ -155,18 +138,8 @@ export default {
     return {}
   },
   methods: {
-    // getSortClass(key) {
-    //   const sort = this.listQuery.sort
-    //   return sort === `+${key}` ? 'ascending' : 'descending'
-    // },
-    // sortChange(data) {
-    //   this.$emit('sort-change', data)
-    // },
     handleUpdate(row) {
       this.$emit('update', row)
-    },
-    handleDelete(row) {
-      this.$emit('delete', row)
     },
     emitPagination() {
       this.$emit('pagination')
@@ -175,4 +148,16 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;
+  transition: transform 0.3s ease; // Thêm hiệu ứng chuyển động cho ảnh khi hover
+
+  &:hover {
+    transform: scale(1.1); // Phóng to ảnh lên 10% khi hover
+  }
+}
+</style>

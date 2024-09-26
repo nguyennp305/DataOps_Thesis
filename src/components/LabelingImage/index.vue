@@ -61,13 +61,14 @@
         <textarea v-model="showData" />
       </section>
       <section class="preview-area">
-        <p>Preview</p>
         <div class="preview css-and-hover-image" />
-        <p>Cropped Image</p>
+        <p>Preview</p>
+
         <div class="cropped-image">
           <img v-if="cropImg" :src="cropImg" alt="Cropped Image" class="css-and-hover-image" />
           <div v-else class="crop-placeholder" />
         </div>
+        <p>Cropped Image</p>
       </section>
     </div>
   </div>

@@ -46,6 +46,9 @@ with token: ```<username>-token```
 http://localhost:9528/api-docs/#/
 ```
 
+#### Technology used
+```eslint: pre-commit hook: lint-staged```
+```server: express```
 
 ## Project Structure
 
