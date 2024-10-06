@@ -55,7 +55,7 @@
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <span>{{ row.deleted }}</span>
+          <el-tag>{{ row.deleted }}</el-tag>
         </template>
       </el-table-column>
 

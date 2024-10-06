@@ -61,13 +61,12 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsEnterpriseTypeOptions > 0"
-            :total="totalItemsEnterpriseTypeOptions"
-            :page.sync="listQueryntEnterpriseTypeOptions.page"
-            :limit.sync="listQueryntEnterpriseTypeOptions.size"
-            @pagination="fetchDataGetEnterprises"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button size="mini" type="primary" :disabled="totalItemsEnterpriseTypeOptions === enterpriseTypeOptions.length" @click="handleAddEnterprises">
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsEnterpriseTypeOptions }}</span>
+          </div>
         </el-select>
       </el-form-item>
 
@@ -85,13 +84,12 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsUsersTypeOptions > 0"
-            :total="totalItemsUsersTypeOptions"
-            :page.sync="listQueryntUsersTypeOptions.page"
-            :limit.sync="listQueryntUsersTypeOptions.size"
-            @pagination="fetchDataGetUsers"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button size="mini" type="primary" :disabled="totalItemsUsersTypeOptions === usersTypeOptions.length" @click="handleAddUsers">
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsUsersTypeOptions }}</span>
+          </div>
         </el-select>
       </el-form-item>
     </el-form>
@@ -107,7 +105,6 @@ import {
   updateProjectById
 } from '@/api/project-management/project-list'
 import { getListEnterprise } from '@/api/organization/enterprise'
-import Pagination from '@/components/Pagination/index.vue'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import moment from 'moment'
 
@@ -124,7 +121,6 @@ const defaultDataForm = {
 export default {
   components: {
     Modal,
-    Pagination,
     DateRangePicker
   },
   props: {
@@ -206,17 +202,13 @@ export default {
           this.dataForm = cloneDeep(newVal)
           if (newVal.members && newVal.members.length > 0) {
             this.userListSelected = newVal.members.map((item) => item.id) // Tạo mảng mới
+            this.fetchDataGetUsersByListIdWhenEdit(newVal.members.map((item) => item.id).join(','))
           } else {
             this.userListSelected = [] // Mảng trống nếu không có member
           }
-          // if (newVal.startAt && newVal.endAt) {
-          //   this.rangeDate = [
-          //     moment("2021-11-10 23:50:00").valueOf(), // Giá trị ngày bắt đầu
-          //     moment("2021-11-10 23:50:00").valueOf(), // Giá trị ngày kết thúc
-          //   ];
-          // } else {
-          //   this.rangeDate = [null, null];
-          // }
+          if (newVal.enterprise) {
+            this.fetchDataGetEnterprisesByListIdWhenEdit(newVal.enterprise.id)
+          }
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
           this.rangeDate = [null, null]
@@ -227,29 +219,71 @@ export default {
     }
   },
   created() {
-    this.fetchDataGetEnterprises()
-    this.fetchDataGetUsers()
+    this.fetchDataGetEnterprises(this.listQueryntEnterpriseTypeOptions)
+    this.fetchDataGetUsers(this.listQueryntUsersTypeOptions)
   },
   methods: {
-    async fetchDataGetEnterprises() {
+    async fetchDataGetEnterprises(queryEnterprises) {
       const { data } = await getListEnterprise(
-        this.listQueryntEnterpriseTypeOptions
+        queryEnterprises
       )
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
       }))
-      this.enterpriseTypeOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.enterpriseTypeOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.enterpriseTypeOptions.push(newItem)
+        }
+      })
       this.totalItemsEnterpriseTypeOptions = data.total
     },
-    async fetchDataGetUsers() {
-      const { data } = await getUserList(this.listQueryntUsersTypeOptions)
+    async handleAddEnterprises() {
+      this.listQueryntEnterpriseTypeOptions.page += 1
+      await this.fetchDataGetEnterprises(this.listQueryntEnterpriseTypeOptions)
+    },
+    async fetchDataGetUsers(queryUsers) {
+      const { data } = await getUserList(queryUsers)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.username
       }))
-      this.usersTypeOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.usersTypeOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.usersTypeOptions.push(newItem)
+        }
+      })
       this.totalItemsUsersTypeOptions = data.total
+    },
+    async handleAddUsers() {
+      this.listQueryntUsersTypeOptions.page += 1
+      await this.fetchDataGetUsers(this.listQueryntUsersTypeOptions)
+    },
+    // ids is string -- enterprise for project
+    async fetchDataGetEnterprisesByListIdWhenEdit(ids) {
+      const newQueryEnterprises = {
+        page: 1,
+        size: 10,
+        ids: ids
+      }
+      await this.fetchDataGetEnterprises(newQueryEnterprises)
+    },
+    // ids is string -- user for project
+    async fetchDataGetUsersByListIdWhenEdit(ids) {
+      const newQueryUsers = {
+        page: 1,
+        size: 20,
+        ids: ids
+      }
+      await this.fetchDataGetUsers(newQueryUsers)
     },
     clearValidate() {
       this.$nextTick(() => {
@@ -260,6 +294,12 @@ export default {
       this.dataForm = cloneDeep(defaultDataForm)
       this.rangeDate = [null, null]
       this.userListSelected = []
+      this.enterpriseTypeOptions = []
+      this.usersTypeOptions = []
+      this.totalItemsEnterpriseTypeOptions = 0
+      this.totalItemsUsersTypeOptions = 0
+      this.listQueryntEnterpriseTypeOptions.page = 1
+      this.listQueryntUsersTypeOptions.page = 1
       this.clearValidate()
       this.$emit('update:visible', false)
     },
@@ -346,5 +386,11 @@ export default {
 /* Add your styles here */
 .date-range-picker {
   width: 100%;
+}
+.component-add-items-to-list-select {
+  padding: 0   10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

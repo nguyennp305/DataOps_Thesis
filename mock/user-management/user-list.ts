@@ -12,7 +12,8 @@ export const getUserList = async(req: Request, res: Response) => {
     startTime,
     endTime,
     roleId,
-    isDelete
+    isDelete,
+    ids
   } = req.query
   const url = BASE_URL + 'user'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
@@ -33,6 +34,9 @@ export const getUserList = async(req: Request, res: Response) => {
   }
   if (isDelete) {
     params += `&isDelete=${isDelete}`
+  }
+  if (ids) {
+    params += `&ids=${ids}`
   }
   const response = await axios.get(url + params)
   return res.json({
