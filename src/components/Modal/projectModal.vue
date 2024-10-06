@@ -197,7 +197,9 @@ export default {
   },
   watch: {
     data: {
-      handler(newVal) {
+      handler(newVal, oldVal) {
+        this.fetchDataGetUsers(this.listQueryntUsersTypeOptions)
+        this.fetchDataGetEnterprises(this.listQueryntEnterpriseTypeOptions)
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
           if (newVal.members && newVal.members.length > 0) {
@@ -386,11 +388,5 @@ export default {
 /* Add your styles here */
 .date-range-picker {
   width: 100%;
-}
-.component-add-items-to-list-select {
-  padding: 0   10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

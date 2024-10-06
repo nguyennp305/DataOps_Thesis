@@ -39,13 +39,17 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsProjectOptions > 0"
-            :total="totalItemsProjectOptions"
-            :page.sync="listQueryProjectOptions.page"
-            :limit.sync="listQueryProjectOptions.size"
-            @pagination="fetchDataGetProject"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="totalItemsProjectOptions === projectByOptions.length"
+              @click="handleAddProjects"
+            >
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsProjectOptions }}</span>
+          </div>
         </el-select>
       </el-form-item>
 
@@ -63,13 +67,17 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsLabelDataOptions > 0"
-            :total="totalItemsLabelDataOptions"
-            :page.sync="listQueryLabelDataOptions.page"
-            :limit.sync="listQueryLabelDataOptions.size"
-            @pagination="fetchDataGetLabelData"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="totalItemsLabelDataOptions === labelDataOptions.length"
+              @click="handleAddLabelsData"
+            >
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsLabelDataOptions }}</span>
+          </div>
         </el-select>
       </el-form-item>
     </el-form>
@@ -80,8 +88,10 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep, update } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
-import { createLabelGroup, updateLabelGroupById } from '@/api/labeling-management/label-group'
-import Pagination from '@/components/Pagination/index.vue'
+import {
+  createLabelGroup,
+  updateLabelGroupById
+} from '@/api/labeling-management/label-group'
 import { UserModule } from '@/store/modules/user'
 import { getLabelDataList } from '@/api/labeling-management/label-data'
 
@@ -94,8 +104,7 @@ const defaultDataForm = {
 
 export default {
   components: {
-    Modal,
-    Pagination
+    Modal
   },
   props: {
     visible: {
@@ -151,10 +160,16 @@ export default {
   watch: {
     data: {
       handler(newVal) {
+        this.fetchDataGetProject(this.listQueryProjectOptions)
+        this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          if (newVal.projectId) {
+            this.fetchDataGetProjectsByListIdWhenEdit(newVal.projectId)
+          }
           if (newVal.labelIds && newVal.labelIds.length > 0) {
             this.labelDataListSelected = newVal.labelIds.map((item) => item) // Tạo mảng mới
+            this.fetchDataGetLabelDataByListIdWhenEdit(newVal.labelIds.map((item) => item).join(','))
           } else {
             this.labelDataListSelected = [] // Mảng trống nếu không có member
           }
@@ -167,31 +182,68 @@ export default {
     }
   },
   created() {
-    this.fetchDataGetProject()
-    this.fetchDataGetLabelData()
+    this.fetchDataGetProject(this.listQueryProjectOptions)
+    this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
   },
   methods: {
-    async fetchDataGetLabelData() {
-      const { data } = await getLabelDataList(
-        this.listQueryLabelDataOptions
-      )
+    async fetchDataGetLabelData(queryLabelData) {
+      const { data } = await getLabelDataList(queryLabelData)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
       }))
-      this.labelDataOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.labelDataOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.labelDataOptions.push(newItem)
+        }
+      })
       this.totalItemsLabelDataOptions = data.total
     },
-    async fetchDataGetProject() {
-      const { data } = await getProjectList(
-        this.listQueryProjectOptions
-      )
+    async handleAddLabelsData() {
+      this.listQueryLabelDataOptions.page += 1
+      await this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
+    },
+    async fetchDataGetLabelDataByListIdWhenEdit(ids) {
+      const newQueryLabelData = {
+        page: 1,
+        size: 20,
+        ids: ids
+      }
+      await this.fetchDataGetLabelData(newQueryLabelData)
+    },
+    async fetchDataGetProject(queryProject) {
+      const { data } = await getProjectList(queryProject)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
       }))
-      this.projectByOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.projectByOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.projectByOptions.push(newItem)
+        }
+      })
       this.totalItemsProjectOptions = data.total
+    },
+    async handleAddProjects() {
+      this.listQueryProjectOptions.page += 1
+      await this.fetchDataGetProject(this.listQueryProjectOptions)
+    },
+    // ids is string -- user for project
+    async fetchDataGetProjectsByListIdWhenEdit(ids) {
+      const newQueryUsers = {
+        page: 1,
+        size: 20,
+        ids: ids
+      }
+      await this.fetchDataGetProject(newQueryUsers)
     },
     clearValidate() {
       this.$nextTick(() => {
@@ -200,7 +252,13 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.projectByOptions = []
+      this.totalItemsProjectOptions = 0
+      this.listQueryProjectOptions.page = 1
       this.labelDataListSelected = []
+      this.labelDataOptions = []
+      this.totalItemsLabelDataOptions = 0
+      this.listQueryLabelDataOptions.page = 1
       this.clearValidate()
       this.$emit('update:visible', false)
     },
@@ -281,5 +339,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

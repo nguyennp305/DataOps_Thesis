@@ -39,13 +39,17 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsProjectOptions > 0"
-            :total="totalItemsProjectOptions"
-            :page.sync="listQueryProjectOptions.page"
-            :limit.sync="listQueryProjectOptions.size"
-            @pagination="fetchDataGetProject"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="totalItemsProjectOptions === projectByOptions.length"
+              @click="handleAddProjects"
+            >
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsProjectOptions }}</span>
+          </div>
         </el-select>
       </el-form-item>
     </el-form>
@@ -56,8 +60,10 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
-import { createLabelData, updateLabelDataById } from '@/api/labeling-management/label-data'
-import Pagination from '@/components/Pagination/index.vue'
+import {
+  createLabelData,
+  updateLabelDataById
+} from '@/api/labeling-management/label-data'
 import { UserModule } from '@/store/modules/user'
 
 const defaultDataForm = {
@@ -69,8 +75,7 @@ const defaultDataForm = {
 
 export default {
   components: {
-    Modal,
-    Pagination
+    Modal
   },
   props: {
     visible: {
@@ -119,8 +124,12 @@ export default {
   watch: {
     data: {
       handler(newVal) {
+        this.fetchDataGetProject(this.listQueryProjectOptions)
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          if (newVal.projectId) {
+            this.fetchDataGetProjectsByListIdWhenEdit(newVal.projectId)
+          }
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
         }
@@ -130,19 +139,38 @@ export default {
     }
   },
   created() {
-    this.fetchDataGetProject()
+    this.fetchDataGetProject(this.listQueryProjectOptions)
   },
   methods: {
-    async fetchDataGetProject() {
-      const { data } = await getProjectList(
-        this.listQueryProjectOptions
-      )
+    async fetchDataGetProject(queryProject) {
+      const { data } = await getProjectList(queryProject)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
       }))
-      this.projectByOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.projectByOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.projectByOptions.push(newItem)
+        }
+      })
       this.totalItemsProjectOptions = data.total
+    },
+    async handleAddProjects() {
+      this.listQueryProjectOptions.page += 1
+      await this.fetchDataGetProject(this.listQueryProjectOptions)
+    },
+    // ids is string -- user for project
+    async fetchDataGetProjectsByListIdWhenEdit(ids) {
+      const newQueryUsers = {
+        page: 1,
+        size: 20,
+        ids: ids
+      }
+      await this.fetchDataGetProject(newQueryUsers)
     },
     clearValidate() {
       this.$nextTick(() => {
@@ -151,6 +179,9 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.projectByOptions = []
+      this.totalItemsProjectOptions = 0
+      this.listQueryProjectOptions.page = 1
       this.clearValidate()
       this.$emit('update:visible', false)
     },
@@ -217,5 +248,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

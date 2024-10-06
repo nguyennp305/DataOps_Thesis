@@ -183,3 +183,10 @@ aside {
 .no-padding {
   padding: 0px !important;
 }
+
+.component-add-items-to-list-select {
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
