@@ -1,3 +1,5 @@
+### Note
+#### Trong datatable của dataset, chưa làm cột về image, trong modal cũng vậy chưa làm data về image, đã tạo hết các chức năng, trừ 2 cái trên. Sửa lại các cái dropdown trong filter-search
 
 ## Project setup
 

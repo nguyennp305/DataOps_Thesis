@@ -61,6 +61,7 @@ export default {
     labelGroup: 'Label Group',
     labelData: 'Label Data',
     labelNameData: 'Label Name',
+    datasetNameData: 'Dataset Name',
     labelGroupName: 'Label Group Name',
     labelingImage: 'Labeling Image',
     datasetManagement: 'Dataset Management',
