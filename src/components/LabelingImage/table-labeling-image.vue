@@ -17,14 +17,14 @@
             :zoomOnTouch="false"
             :zoomOnWheel="false"
             :wheelZoomRatio="0"
-            preview=".preview"
+            preview=".preview-after-cropper"
           />
           <!-- :aspect-ratio="NaN" // Không khóa tỷ lệ, cho phép crop tự do
           :view-mode="1" // Cho phép crop mà không vượt quá vùng ảnh -->
         </div>
       </section>
       <section class="preview-area">
-        <div class="preview css-and-hover-image" />
+        <div class="preview-after-cropper css-and-hover-image" />
         <p>Preview</p>
       </section>
     </div>
@@ -53,6 +53,16 @@
               />
               <div v-else class="crop-placeholder" />
             </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          :label="$t('route.project')"
+          :align="'center'"
+          width="200px"
+        >
+          <template slot-scope="{row}">
+            <div> {{ row }}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -96,14 +106,16 @@ export default {
     },
     labeledImages: {
       handler(newVal) {
+        console.log('foeuihwwww', newVal)
         // đang test với chế độ item đầu tiên của mảng
         if (newVal && newVal.length > 0) {
+          const newCropperImage = newVal.length - 1
           this.$nextTick(async() => {
             const cropper = this.$refs.cropperShowTable
             if (cropper) {
               setTimeout(() => {
-                cropper.setData(newVal[0].cropData)
-                cropper.setCropBoxData(newVal[0].cropBoxData)
+                cropper.setData(newVal[newCropperImage].cropData)
+                cropper.setCropBoxData(newVal[newCropperImage].cropBoxData)
                 // // cropper.setContainerData(newVal[0].containerData);
                 // // Zoom to 50% from the center of the container.
                 // cropper.zoomTo(0.5, {
@@ -194,7 +206,7 @@ img {
 .preview-area p:last-of-type {
   margin-top: 1rem;
 }
-.preview {
+.preview-after-cropper {
   width: 100%;
   height: calc(372px * (9 / 16));
   overflow: hidden;

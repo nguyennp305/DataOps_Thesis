@@ -57,6 +57,7 @@ export default class extends Vue {
   private onCropUploadSuccess(jsonData: any, field: string) {
     this.showImageUpload = false
     this.image = jsonData.files[field]
+    console.log('----------', this.image)
   }
 
   private onClose() {
