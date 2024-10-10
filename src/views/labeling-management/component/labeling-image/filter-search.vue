@@ -1,5 +1,6 @@
 <template>
   <div class="filter-container">
+    <div>Labeling Image filter-search</div>
     <!-- <div class="portlet-filter">
       <labeling-slot :label="$t('route.labelNameData')">
         <el-input

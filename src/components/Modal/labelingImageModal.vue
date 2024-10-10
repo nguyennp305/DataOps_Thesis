@@ -31,11 +31,12 @@
 
       <el-form-item :label="$t('route.table')" prop="table">
         <table-labeling-image
-          v-if="dataForm.imageUrl"
+          v-if="dataForm.imageUrl && datasetInfo"
           :loading="listLoading"
           :imgUrl="dataForm.imageUrl"
           :labeledImages="dataForm.labeledImages"
           :tableKey="tableKey"
+          :dataset="datasetInfo"
           @update="handleUpdateLabelingImageInTable"
         />
       </el-form-item>
@@ -50,7 +51,7 @@ import LabelingImageComponent from '@/components/LabelingImage/index'
 import tableLabelingImage from '@/components/LabelingImage/table-labeling-image'
 
 const defaultDataForm = {
-  datasetId: null,
+  // datasetId: null,
   description: '',
   id: null,
   imageUrl: null,
@@ -75,13 +76,18 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    dataset: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
       dataForm: cloneDeep(defaultDataForm),
       listLoading: true,
-      tableKey: 0
+      tableKey: 0,
+      datasetInfo: null
     }
   },
   watch: {
@@ -97,6 +103,15 @@ export default {
         this.clearValidate()
       },
       deep: true
+    },
+    dataset: {
+      handler(newVal) {
+        if (newVal) {
+          this.datasetInfo = newVal
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -107,6 +122,7 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.datasetInfo = null
       this.clearValidate()
       this.$emit('update:visible', false)
     },
@@ -117,10 +133,10 @@ export default {
       this.updateLabelingImageModal()
     },
     updateLabelingImageModal() {
-      console.log('updateLabelingImageModal')
+      console.log('updateLabelingImageModal', this.dataForm)
     },
-    handleUpdateLabelingImageInTable() {
-      console.log('handleUpdateLabelingImageInTable')
+    handleUpdateLabelingImageInTable(row) {
+      console.log('handleUpdateLabelingImageInTable', row)
     },
     updateTableKey(newVal) {
       this.tableKey = newVal

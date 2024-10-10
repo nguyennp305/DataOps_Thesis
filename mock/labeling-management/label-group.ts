@@ -10,7 +10,8 @@ export const getLabelGroupList = async(req: Request, res: Response) => {
     name,
     description,
     createdBy,
-    projectId
+    projectId,
+    ids
   } = req.query
   const url = BASE_URL + 'label-set'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
@@ -25,6 +26,9 @@ export const getLabelGroupList = async(req: Request, res: Response) => {
   }
   if (projectId) {
     params += `&projectId=${projectId}`
+  }
+  if (ids) {
+    params += `&ids=${ids}`
   }
   const response = await axios.get(url + params)
   return res.json({

@@ -123,7 +123,8 @@ export default {
         cropBoxData: JSON.parse(this.cropBoxData),
         cropImg: this.cropImg,
         labelGroupId: null,
-        labelId: null
+        labelId: null,
+        description: null
         // containerData: JSON.parse(JSON.stringify(this.$refs.cropper.getContainerData(), null, 4)),
         // imageData: JSON.parse(JSON.stringify(this.$refs.cropper.getImageData(), null, 4)),
         // canvasData: JSON.parse(JSON.stringify(this.$refs.cropper.getCanvasData(), null, 4)),
