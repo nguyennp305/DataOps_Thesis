@@ -1,10 +1,10 @@
 <template>
   <div class="filter-container">
     <div class="portlet-filter">
-      <labeling-slot :label="$t('route.datasetNameData')">
+      <labeling-slot :label="$t('route.dataName')">
         <el-input
           v-model="localListQuery.name"
-          :placeholder="$t('route.datasetNameData')"
+          :placeholder="$t('route.dataName')"
         />
       </labeling-slot>
 
@@ -14,29 +14,6 @@
           :placeholder="$t('table.description')"
         />
       </labeling-slot>
-
-      <!-- <labeling-slot :label="$t('table.createdBy')">
-        <el-select
-          v-model="localListQuery.createdBy"
-          :placeholder="$t('table.createdBy')"
-          filterable
-          clearable
-        >
-          <el-option
-            v-for="item in createdByOptions"
-            :key="item.key"
-            :label="item.displayName"
-            :value="item.key"
-          />
-          <pagination
-            v-show="totalItemsCreatedByOptions > 0"
-            :total="totalItemsCreatedByOptions"
-            :page.sync="listQueryCreatedByOptions.page"
-            :limit.sync="listQueryCreatedByOptions.size"
-            @pagination="fetchDataGetCreatedBy"
-          />
-        </el-select>
-      </labeling-slot> -->
 
       <labeling-slot :label="$t('route.project')">
         <el-select
@@ -63,6 +40,21 @@
             <span>Total: {{ totalItemsProjectOptions }}</span>
           </div>
         </el-select>
+      </labeling-slot>
+
+      <labeling-slot :label="$t('table.status')">
+        <el-select
+          v-model="localListQuery.status"
+          :placeholder="$t('table.status')"
+          clearable
+        >
+          <el-option
+            v-for="item in isStatusOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+      </el-select>
       </labeling-slot>
     </div>
 
@@ -140,7 +132,12 @@ export default {
       listQueryProjectOptions: {
         page: 1,
         size: 10
-      }
+      },
+      isStatusOptions: [
+        { key: 'notLabel', displayName: 'Not label' },
+        { key: 'labeled', displayName: 'Labeled' },
+        { key: 'labeling', displayName: 'Labeling' }
+      ]
     }
   },
   watch: {
@@ -161,21 +158,9 @@ export default {
     }
   },
   created() {
-    // this.fetchDataGetCreatedBy()
     this.fetchDataGetProject(this.listQueryProjectOptions)
   },
   methods: {
-    // async fetchDataGetCreatedBy() {
-    //   const { data } = await getUserList(
-    //     this.listQueryCreatedByOptions
-    //   )
-    //   const newArray = data.items.map((item) => ({
-    //     key: item.id,
-    //     displayName: item.username
-    //   }))
-    //   this.createdByOptions = newArray
-    //   this.totalItemsCreatedByOptions = data.total
-    // },
     async fetchDataGetProject(queryProject) {
       const { data } = await getProjectList(queryProject)
       const newArray = data.items.map((item) => ({

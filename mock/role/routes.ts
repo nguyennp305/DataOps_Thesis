@@ -255,6 +255,28 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/data',
+    component: 'Layout',
+    redirect: '/data/list',
+    meta: {
+      title: 'dataManagement',
+      icon: 'documentation',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'list',
+        component: 'views/data-management/index.vue',
+        name: 'Data',
+        meta: {
+          title: 'data',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: 'Layout',
     meta: {

@@ -307,6 +307,27 @@ export const asyncRoutes: RouteConfig[] = [
     ]
   },
   {
+    path: '/data',
+    component: Layout,
+    meta: {
+      title: 'dataManagement',
+      icon: 'documentation',
+      roles: ['admin', 'admin_project'],
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/data-management/index.vue'),
+        name: 'Data',
+        meta: {
+          title: 'data',
+          roles: ['admin', 'admin_project']
+        }
+      }
+    ]
+  },
+  {
     path: '/icon',
     component: Layout,
     meta: {

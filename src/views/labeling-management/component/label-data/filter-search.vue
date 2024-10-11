@@ -51,13 +51,17 @@
             :label="item.displayName"
             :value="item.key"
           />
-          <pagination
-            v-show="totalItemsProjectOptions > 0"
-            :total="totalItemsProjectOptions"
-            :page.sync="listQueryProjectOptions.page"
-            :limit.sync="listQueryProjectOptions.size"
-            @pagination="fetchDataGetProject"
-          />
+          <div class="component-add-items-to-list-select">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="totalItemsProjectOptions === projectByOptions.length"
+              @click="handleAddProjects"
+            >
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsProjectOptions }}</span>
+          </div>
         </el-select>
       </labeling-slot>
     </div>
@@ -160,13 +164,11 @@ export default {
   },
   created() {
     this.fetchDataGetCreatedBy()
-    this.fetchDataGetProject()
+    this.fetchDataGetProject(this.listQueryProjectOptions)
   },
   methods: {
     async fetchDataGetCreatedBy() {
-      const { data } = await getUserList(
-        this.listQueryCreatedByOptions
-      )
+      const { data } = await getUserList(this.listQueryCreatedByOptions)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.username
@@ -174,16 +176,26 @@ export default {
       this.createdByOptions = newArray
       this.totalItemsCreatedByOptions = data.total
     },
-    async fetchDataGetProject() {
-      const { data } = await getProjectList(
-        this.listQueryProjectOptions
-      )
+    async fetchDataGetProject(queryProject) {
+      const { data } = await getProjectList(queryProject)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
       }))
-      this.projectByOptions = newArray
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.projectByOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.projectByOptions.push(newItem)
+        }
+      })
       this.totalItemsProjectOptions = data.total
+    },
+    async handleAddProjects() {
+      this.listQueryProjectOptions.page += 1
+      await this.fetchDataGetProject(this.listQueryProjectOptions)
     },
     handleFilter() {
       this.$emit('filter')

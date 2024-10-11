@@ -94,6 +94,11 @@ router.get('/datasets', api.getDatasetList)
 router.delete('/datasets/:id', api.deleteDatasetById)
 router.post('/datasets', api.createDataset)
 router.put('/datasets/:id', api.updateDatasetById)
+// data:
+router.get('/datas', api.getDataList)
+router.delete('/datas/:id', api.deleteDataById)
+router.post('/datas', api.createData)
+router.put('/datas/:id', api.updateDataById)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)
