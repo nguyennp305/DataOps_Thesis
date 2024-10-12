@@ -29,7 +29,7 @@ export const mockLabelingImageData = [
       }
     ],
     name: 'name_0',
-    status: 'status_0',
+    status: 'labeled',
     projectId: null,
     updatedAt: '2024-09-24T14:37:36.335Z',
     updatedBy: 'updatedBy_0'

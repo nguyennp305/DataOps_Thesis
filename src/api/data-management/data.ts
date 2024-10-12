@@ -13,17 +13,3 @@ export const deleteDataById = (params: any) =>
     method: 'delete',
     params
   })
-
-export const createData = (data: any) =>
-  request({
-    url: '/datas',
-    method: 'post',
-    data
-  })
-
-export const updateDataById = (data: any) =>
-  request({
-    url: '/datas/' + data.id,
-    method: 'put',
-    data
-  })

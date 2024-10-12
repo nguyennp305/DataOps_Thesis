@@ -68,7 +68,7 @@
 
       <el-form-item :label="$t('route.image')" prop="image" v-if="!isEdit">
         <div class="editor-container">
-          <dropzone
+          <image-upload
             id="myVueDropzone"
             url="https://httpbin.org/post"
             @dropzone-success="dropzoneSuccess"
@@ -78,31 +78,26 @@
       </el-form-item>
       <el-form-item :label="$t('route.image')" prop="image" v-else>
         <div class="cropped-image">
-            <img
-              v-if="dataForm.image"
-              :src="dataForm.image"
-              alt="Cropped Image"
-              class="css-and-hover-image"
-            />
-            <div v-else class="crop-placeholder" />
-          </div>
+          <img
+            v-if="dataForm.image"
+            :src="dataForm.image"
+            alt="Cropped Image"
+            class="css-and-hover-image"
+          />
+          <div v-else class="crop-placeholder" />
+        </div>
       </el-form-item>
-
     </el-form>
   </modal>
 </template>
 
 <script>
 import Modal from '@/components/Commons/modal.vue'
-import { cloneDeep, update } from 'lodash'
+import axios from 'axios'
+import { cloneDeep } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
-import {
-  createDataset,
-  updateDatasetById
-} from '@/api/dataset-management/dataset'
 import { UserModule } from '@/store/modules/user'
-import { getLabelGroupList } from '@/api/labeling-management/label-group'
-import Dropzone from '@/components/Dropzone/index.vue'
+import imageUpload from '@/components/Dropzone/imageUpload'
 
 const defaultDataForm = {
   description: '',
@@ -116,7 +111,7 @@ const defaultDataForm = {
 export default {
   components: {
     Modal,
-    Dropzone
+    imageUpload
   },
   props: {
     visible: {
@@ -249,73 +244,86 @@ export default {
     },
     handleModalConfirm() {
       if (this.isEdit) {
-        this.updateDatasetModal()
+        this.updateDataModal()
       } else {
-        this.createDatasetModal()
+        this.createDataModal()
       }
     },
-    updateDatasetModal() {
+    updateDataModal() {
+      const BASE_URL = 'http://localhost:8089/api/'
       this.$refs.dataFormRef.validate(async(valid) => {
-        // if (valid) {
-        //   const dataUpdateDataset = {
-        //     description: this.dataForm.description,
-        //     id: this.dataForm.id,
-        //     labelGroupIds: this.labelGroupDataListSelected,
-        //     labeledImageIds: this.dataForm.labeledImageIds, // fake data, chưa làm
-        //     name: this.dataForm.name,
-        //     projectId: this.dataForm.projectId,
-        //     updatedBy: UserModule.id
-        //   }
-        //   await updateDatasetById(dataUpdateDataset)
-        //     .then((res) => {
-        //       console.log('res', res)
-        //       this.$notify({
-        //         title: 'Success',
-        //         message: 'Update Successfully',
-        //         type: 'success',
-        //         duration: 2000
-        //       })
-        //       this.$emit('update:reload-table')
-        //       this.$emit('update:visible', false)
-        //     })
-        //     .catch((err) => {
-        //       console.log('err', err)
-        //     })
-        // } else {
-        //   console.log('Form update Dataset is invalid')
-        // }
+        if (valid) {
+          // Tạo form-data
+          const dataUpdateData = new FormData()
+          dataUpdateData.append('updatedBy', UserModule.id)
+          dataUpdateData.append('description', this.dataForm.description)
+          dataUpdateData.append('name', this.dataForm.name)
+          dataUpdateData.append('projectId', this.dataForm.projectId)
+          dataUpdateData.append('status', this.dataForm.status)
+          dataUpdateData.append('id', this.dataForm.id)
+          await axios
+            .put(BASE_URL + 'data', dataUpdateData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form update Data is invalid')
+        }
       })
     },
-    createDatasetModal() {
+    createDataModal() {
+      const BASE_URL = 'http://localhost:8089/api/'
       this.$refs.dataFormRef.validate(async(valid) => {
-        // if (valid) {
-        //   const dataCreateDataset = {
-        //     description: this.dataForm.description,
-        //     id: this.dataForm.id,
-        //     labelGroupIds: this.labelGroupDataListSelected,
-        //     labeledImageIds: this.dataForm.labeledImageIds, // fake data, chưa làm
-        //     name: this.dataForm.name,
-        //     projectId: this.dataForm.projectId,
-        //     createdBy: UserModule.id
-        //   }
-        //   await createDataset(dataCreateDataset)
-        //     .then((res) => {
-        //       console.log('res', res)
-        //       this.$notify({
-        //         title: 'Success',
-        //         message: 'Create Successfully',
-        //         type: 'success',
-        //         duration: 2000
-        //       })
-        //       this.$emit('update:reload-table')
-        //       this.$emit('update:visible', false)
-        //     })
-        //     .catch((err) => {
-        //       console.log('err', err)
-        //     })
-        // } else {
-        //   console.log('Form create Dataset is invalid')
-        // }
+        if (valid) {
+          // Tạo form-data
+          const dataCreateData = new FormData()
+          dataCreateData.append('createdBy', UserModule.id)
+          dataCreateData.append('description', this.dataForm.description)
+          dataCreateData.append('name', this.dataForm.name)
+          dataCreateData.append('projectId', this.dataForm.projectId)
+          dataCreateData.append('status', this.dataForm.status)
+          // Kiểm tra nếu image là một file, thì thêm nó vào formData
+          if (this.dataForm.image instanceof File) {
+            dataCreateData.append('image', this.dataForm.image)
+          }
+          await axios
+            .post(BASE_URL + 'data', dataCreateData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Create Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form create Data is invalid')
+        }
       })
     },
     dropzoneSuccess(file, response) {
@@ -332,4 +340,24 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.cropped-image img {
+  max-width: 100%;
+  height: 200px;
+  object-fit: contain;
+}
+.css-and-hover-image {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+.crop-placeholder {
+  width: 100%;
+  height: 200px;
+  background: #ccc;
+}
+</style>

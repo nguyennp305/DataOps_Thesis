@@ -58,6 +58,23 @@
       </el-table-column>
 
       <el-table-column
+        :label="$t('route.image')"
+        min-width="150px"
+        :align="'center'"
+      >
+        <template slot-scope="{row}">
+          <div v-if="row.labeledImageIds && row.labeledImageIds.length > 0">
+            <el-tag v-for="(labeledImage, index) in row.labeledImageIds" :key="index">
+              {{ labeledImage }}
+            </el-tag>
+          </div>
+          <div v-else>
+            <span style="color: red">{{ $t("table.noData") }}</span>
+          </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column
         :label="$t('route.updatedAt')"
         :align="'center'"
         min-width="150px"

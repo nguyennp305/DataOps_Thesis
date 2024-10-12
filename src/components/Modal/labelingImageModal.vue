@@ -10,6 +10,7 @@
     <el-form
       ref="dataFormRef"
       :model="dataForm"
+      :rules="rules"
       label-position="top"
       class="labeling-modal-form"
     >
@@ -39,6 +40,21 @@
           :dataset="datasetInfo"
           @update="handleUpdateLabelingImageInTable"
         />
+      </el-form-item>
+
+      <el-form-item :label="$t('table.status')" prop="status">
+        <el-select
+          v-model="dataForm.status"
+          :placeholder="$t('table.status')"
+          clearable
+        >
+          <el-option
+            v-for="item in isStatusOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
   </modal>
@@ -87,7 +103,21 @@ export default {
       dataForm: cloneDeep(defaultDataForm),
       listLoading: true,
       tableKey: 0,
-      datasetInfo: null
+      datasetInfo: null,
+      rules: {
+        status: [
+          {
+            required: true,
+            message: 'Status is required',
+            trigger: 'blur'
+          }
+        ]
+      },
+      isStatusOptions: [
+        { key: 'notLabel', displayName: 'Not label' },
+        { key: 'labeled', displayName: 'Labeled' },
+        { key: 'labeling', displayName: 'Labeling' }
+      ]
     }
   },
   watch: {
@@ -133,7 +163,11 @@ export default {
       this.updateLabelingImageModal()
     },
     updateLabelingImageModal() {
-      console.log('updateLabelingImageModal', this.dataForm)
+      this.$refs.dataFormRef.validate(async(valid) => {
+        if (valid) {
+          console.log('updateLabelingImageModal', this.dataForm)
+        }
+      })
     },
     handleUpdateLabelingImageInTable(row) {
       console.log('handleUpdateLabelingImageInTable', row)

@@ -1,7 +1,8 @@
 ### Note
-#### Trong datatable của dataset, chưa làm cột về image, trong modal cũng vậy chưa làm data về image, đã tạo hết các chức năng, trừ 2 cái trên. Sửa lại các cái dropdown trong filter-search
+#### Sửa lại các cái dropdown trong filter-search
 #### trong table cuar modal gan nhan, chưa làm data cho từng hàng của table, mà mới test chung
-#### dropzone chưa config cho upload mỗi ảnh
+#### trong model của modal data, chưa làm cái show các label đã sử dụng, thêm 1 nút chi tiết.
+#### tối nay bắt đầu làm gán nhãn
 ## Project setup
 
 With [yarn](https://yarnpkg.com/lang/en/) or [npm](https://www.npmjs.com/get-npm)
