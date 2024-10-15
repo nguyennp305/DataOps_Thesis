@@ -90,6 +90,10 @@
       >
         {{ $t("table.createdBy") }}
       </el-checkbox>
+      <el-button type="warning" icon="el-icon-arrow-right">
+        <router-link to="/label-management/labeling-image">{{ $t("route.labelingImage") }}</router-link>
+      </el-button>
+
       <el-button type="primary" icon="el-icon-edit" @click="handleCreate">
         {{ $t("table.add") }}
       </el-button>

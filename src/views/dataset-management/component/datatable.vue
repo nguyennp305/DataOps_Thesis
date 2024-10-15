@@ -47,12 +47,12 @@
       >
         <template slot-scope="{row}">
           <div v-if="row.labelGroupIds && row.labelGroupIds.length > 0">
-            <el-tag v-for="(labelGroupData, index) in row.labelGroupIds" :key="index">
-              {{ labelGroupData }}
+            <el-tag>
+              {{ row.labelGroupIds.length }} images
             </el-tag>
           </div>
           <div v-else>
-            <span style="color: red">{{ $t("table.noData") }}</span>
+            <span style="color: red">No images</span>
           </div>
         </template>
       </el-table-column>

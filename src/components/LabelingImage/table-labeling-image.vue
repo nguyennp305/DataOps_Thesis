@@ -65,7 +65,8 @@
         >
           <template slot-scope="{row}">
             <el-select
-              v-model="row.labelId"
+              :value="getLabelIds(row)"
+              @input="updateLabelIds(row, $event)"
               :placeholder="$t('route.labelNameData')"
               multiple
               filterable
@@ -91,6 +92,35 @@
                 <span>Total: {{ totalItemsLabelDataOptions }}</span>
               </div>
             </el-select>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          :label="$t('route.labelExactRatio')"
+          :align="'center'"
+          width="500px"
+        >
+          <template slot-scope="{row}">
+            <div
+              v-for="(item, index) in row.labelCropMulti"
+              :key="index"
+              class="exact-ratio-row"
+            >
+              <el-tag>{{ getLabelName(item.labelId) }}</el-tag>
+              <label class="label" for="exactRatio">
+                Exact ratio:
+                <el-input
+                  v-model.number="item.exactRatio"
+                  type="number"
+                  placeholder="Exact Ratio"
+                  :min="0"
+                  :max="100"
+                  style="width: 80px; margin-left: 8px"
+                  @input="handleExactRatioInput(item)"
+                />
+                %
+              </label>
+            </div>
           </template>
         </el-table-column>
 
@@ -275,6 +305,29 @@ export default {
     handleDeleteItemCropperImage(data, index) {
       console.log(data)
       this.labeledImagesDataLocal.splice(index, 1)
+    },
+    // Hàm để lấy danh sách labelId từ labelCropMulti của row
+    getLabelIds(row) {
+      return row.labelCropMulti.map((item) => item.labelId)
+    },
+    // Hàm để cập nhật lại labelCropMulti khi danh sách labelId thay đổi
+    updateLabelIds(row, newLabelIds) {
+      row.labelCropMulti = newLabelIds.map((labelId) => ({
+        labelId,
+        exactRatio: 1 // Giữ nguyên hoặc thiết lập giá trị mặc định cho exactRatio
+      }))
+    },
+    // Hàm lấy tên label dựa trên labelId
+    getLabelName(labelId) {
+      const label = this.labelDataOptions.find((item) => item.key === labelId)
+      return label ? label.displayName : 'Unknown Label'
+    },
+    handleExactRatioInput(item) {
+      if (item.exactRatio < 1) {
+        item.exactRatio = 1
+      } else if (item.exactRatio > 100) {
+        item.exactRatio = 100
+      }
     }
   }
 }
@@ -342,5 +395,12 @@ img {
   display: flex;
   flex-direction: row-reverse;
   margin-top: 10px;
+}
+.exact-ratio-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 </style>
