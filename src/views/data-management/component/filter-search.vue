@@ -104,7 +104,7 @@ import LabelingSlot from '@/components/Commons/labeling-slot'
 import { getProjectList } from '@/api/project-management/project-list'
 
 export default {
-  name: 'FilterSearchDataset',
+  name: 'FilterSearchData',
   components: {
     LabelingSlot
   },

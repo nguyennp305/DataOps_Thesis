@@ -74,6 +74,7 @@ export default {
     updatedAt: 'Updated At',
     updatedBy: 'Updated By',
     errorPages: '错误页面',
+    updateCropperImage: 'Update Cropper Image',
     page401: '401',
     page404: '404',
     excel: 'Excel',

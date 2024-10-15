@@ -74,7 +74,8 @@ export default class extends Vue {
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 20px;
+      margin-left: 20px;
     }
 
     & .sidebar-title {

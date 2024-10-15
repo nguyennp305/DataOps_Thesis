@@ -1,36 +1,34 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <div class="portlet-filter">
-        <labeling-slot :label="$t('route.datasetNameData')">
-          <el-select
-            v-model="datasetId"
-            :placeholder="$t('route.datasetNameData')"
-            filterable
-            clearable
-          >
-            <el-option
-              v-for="item in datasetTypyOptions"
-              :key="item.key"
-              :label="item.displayName"
-              :value="item.key"
-            />
-            <div class="component-add-items-to-list-select">
-              <el-button
-                size="mini"
-                type="primary"
-                :disabled="
-                  totalItemsDatasetsOptions === datasetTypyOptions.length
-                "
-                @click="handleAddDatasets"
-              >
-                Add Items
-              </el-button>
-              <span>Total: {{ totalItemsDatasetsOptions }}</span>
-            </div>
-          </el-select>
-        </labeling-slot>
-      </div>
+    <div class="portlet-filter">
+      <labeling-slot :label="$t('route.datasetNameData')">
+        <el-select
+          v-model="datasetId"
+          :placeholder="$t('route.datasetNameData')"
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="item in datasetTypyOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+          <div class="component-add-items-to-list-select">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="
+                totalItemsDatasetsOptions === datasetTypyOptions.length
+              "
+              @click="handleAddDatasets"
+            >
+              Add Items
+            </el-button>
+            <span>Total: {{ totalItemsDatasetsOptions }}</span>
+          </div>
+        </el-select>
+      </labeling-slot>
     </div>
     <div v-if="datasetId">
       <filter-search
@@ -52,16 +50,16 @@
         :showCreatedAt="showCreatedAt"
         :showCreatedBy="showCreatedBy"
         @update="handleClickButtonUpdate"
-        @pagination="getListImage"
-      />
-      <labeling-image-modal
-        :visible="visible"
-        :data="propDataItem"
-        :dataset="datasetInfo"
-        @update:visible="handleUpdateVisible"
-        @update:reload-table="reloadTable"
+        @pagination="getList"
       />
     </div>
+    <labeling-image-modal
+      :visible="visible"
+      :data="propDataItem"
+      :dataset="datasetInfo"
+      @update:visible="handleUpdateVisible"
+      @update:reload-table="reloadTable"
+    />
   </div>
 </template>
 
@@ -73,8 +71,8 @@ import LabelingImageModal from '@/components/Modal/labelingImageModal'
 import LabelingSlot from '@/components/Commons/labeling-slot'
 // import function call api.
 // import { getLabelDataList } from '@/api/labeling-management/label-data'
-import { mockLabelingImageData } from '@/views/labeling-management/component/labeling-image/mockLabelingImageData'
 import { getDatasetList } from '@/api/dataset-management/dataset'
+import { getDataList } from '@/api/data-management/data'
 
 export default {
   name: 'LabelingImage',
@@ -93,10 +91,12 @@ export default {
       listQuery: {
         page: 1,
         size: 10,
+        ids: null,
         name: undefined,
         description: undefined,
         createdBy: undefined,
-        projectId: undefined
+        projectId: undefined,
+        status: undefined
       },
       showCreatedAt: false,
       showCreatedBy: false,
@@ -118,11 +118,14 @@ export default {
     datasetId(newVal) {
       if (newVal) {
         this.getDatasetById(newVal)
+      } else {
+        this.listQuery.ids = null
+        this.getList()
       }
     }
   },
   created() {
-    this.getListImage()
+    this.getList()
     this.fetchDataSetList(this.listQueryDatasetOptions)
   },
   methods: {
@@ -134,6 +137,13 @@ export default {
       }
       const { data } = await getDatasetList(newQuery)
       this.datasetInfo = data.items[0]
+      if (data.items[0].labeledImageIds.length > 0) {
+        this.listQuery.ids = data.items[0].labeledImageIds.join(',')
+        await this.getList()
+      } else {
+        this.listQuery.ids = 'notImage'
+        await this.getList()
+      }
     },
     async fetchDataSetList(queryDataset) {
       const { data } = await getDatasetList(queryDataset)
@@ -156,21 +166,18 @@ export default {
       this.listQueryDatasetOptions.page += 1
       await this.fetchDataSetList(this.listQueryDatasetOptions)
     },
-    async getListImage() {
+    async getList() {
       this.listLoading = true
-      // const { data } = await getLabelDataList(this.listQuery)
-      // this.list = data.items
-      // this.total = data.total
-      this.list = mockLabelingImageData
-      this.total = mockLabelingImageData.length
-
+      const { data } = await getDataList(this.listQuery)
+      this.list = data.items
+      this.total = data.total
       setTimeout(() => {
         this.listLoading = false
       }, 0.5 * 1000)
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getListImage()
+      this.getList()
     },
     handleClickButtonUpdate(row) {
       this.propDataItem = row

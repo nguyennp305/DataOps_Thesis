@@ -1,7 +1,7 @@
 ### Note
 #### Sửa lại các cái dropdown trong filter-search
-#### trong table cuar modal gan nhan, chưa làm data cho từng hàng của table, mà mới test chung
-#### trong model của modal data, chưa làm cái show các label đã sử dụng, thêm 1 nút chi tiết.
+#### trong table cuar modal gan nhan, chua cos description cho tung item
+#### trong model của modal data, thêm 1 nút chi tiết.
 #### tối nay bắt đầu làm gán nhãn
 ## Project setup
 

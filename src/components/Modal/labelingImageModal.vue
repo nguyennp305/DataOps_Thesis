@@ -65,6 +65,7 @@ import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import LabelingImageComponent from '@/components/LabelingImage/index'
 import tableLabelingImage from '@/components/LabelingImage/table-labeling-image'
+import axios from 'axios'
 
 const defaultDataForm = {
   // datasetId: null,
@@ -74,7 +75,7 @@ const defaultDataForm = {
   labeledImages: [],
   name: '',
   projectId: null,
-  status: '',
+  status: 'notLabel',
   updatedBy: null
 }
 
@@ -117,7 +118,12 @@ export default {
         { key: 'notLabel', displayName: 'Not label' },
         { key: 'labeled', displayName: 'Labeled' },
         { key: 'labeling', displayName: 'Labeling' }
-      ]
+      ],
+      dataSubmitLabelingImage: {
+        dataId: null,
+        labeledImages: [],
+        status: null
+      }
     }
   },
   watch: {
@@ -126,6 +132,7 @@ export default {
         if (newVal) {
           this.listLoading = true
           this.dataForm = cloneDeep(newVal)
+          this.datasetInfo = this.dataset
           this.listLoading = false
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
@@ -163,14 +170,34 @@ export default {
       this.updateLabelingImageModal()
     },
     updateLabelingImageModal() {
+      const BASE_URL = 'http://localhost:8089/api/'
       this.$refs.dataFormRef.validate(async(valid) => {
         if (valid) {
-          console.log('updateLabelingImageModal', this.dataForm)
+          this.dataSubmitLabelingImage.dataId = this.dataForm.id
+          this.dataSubmitLabelingImage.status = this.dataForm.status
+          await axios
+            .post(BASE_URL + 'data/crop-label', this.dataSubmitLabelingImage)
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Label Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form update is invalid')
         }
       })
     },
-    handleUpdateLabelingImageInTable(row) {
-      console.log('handleUpdateLabelingImageInTable', row)
+    async handleUpdateLabelingImageInTable(data) {
+      this.dataSubmitLabelingImage.labeledImages = data
     },
     updateTableKey(newVal) {
       this.tableKey = newVal

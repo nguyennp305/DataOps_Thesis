@@ -1,7 +1,6 @@
 <template>
   <div>
-    <!-- v-if="labeledImages.length > 0 && cropData && cropBoxData" -->
-    <div class="content" v-if="labeledImages.length > 0">
+    <div class="content" v-if="labeledImagesDataLocal.length > 0">
       <section class="cropper-area">
         <div class="img-cropper">
           <vue-cropper
@@ -32,20 +31,22 @@
       <el-table
         v-loading="loading"
         :key="tableKey"
-        :data="labeledImages"
+        :data="labeledImagesDataLocal"
         :border="true"
         fit
         highlight-current-row
         style="width: 100%"
-        @row-click="handleClickRowWillChangeImageDemoTable"
       >
         <el-table-column
-          :label="$t('route.project')"
+          :label="$t('route.image')"
           :align="'center'"
           width="200px"
         >
           <template slot-scope="{row}">
-            <div class="cropped-image">
+            <div
+              class="cropped-image"
+              @click="handleClickRowWillChangeImageDemoTable(row)"
+            >
               <img
                 v-if="row.cropImg"
                 :src="row.cropImg"
@@ -58,32 +59,6 @@
         </el-table-column>
 
         <el-table-column
-          :label="$t('route.labelGroupName')"
-          :align="'center'"
-          width="200px"
-        >
-          <template slot-scope="{row}">
-            <el-select
-              v-model="row.labelGroupId"
-              :placeholder="$t('route.labelGroupName')"
-              filterable
-              clearable
-              @change="handleChangeLabelGroupId(row.labelGroupId)"
-            >
-              <el-option
-                v-for="item in labelGroupTypyOptions"
-                :key="item.key"
-                :label="item.displayName"
-                :value="item.key"
-              />
-              <div class="component-add-items-to-list-select">
-                <span>Total: {{ totalItemsLabelGroupsOptions }}</span>
-              </div>
-            </el-select>
-          </template>
-        </el-table-column>
-
-        <el-table-column
           :label="$t('route.labelNameData')"
           :align="'center'"
           width="200px"
@@ -92,6 +67,7 @@
             <el-select
               v-model="row.labelId"
               :placeholder="$t('route.labelNameData')"
+              multiple
               filterable
               clearable
             >
@@ -119,15 +95,31 @@
         </el-table-column>
 
         <el-table-column
-          :label="$t('table.description')"
+          :label="$t('table.actions')"
           :align="'center'"
-          width="200px"
+          width="100px"
+          clas-name="fixed-width"
         >
-        <el-input
-          :placeholder="$t('table.description')"
-        />
-      </el-table-column>
+          <template slot-scope="{row, $index}">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleDeleteItemCropperImage(row, $index)"
+            >
+              {{ $t("table.delete") }}
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
+    </div>
+    <div class="update-table-button">
+      <el-button
+        type="primary"
+        size="mini"
+        @click="handleUpdateLabelInACropperImage"
+      >
+        {{ $t("route.updateCropperImage") }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -160,8 +152,6 @@ export default {
   data() {
     return {
       imgSrc: null,
-      labelGroupTypyOptions: [],
-      totalItemsLabelGroupsOptions: 0,
       labelDataOptions: [],
       labelDataListSelected: [],
       totalItemsLabelDataOptions: 0,
@@ -169,9 +159,8 @@ export default {
         page: 1,
         size: 10,
         ids: null
-      }
-      // cropData: null,
-      // cropBoxData: null,
+      },
+      labeledImagesDataLocal: []
     }
   },
   watch: {
@@ -184,22 +173,23 @@ export default {
     },
     dataset: {
       handler(newVal) {
-        if (newVal) {
-          const newQuery = {
-            page: 1,
-            size: 10,
-            ids: newVal.labelGroupIds.join(',')
-          }
-          this.fetchLabelGroupList(newQuery)
+        console.log('dataset', newVal)
+        const newQuery = {
+          page: 1,
+          size: 10,
+          ids: newVal.labelGroupIds.join(',') // Tạo mảng mới
         }
+        this.fetchDataGetLabelGroupData(newQuery)
       },
       deep: true,
       immediate: true
     },
     labeledImages: {
       handler(newVal) {
+        console.log('labeledImagesxxxxxxx', newVal)
         // đang test với chế độ item đầu tiên của mảng
         if (newVal && newVal.length > 0) {
+          this.labeledImagesDataLocal = newVal
           const newCropperImage = newVal.length - 1
           this.$nextTick(async() => {
             const cropper = this.$refs.cropperShowTable
@@ -207,19 +197,13 @@ export default {
               setTimeout(() => {
                 cropper.setData(newVal[newCropperImage].cropData)
                 cropper.setCropBoxData(newVal[newCropperImage].cropBoxData)
-                // // cropper.setContainerData(newVal[0].containerData);
-                // // Zoom to 50% from the center of the container.
-                // cropper.zoomTo(0.5, {
-                //   x: newVal[0].containerData.width / 2,
-                //   y: newVal[0].containerData.height / 2,
-                // });
-                // cropper.setImageData(newVal[0].imageData);
-                // cropper.setCanvasData(newVal[0].canvasData);
               }, 3000)
             } else {
               console.error('Không thể tìm thấy cropper instance.')
             }
           })
+        } else {
+          this.labeledImagesDataLocal = []
         }
       },
       immediate: true,
@@ -227,22 +211,14 @@ export default {
     }
   },
   methods: {
-    async fetchLabelGroupList(queryLabelGroup) {
-      const { data } = await getLabelGroupList(queryLabelGroup)
-      const newArray = data.items.map((item) => ({
-        key: item.id,
-        displayName: item.name
-      }))
-      // Kiểm tra và chỉ thêm những item chưa tồn tại
-      newArray.forEach((newItem) => {
-        const isExist = this.labelGroupTypyOptions.some(
-          (existingItem) => existingItem.key === newItem.key
-        )
-        if (!isExist) {
-          this.labelGroupTypyOptions.push(newItem)
-        }
+    async fetchDataGetLabelGroupData(queryLabelData) {
+      const { data } = await getLabelGroupList(queryLabelData)
+      const labelIdsSet = new Set()
+      data.items.forEach((item) => {
+        item.labelIds.forEach((id) => labelIdsSet.add(id))
       })
-      this.totalItemsLabelGroupsOptions = data.total
+      this.listQueryLabelDataOptions.ids = Array.from(labelIdsSet).join(',')
+      await this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
     },
     async fetchDataGetLabelData(queryLabelData) {
       const { data } = await getLabelDataList(queryLabelData)
@@ -265,24 +241,6 @@ export default {
       this.listQueryLabelDataOptions.page += 1
       await this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
     },
-    async handleChangeLabelGroupId(id) {
-      if (id) {
-        const newQuery = {
-          page: 1,
-          size: 10,
-          ids: id
-        }
-        const groupInfo = null
-        this.$nextTick(async() => {
-          const { data } = await getLabelGroupList(newQuery)
-          newQuery.ids = data.items[0].labelIds.join(',')
-          this.labelDataOptions = []
-          await this.fetchDataGetLabelData(newQuery)
-        }, 3000)
-      } else {
-        this.labelDataOptions = []
-      }
-    },
     // Hàm này dùng để đặt dữ liệu liên quan đến crop box (hộp khung crop), tức là vùng hình chữ nhật mà bạn dùng để xác định khu vực sẽ crop.
     // Hàm này thay đổi vị trí và kích thước của khung crop mà không thay đổi dữ liệu về ảnh.
     setCropBoxData(data) {
@@ -294,7 +252,7 @@ export default {
       if (!data) return
       this.$refs.cropperShowTable.setData(data)
     },
-    handleClickRowWillChangeImageDemoTable(row, event, column) {
+    handleClickRowWillChangeImageDemoTable(row) {
       console.log('row', row)
       this.$nextTick(async() => {
         const cropper = this.$refs.cropperShowTable
@@ -302,37 +260,21 @@ export default {
           setTimeout(() => {
             cropper.setData(row.cropData)
             cropper.setCropBoxData(row.cropBoxData)
-            // // cropper.setContainerData(newVal[0].containerData);
-            // // Zoom to 50% from the center of the container.
-            // cropper.zoomTo(0.5, {
-            //   x: newVal[0].containerData.width / 2,
-            //   y: newVal[0].containerData.height / 2,
-            // });
-            // cropper.setImageData(newVal[0].imageData);
-            // cropper.setCanvasData(newVal[0].canvasData);
           }, 3000)
         } else {
           console.error('Không thể tìm thấy cropper instance.')
         }
       })
     },
-    // setContainerData(data) {
-    //   if (!data) return;
-    //   this.$refs.cropperShowTable.setContainerData(data);
-    // },
-    // setImageData(data) {
-    //   if (!data) return;
-    //   this.$refs.cropperShowTable.setImageData(data);
-    // },
-    // setCanvasData(data) {
-    //   if (!data) return;
-    //   this.$refs.cropperShowTable.setCanvasData(data);
-    // },
-    handleUpdateLabelInACropperImage(row) {
-      this.$emit('update', row)
+    handleUpdateLabelInACropperImage() {
+      this.$emit('update', this.labeledImagesDataLocal)
     },
     reset() {
       this.$refs.cropperShowTable.reset()
+    },
+    handleDeleteItemCropperImage(data, index) {
+      console.log(data)
+      this.labeledImagesDataLocal.splice(index, 1)
     }
   }
 }
@@ -395,5 +337,10 @@ img {
   width: 100%;
   height: 200px;
   background: #ccc;
+}
+.update-table-button {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 10px;
 }
 </style>

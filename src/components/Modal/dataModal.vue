@@ -77,14 +77,21 @@
         </div>
       </el-form-item>
       <el-form-item :label="$t('route.image')" prop="image" v-else>
-        <div class="cropped-image">
-          <img
-            v-if="dataForm.image"
-            :src="dataForm.image"
-            alt="Cropped Image"
-            class="css-and-hover-image"
-          />
-          <div v-else class="crop-placeholder" />
+        <div class="show-image-and-label-edit-info">
+          <div class="cropped-image">
+            <img
+              v-if="dataForm.image"
+              :src="dataForm.image"
+              alt="Cropped Image"
+              class="css-and-hover-image"
+            />
+            <div v-else class="crop-placeholder" />
+          </div>
+          <div class="show-used-label">
+            <el-tag v-for="(label, index) in labeledNames" :key="index">{{
+              label
+            }}</el-tag>
+          </div>
         </div>
       </el-form-item>
     </el-form>
@@ -167,6 +174,25 @@ export default {
         { key: 'labeled', displayName: 'Labeled' },
         { key: 'labeling', displayName: 'Labeling' }
       ]
+    }
+  },
+  computed: {
+    labeledNames() {
+      if (this.dataForm.id) {
+        let response = []
+        if (this.dataForm.labeledImages.length === 0) {
+          response.push('Not use label')
+          return response
+        }
+        const uniqueLabels = new Set() // Sử dụng Set để lọc các giá trị không trùng nhau
+        this.dataForm.labeledImages.forEach((labeledImage) => {
+          uniqueLabels.add(labeledImage.labelId)
+        })
+        response = [...uniqueLabels] // Chuyển Set thành mảng và gán vào response
+        return response
+      } else {
+        return []
+      }
     }
   },
   watch: {
@@ -359,5 +385,15 @@ export default {
   width: 100%;
   height: 200px;
   background: #ccc;
+}
+.show-image-and-label-edit-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.show-used-label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 </style>

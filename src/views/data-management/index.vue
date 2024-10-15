@@ -137,8 +137,13 @@ export default {
         ids: id
       }
       const { data } = await getDatasetList(newQuery)
-      this.listQuery.ids = data.items[0].labeledImageIds.join(',')
-      await this.getList()
+      if (data.items[0].labeledImageIds.length > 0) {
+        this.listQuery.ids = data.items[0].labeledImageIds.join(',')
+        await this.getList()
+      } else {
+        this.listQuery.ids = 'notImage'
+        await this.getList()
+      }
     },
     async fetchDataSetList(queryDataset) {
       const { data } = await getDatasetList(queryDataset)

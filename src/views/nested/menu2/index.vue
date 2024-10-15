@@ -1,127 +1,103 @@
 <template>
   <div>
-    <div style="padding:30px;">
-      <el-alert :closable="false" title="menu 2" />
+    <h2>Phát Hiện Đối Tượng với COCO-SSD</h2>
+    <input type="file" @change="onFileChange" accept="image/*" />
+    <div v-if="imageSrc">
+      <img
+        :src="imageSrc"
+        id="input-image"
+        @load="detectObjects"
+        alt="Input"
+        style="max-width: 100%;"
+      />
+      <canvas ref="canvas" style="position: absolute; top: 0; left: 0;"></canvas>
     </div>
-    <div id="app">
-      <cropper ref="cropper" class="cropper" :src="data.image.src" />
-      <div class="button-wrapper">
-        <button class="button" @click="$refs.file.click()">
-          <input type="file" ref="file" @change="uploadImage($event)" accept="image/*" />
-          Upload image
-        </button>
-        <button class="button" @click="cropImage">Crop image</button>
-      </div>
-      <div class="cropped-images">
-        <div
-          v-for="(croppedImage, index) in data.croppedImages"
-          :key="index"
-          class="cropped-image"
-        >
-          <img :src="croppedImage.src" alt="Cropped Image" />
-          <p>{{ croppedImage.name }}</p> <!-- Hiển thị tên ngẫu nhiên -->
-        </div>
-      </div>
+    <div v-if="predictions.length">
+      <h3>Kết quả phát hiện:</h3>
+      <ul>
+        <li v-for="(prediction, index) in predictions" :key="index">
+          {{ prediction.class }} - {{ (prediction.score * 100).toFixed(2) }}%
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
-import { Cropper } from 'vue-advanced-cropper'
-import 'vue-advanced-cropper/dist/style.css'
-import faker from 'faker' // Import faker
+import * as cocoSsd from '@tensorflow-models/coco-ssd'
 
 export default {
-  name: 'Menu2',
-  components: {
-    Cropper
-  },
+  name: 'ObjectDetection',
   data() {
     return {
-      data: {
-        image: {
-          src: null,
-          type: 'image/jpg'
-        },
-        croppedImages: []
-      }
+      imageSrc: null,
+      model: null,
+      predictions: []
     }
   },
   methods: {
-    cropImage() {
-      const result = this.$refs.cropper.getResult()
-      const croppedImage = result.canvas.toDataURL(this.data.image.type)
-      const imageName = faker.random.word() // Tạo tên ngẫu nhiên
-      this.data.croppedImages.push({ src: croppedImage, name: imageName })
-      console.log(this.data.croppedImages) // Xem mảng
-    },
-    uploadImage(event) {
-      const { files } = event.target
-      if (files && files[0]) {
-        if (this.data.image.src) {
-          URL.revokeObjectURL(this.data.image.src)
+    onFileChange(e) {
+      const file = e.target.files[0]
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          this.imageSrc = event.target.result
         }
-        const blob = URL.createObjectURL(files[0])
-        this.data.image = {
-          src: blob,
-          type: files[0].type
-        }
-        this.data.croppedImages = []
+        reader.readAsDataURL(file)
       }
-    }
-  },
-  destroyed() {
-    if (this.image.src) {
-      URL.revokeObjectURL(this.image.src)
+    },
+    async loadModel() {
+      if (!this.model) {
+        this.model = await cocoSsd.load()
+        console.log('Mô hình COCO-SSD đã được tải.')
+      }
+    },
+    async detectObjects() {
+      await this.loadModel()
+      const img = this.$refs['input-image'] || document.getElementById('input-image')
+      const canvas = this.$refs.canvas
+      const ctx = canvas.getContext('2d')
+
+      // Đảm bảo hình ảnh đã tải xong
+      if (img.complete) {
+        // Thiết lập kích thước canvas giống hình ảnh
+        canvas.width = img.width
+        canvas.height = img.height
+
+        // Vẽ hình ảnh lên canvas
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+
+        // Phát hiện đối tượng
+        const predictions = await this.model.detect(img)
+        this.predictions = predictions
+
+        // Vẽ bounding boxes
+        predictions.forEach((prediction) => {
+          const [x, y, width, height] = prediction.bbox
+          ctx.strokeStyle = '#00FFFF'
+          ctx.lineWidth = 2
+          ctx.strokeRect(x, y, width, height)
+
+          // Vẽ nhãn
+          ctx.fillStyle = '#00FFFF'
+          ctx.font = '18px Arial'
+          ctx.fillText(
+            `${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`,
+            x,
+            y > 10 ? y - 5 : y + 15
+          )
+        })
+      }
     }
   }
 }
 </script>
 
-<!-- đã có tên cho ảnh được crop -->
-
-<style lang="scss" scoped>
-.cropper {
-  min-height: 300px;
-  width: 100%;
+<style scoped>
+div {
+  position: relative;
 }
-.button-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 17px;
-}
-.button {
-  color: white;
-  font-size: 16px;
-  padding: 10px 20px;
-  width: 100%;
-  background: #151515;
-  cursor: pointer;
-  transition: background 0.5s;
-  border: none;
-  &:not(:last-of-type) {
-    margin-right: 10px;
-  }
-  &:hover {
-    background: #2F2F2F;
-  }
-  input {
-    display: none;
-  }
-}
-.cropped-images {
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-}
-.cropped-image {
-  margin: 10px;
-}
-.cropped-image img {
-  max-width: 100px;
-  max-height: 100px;
-  border: 1px solid #ddd;
-  padding: 5px;
-  background: #fff;
+canvas {
+  position: absolute;
 }
 </style>

@@ -64,7 +64,7 @@
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <span>{{ row.labeledImages }}</span>
+          <el-tag v-for="(label, index) in labeledNames.find((item) => item.id === row.id).data" :key="index">{{ label }}</el-tag>
         </template>
       </el-table-column>
 
@@ -164,6 +164,28 @@ export default {
   },
   data() {
     return {}
+  },
+  computed: {
+    labeledNames() {
+      const response = this.data.map((item) => {
+        return {
+          id: item.id,
+          data: []
+        }
+      })
+      this.data.forEach((item, index) => {
+        if (item.labeledImages.length === 0) {
+          response[index].data.push('Not use label')
+          return
+        }
+        const uniqueLabels = new Set() // Sử dụng Set để lọc các giá trị không trùng nhau
+        item.labeledImages.forEach((labeledImage) => {
+          uniqueLabels.add(labeledImage.labelId)
+        })
+        response[index].data = [...uniqueLabels] // Chuyển Set thành mảng và gán vào response
+      })
+      return response
+    }
   },
   methods: {
     // getSortClass(key) {
