@@ -22,6 +22,7 @@
       :showCreatedAt="showCreatedAt"
       :showCreatedBy="showCreatedBy"
       @update="handleClickButtonUpdate"
+      @assign="handleClickButtonAssign"
       @delete="handleDelete"
       @pagination="getList"
     />
@@ -32,6 +33,12 @@
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
+    <assign-task-modal
+      :visible="visibleAssign"
+      :projectId="propDataItemAssign?.id"
+      @update:visible="handleUpdateVisibleAssign"
+      @update:reload-table="reloadTable"
+    />
   </div>
 </template>
 
@@ -40,6 +47,7 @@
 import Datatable from '@/views/project-management/components/datatable'
 import FilterSearch from '@/views/project-management/components/filter-search'
 import ProjectModal from '@/components/Modal/projectModal'
+import AssignTaskModal from '@/components/Modal/assignTaskModal.vue'
 // import function call api.
 import { getProjectList, deleteProjectById } from '@/api/project-management/project-list'
 export default {
@@ -47,7 +55,8 @@ export default {
   components: {
     Datatable,
     FilterSearch,
-    ProjectModal
+    ProjectModal,
+    AssignTaskModal
   },
   data() {
     return {
@@ -73,8 +82,10 @@ export default {
       showCreatedBy: false,
       downloadLoading: false,
       visible: false,
+      visibleAssign: false,
       isEditModal: false,
-      propDataItem: null
+      propDataItem: null,
+      propDataItemAssign: null
     }
   },
   created() {
@@ -99,9 +110,17 @@ export default {
       this.isEditModal = true
       this.visible = true
     },
+    handleClickButtonAssign(row) {
+      this.propDataItemAssign = row
+      this.visibleAssign = true
+    },
     handleUpdateVisible(newVal) {
       this.propDataItem = null
       this.visible = newVal
+    },
+    handleUpdateVisibleAssign(newVal) {
+      this.propDataItemAssign = null
+      this.visibleAssign = newVal
     },
     handleDelete(row) {
       this.$confirm(

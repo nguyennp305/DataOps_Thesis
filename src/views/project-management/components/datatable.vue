@@ -111,7 +111,7 @@
       <el-table-column
         :label="$t('table.actions')"
         :align="'center'"
-        min-width="200px"
+        min-width="300px"
         clas-name="fixed-width"
       >
         <template slot-scope="{row}">
@@ -120,6 +120,9 @@
           </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">
             {{ $t("table.delete") }}
+          </el-button>
+          <el-button type="warning" size="mini" @click="handleAssign(row)">
+            Assign Task
           </el-button>
         </template>
       </el-table-column>
@@ -164,6 +167,9 @@ export default {
     // },
     handleUpdate(row) {
       this.$emit('update', row)
+    },
+    handleAssign(row) {
+      this.$emit('assign', row)
     },
     handleDelete(row) {
       this.$emit('delete', row)
