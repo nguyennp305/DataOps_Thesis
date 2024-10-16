@@ -10,7 +10,7 @@
       style="width: 100%"
     >
       <el-table-column
-        :label="$t('route.datasetNameData')"
+        :label="$t('route.taskName')"
         width="200px"
         :align="'center'"
       >
@@ -30,67 +30,35 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('table.description')"
+        :label="$t('table.status')"
         min-width="150px"
         max-width="300px"
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
+          <el-tag>
+            {{ row.status }}
+          </el-tag>
         </template>
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.labelGroupName')"
-        min-width="150px"
+        :label="$t('table.startTime')"
         :align="'center'"
+        min-width="150px"
       >
         <template slot-scope="{row}">
-          <div v-if="row.labelGroupIds && row.labelGroupIds.length > 0">
-            <el-tag>
-              {{ row.labelGroupIds.length }} groups
-            </el-tag>
-          </div>
-          <div v-else>
-            <span style="color: red">No groups</span>
-          </div>
+          <span style="color: red">{{ row.startDate }}</span>
         </template>
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.image')"
-        min-width="150px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <div v-if="row.labeledImageIds && row.labeledImageIds.length > 0">
-            <el-tag>
-              {{ row.labeledImageIds.length }} images
-            </el-tag>
-          </div>
-          <div v-else>
-            <span style="color: red">No images</span>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('route.updatedAt')"
+        :label="$t('table.endTime')"
         :align="'center'"
         min-width="150px"
       >
         <template slot-scope="{row}">
-          <span style="color: red">{{ row.updatedAt }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        :label="$t('route.updatedBy')"
-        :align="'center'"
-        min-width="150px"
-      >
-        <template slot-scope="{row}">
-          <span style="color: red">{{ row.updatedBy }}</span>
+          <span style="color: red">{{ row.endDate }}</span>
         </template>
       </el-table-column>
 

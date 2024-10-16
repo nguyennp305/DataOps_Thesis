@@ -63,6 +63,8 @@ export default {
     labelNameData: 'Label Name',
     datasetNameData: 'Dataset Name',
     labelGroupName: 'Label Group Name',
+    taskManagement: 'Task Management',
+    taskName: 'Task Name',
     labelingImage: 'Labeling Image',
     datasetManagement: 'Dataset Management',
     dataManagement: 'Data Management',

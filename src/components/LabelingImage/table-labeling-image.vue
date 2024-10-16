@@ -144,8 +144,8 @@
     </div>
     <div class="update-table-button">
       <el-button
-        type="primary"
-        size="mini"
+        type="warning"
+        size="large"
         @click="handleUpdateLabelInACropperImage"
       >
         {{ $t("route.updateCropperImage") }}

@@ -189,6 +189,15 @@ export const asyncRoutes = [
           title: 'project',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'task-management',
+        component: 'views/project-management/task-management.vue',
+        name: 'TaskManagement',
+        meta: {
+          title: 'taskManagement',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },
