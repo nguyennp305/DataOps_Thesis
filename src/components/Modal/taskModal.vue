@@ -66,8 +66,8 @@
       </el-form-item>
 
       <el-form-item
-        :label="'AssigneeID'"
-        prop="rangeDate"
+        :label="'Assignee'"
+        prop="assignee"
       >
         <el-tag>{{ dataForm.assigneeId || 'Not Assignee' }}</el-tag>
       </el-form-item>
@@ -92,7 +92,7 @@
 
 <script>
 import Modal from '@/components/Commons/modal.vue'
-import { assign, cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
 import { createTask, updateTaskById } from '@/api/project-management/task-list'
 import { UserModule } from '@/store/modules/user'
@@ -156,8 +156,7 @@ export default {
         { key: 'review', displayName: 'Review' },
         { key: 'complete', displayName: 'Complete' },
         { key: 'onhold', displayName: 'On hold' },
-        { key: 'canceled', displayName: 'Canceled' },
-        { key: 'blocked', displayName: 'Blocked' }
+        { key: 'rework', displayName: 'Rework/Redo' }
       ],
       projectByOptions: [],
       totalItemsProjectOptions: 0,

@@ -11,31 +11,70 @@
       ref="dataFormAssignRef"
       :model="dataForm"
       label-position="top"
-      class="labeling-modal-form"
-      >
+      class="assign-task-modal-form"
+    >
       <div class="components-container board">
-    <draggable-assign-task
-      :key="1"
-      :list="list1"
-      :group="group"
-      class="kanban todo"
-      header-text="Todo"
-    />
-    <draggable-assign-task
-      :key="2"
-      :list="list2"
-      :group="group"
-      class="kanban working"
-      header-text="Working"
-    />
-    <draggable-assign-task
-      :key="3"
-      :list="list3"
-      :group="group"
-      class="kanban done"
-      header-text="Done"
-    />
-  </div>
+        <draggable-assign-task
+          :key="1"
+          :list="list1"
+          :group="group"
+          :members="membersInProject"
+          class="kanban todo"
+          header-text="To do"
+          list-name="todo"
+          @update-assignee="handleUpdateAssignee"
+        />
+        <draggable-assign-task
+          :key="2"
+          :list="list2"
+          :group="group"
+          :members="membersInProject"
+          class="kanban inprogress"
+          header-text="In progress"
+          list-name="inprogress"
+          @update-assignee="handleUpdateAssignee"
+        />
+        <draggable-assign-task
+          :key="3"
+          :list="list3"
+          :group="group"
+          :members="membersInProject"
+          class="kanban review"
+          header-text="Review"
+          list-name="review"
+          @update-assignee="handleUpdateAssignee"
+        />
+        <draggable-assign-task
+          :key="4"
+          :list="list4"
+          :group="group"
+          :members="membersInProject"
+          class="kanban complete"
+          header-text="Complete"
+          list-name="complete"
+          @update-assignee="handleUpdateAssignee"
+        />
+        <draggable-assign-task
+          :key="5"
+          :list="list5"
+          :group="group"
+          :members="membersInProject"
+          class="kanban onhold"
+          header-text="On hold"
+          list-name="onhold"
+          @update-assignee="handleUpdateAssignee"
+        />
+        <draggable-assign-task
+          :key="6"
+          :list="list6"
+          :group="group"
+          :members="membersInProject"
+          class="kanban rework"
+          header-text="Rework/Redo"
+          list-name="reword"
+          @update-assignee="handleUpdateAssignee"
+        />
+      </div>
     </el-form>
   </modal>
 </template>
@@ -44,6 +83,8 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import DraggableAssignTask from '@/components/DraggableKanban/draggableAssignTask.vue'
+import { getTaskList } from '@/api/project-management/task-list'
+import { getProjectList } from '@/api/project-management/project-list'
 
 const defaultDataForm = {}
 
@@ -68,30 +109,32 @@ export default {
       listLoading: true,
       tableKey: 0,
       // draggable
-      group: 'mission',
-      list1: [
-        { name: 'Mission', id: 1 },
-        { name: 'Mission', id: 2 },
-        { name: 'Mission', id: 3 },
-        { name: 'Mission', id: 4 }
-      ],
-      list2: [
-        { name: 'Mission', id: 5 },
-        { name: 'Mission', id: 6 },
-        { name: 'Mission', id: 7 }
-      ],
-      list3: [
-        { name: 'Mission', id: 8 },
-        { name: 'Mission', id: 9 },
-        { name: 'Mission', id: 10 }
-      ]
+      group: 'assign',
+      list1: [],
+      list2: [],
+      list3: [],
+      list4: [],
+      list5: [],
+      list6: [],
+      membersInProject: []
     }
   },
   watch: {
     projectId: {
       handler(newVal) {
         if (newVal) {
-          console.log('newVal', newVal)
+          const queryTask = {
+            page: 1,
+            size: 100000,
+            projectId: newVal
+          }
+          this.fetchDataGetTaskByProjectId(queryTask)
+          const queryProject = {
+            page: 1,
+            size: 10,
+            ids: newVal
+          }
+          this.fetchProjectById(queryProject)
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
         }
@@ -101,6 +144,39 @@ export default {
     }
   },
   methods: {
+    async fetchDataGetTaskByProjectId(queryTask) {
+      const { data } = await getTaskList(queryTask)
+      // Lặp qua từng task và phân loại theo status
+      data.items.forEach((task) => {
+        switch (task.status) {
+          case 'todo':
+            this.list1.push(task)
+            break
+          case 'inprogress':
+            this.list2.push(task)
+            break
+          case 'review':
+            this.list3.push(task)
+            break
+          case 'complete':
+            this.list4.push(task)
+            break
+          case 'onhold':
+            this.list5.push(task)
+            break
+          case 'rework':
+            this.list6.push(task)
+            break
+          default:
+            // Nếu status không khớp với các trường hợp trên thì bỏ qua
+            break
+        }
+      })
+    },
+    async fetchProjectById(queryProject) {
+      const { data } = await getProjectList(queryProject)
+      this.membersInProject = data.items[0].members
+    },
     clearValidate() {
       this.$nextTick(() => {
         this.$refs.dataFormAssignRef.clearValidate()
@@ -108,6 +184,13 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.list1 = []
+      this.list2 = []
+      this.list3 = []
+      this.list4 = []
+      this.list5 = []
+      this.list6 = []
+      this.membersInProject = []
       this.clearValidate()
       this.$emit('update:visible', false)
     },
@@ -115,13 +198,48 @@ export default {
       this.handleModalClose()
     },
     handleModalConfirm() {
-      this.updateLabelingImageModal()
+      this.updateAssignTaskModal()
     },
-    updateLabelingImageModal() {
-      console.log('this.dataForm', this.dataForm)
+    updateAssignTaskModal() {
+      console.log('list1 (To do):', this.list1)
+      console.log('list2 (In progress):', this.list2)
+      console.log('list3 (Review):', this.list3)
+      console.log('list4 (Complete):', this.list4)
+      console.log('list5 (On hold):', this.list5)
+      console.log('list6 (Rework/Redo):', this.list6)
     },
     updateTableKey(newVal) {
       this.tableKey = newVal
+    },
+    handleUpdateAssignee(listName, taskId, newAssigneeId) {
+      let targetList
+      switch (listName) {
+        case 'todo':
+          targetList = this.list1
+          break
+        case 'inprogress':
+          targetList = this.list2
+          break
+        case 'review':
+          targetList = this.list3
+          break
+        case 'complete':
+          targetList = this.list4
+          break
+        case 'onhold':
+          targetList = this.list5
+          break
+        case 'rework':
+          targetList = this.list6
+          break
+        default:
+          return
+      }
+
+      const task = targetList.find((t) => t.id === taskId)
+      if (task) {
+        task.assigneeId = newAssigneeId
+      }
     }
   }
 }
@@ -135,15 +253,33 @@ export default {
     }
   }
 
-  &.working {
+  &.inprogress {
     .board-column-header {
       background: #f9944a;
     }
   }
 
-  &.done {
+  &.review {
+    .board-column-header {
+      background: #ffd700;
+    }
+  }
+
+  &.complete {
     .board-column-header {
       background: #2ac06d;
+    }
+  }
+
+  &.onhold {
+    .board-column-header {
+      background: #9370db;
+    }
+  }
+
+  &.rework {
+    .board-column-header {
+      background: #ff8c00;
     }
   }
 }
@@ -151,11 +287,18 @@ export default {
 
 <style lang="scss" scoped>
 .board {
-  width: 1000px;
+  width: 100%;
   margin-left: 20px;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  column-gap: 20px;
   flex-direction: row;
   align-items: flex-start;
+}
+.assign-task-modal-form {
+  max-height: 60vh;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 </style>
