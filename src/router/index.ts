@@ -252,6 +252,15 @@ export const asyncRoutes: RouteConfig[] = [
           title: 'taskManagement',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'report-management',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/project-management/report-management.vue'),
+        name: 'ReportManagement',
+        meta: {
+          title: 'reportManagement',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },

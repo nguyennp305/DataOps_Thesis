@@ -2,7 +2,6 @@
 #### Sửa lại các cái dropdown trong filter-search
 #### trong table cuar modal gan nhan, chua cos description cho tung item
 #### trong model của modal data, thêm 1 nút chi tiết.
-#### assignTaskModal chưa ghép api. mới show ra đc data cần thiết để submit
 
 ## Project setup
 
