@@ -2,7 +2,8 @@
 #### Sửa lại các cái dropdown trong filter-search
 #### trong table cuar modal gan nhan, chua cos description cho tung item
 #### trong model của modal data, thêm 1 nút chi tiết.
-#### tối nay bắt đầu làm gán nhãn
+#### assignTaskModal chưa ghép api. mới show ra đc data cần thiết để submit
+
 ## Project setup
 
 With [yarn](https://yarnpkg.com/lang/en/) or [npm](https://www.npmjs.com/get-npm)

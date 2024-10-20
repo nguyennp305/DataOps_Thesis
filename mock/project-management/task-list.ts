@@ -75,3 +75,21 @@ export const updateTaskById = async(req: Request, res: Response) => {
       })
     })
 }
+
+export const assignTaskByProjectId = async(req: Request, res: Response) => {
+  const data = req.body
+  const url = BASE_URL + 'task/assign'
+  await axios.post(url, data)
+    .then(response => {
+      return res.json({
+        code: 20000,
+        data: response.data
+      })
+    })
+    .catch(err => {
+      return res.json({
+        code: 50006,
+        message: err.response.data.message
+      })
+    })
+}

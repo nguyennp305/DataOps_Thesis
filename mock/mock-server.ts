@@ -83,6 +83,7 @@ router.get('/tasks', api.getTaskList)
 router.delete('/tasks/:id', api.deleteTaskById)
 router.post('/tasks', api.createTask)
 router.put('/tasks/:id', api.updateTaskById)
+router.post('/tasks/assign', api.assignTaskByProjectId)
 // labeling-management:
 // label-data:
 router.get('/labels-data', api.getLabelDataList)

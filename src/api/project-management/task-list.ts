@@ -27,3 +27,10 @@ export const updateTaskById = (data: any) =>
     method: 'put',
     data
   })
+
+export const assignTaskByProjectId = (data: any) =>
+  request({
+    url: '/tasks/assign',
+    method: 'post',
+    data
+  })

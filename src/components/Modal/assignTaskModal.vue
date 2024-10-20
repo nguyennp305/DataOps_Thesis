@@ -83,8 +83,10 @@
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import DraggableAssignTask from '@/components/DraggableKanban/draggableAssignTask.vue'
-import { getTaskList } from '@/api/project-management/task-list'
+import { getTaskList, assignTaskByProjectId } from '@/api/project-management/task-list'
+
 import { getProjectList } from '@/api/project-management/project-list'
+import moment from 'moment'
 
 const defaultDataForm = {}
 
@@ -197,16 +199,68 @@ export default {
     handleModalCancel() {
       this.handleModalClose()
     },
-    handleModalConfirm() {
-      this.updateAssignTaskModal()
+    async handleModalConfirm() {
+      await this.updateAssignTaskModal()
     },
-    updateAssignTaskModal() {
-      console.log('list1 (To do):', this.list1)
-      console.log('list2 (In progress):', this.list2)
-      console.log('list3 (Review):', this.list3)
-      console.log('list4 (Complete):', this.list4)
-      console.log('list5 (On hold):', this.list5)
-      console.log('list6 (Rework/Redo):', this.list6)
+    async updateAssignTaskModal() {
+      // Tạo một mảng tổng hợp từ các danh sách và thay đổi status
+      const combinedList = [
+        ...this.list1.map((item) => ({
+          ...item,
+          status: 'todo',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        })),
+        ...this.list2.map((item) => ({
+          ...item,
+          status: 'inprogress',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        })),
+        ...this.list3.map((item) => ({
+          ...item,
+          status: 'review',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        })),
+        ...this.list4.map((item) => ({
+          ...item,
+          status: 'complete',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        })),
+        ...this.list5.map((item) => ({
+          ...item,
+          status: 'onhold',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        })),
+        ...this.list6.map((item) => ({
+          ...item,
+          status: 'rework',
+          startDate: item.startDate ? this.convertToISOString(item.startDate) : null,
+          endDate: item.endDate ? this.convertToISOString(item.endDate) : null
+        }))
+      ]
+      const assignData = {
+        projectId: this.projectId,
+        tasks: combinedList
+      }
+      await assignTaskByProjectId(assignData)
+        .then((res) => {
+          console.log('res', res)
+          this.$notify({
+            title: 'Success',
+            message: 'Update Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.$emit('update:reload-table')
+          this.$emit('update:visible', false)
+        })
+        .catch((err) => {
+          console.log('err', err)
+        })
     },
     updateTableKey(newVal) {
       this.tableKey = newVal
@@ -240,6 +294,12 @@ export default {
       if (task) {
         task.assigneeId = newAssigneeId
       }
+    },
+    convertToISOString(dateString) {
+      const formattedDate = moment(dateString)
+        .format('DD/MM/yyyy HH:mm:ss')
+        .toString()
+      return formattedDate
     }
   }
 }
