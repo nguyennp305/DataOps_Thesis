@@ -43,7 +43,7 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
+      default: 'edit in here!'
     },
     id: {
       type: String,

@@ -71,14 +71,13 @@
       <el-form-item :label="'Data Report'" prop="report">
         <div class="components-report-tinymce">
           <report-project-tinymce
-            v-if="dataForm.data"
             :value="dataForm.data"
             :id="dataForm.id"
             :height="400"
             class="report-project-tinymce"
             @input="updateDataReportContent"
           />
-          <div class="editor-content" v-html="dataForm.data" />
+          <div class="editor-content" v-html="dataForm.data"></div>
         </div>
       </el-form-item>
     </el-form>
@@ -90,11 +89,11 @@ import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import { getProjectList } from '@/api/project-management/project-list'
 import {
-  createLabelData,
-  updateLabelDataById
-} from '@/api/labeling-management/label-data'
+  createReport,
+  updateReportById
+} from '@/api/project-management/report-list'
 import { UserModule } from '@/store/modules/user'
-import ReportProjectTinymce from '@/components/Tinymce/reportProjectTinymce.vue'
+import ReportProjectTinymce from '@/components/Tinymce/reportProjectTinymce'
 
 const defaultDataForm = {
   name: '',
@@ -254,52 +253,51 @@ export default {
       }
     },
     updateReportProjectModal() {
-      // this.$refs.dataFormRef.validate(async(valid) => {
-      //   if (valid) {
-      //     this.dataForm.updatedBy = UserModule.id
-      //     await updateLabelDataById(this.dataForm)
-      //       .then((res) => {
-      //         console.log('res', res)
-      //         this.$notify({
-      //           title: 'Success',
-      //           message: 'Update Successfully',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //         this.$emit('update:reload-table')
-      //         this.$emit('update:visible', false)
-      //       })
-      //       .catch((err) => {
-      //         console.log('err', err)
-      //       })
-      //   } else {
-      //     console.log('Form update LabelData is invalid')
-      //   }
-      // })
+      this.$refs.dataFormRef.validate(async(valid) => {
+        if (valid) {
+          await updateReportById(this.dataForm)
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Update Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form update ReportProject is invalid')
+        }
+      })
     },
     createReportProjectModal() {
-      // this.$refs.dataFormRef.validate(async(valid) => {
-      //   if (valid) {
-      //     this.dataForm.createdBy = UserModule.id
-      //     await createLabelData(this.dataForm)
-      //       .then((res) => {
-      //         console.log('res', res)
-      //         this.$notify({
-      //           title: 'Success',
-      //           message: 'Create Successfully',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //         this.$emit('update:reload-table')
-      //         this.$emit('update:visible', false)
-      //       })
-      //       .catch((err) => {
-      //         console.log('err', err)
-      //       })
-      //   } else {
-      //     console.log('Form create LabelData is invalid')
-      //   }
-      // })
+      this.$refs.dataFormRef.validate(async(valid) => {
+        if (valid) {
+          this.dataForm.createdBy = UserModule.id
+          await createReport(this.dataForm)
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Create Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form create ReportProject is invalid')
+        }
+      })
     },
     updateDataReportContent(content) {
       this.dataForm.data = content
