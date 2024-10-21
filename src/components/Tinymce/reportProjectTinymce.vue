@@ -4,17 +4,9 @@
     class="tinymce-container"
     :style="{width: containerWidth}"
   >
-    <tinymce-editor
-      :id="id"
-      v-model="tinymceContent"
-      :init="initOptions"
-    />
+    <tinymce-editor :id="id" v-model="tinymceContent" :init="initOptions" />
     <div class="editor-custom-btn-container">
-      <editor-image-upload
-        :color="uploadButtonColor"
-        class="editor-upload-btn"
-        @success-callback="imageSuccessCBK"
-      />
+      <input type="file" @change="importWordFile" accept=".docx" />
     </div>
   </div>
 </template>
@@ -29,16 +21,16 @@ import 'tinymce/plugins/code'
 import 'tinymce/plugins/image'
 import 'tinymce/plugins/link'
 import TinymceEditor from '@tinymce/tinymce-vue'
-import EditorImageUpload from './components/EditorImage.vue'
 import { plugins, toolbar } from './config'
+import mammoth from 'mammoth'
 
-const defaultId = () => 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
+const defaultId = () =>
+  'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
 
 export default {
   name: 'ReportProjectTinymce',
   components: {
-    TinymceEditor,
-    EditorImageUpload
+    TinymceEditor
   },
   props: {
     value: {
@@ -78,8 +70,7 @@ export default {
         ja: 'ja',
         ko: 'ko_KR',
         it: 'it'
-      },
-      uploadButtonColor: 'themeColor' // Replace with actual logic to get theme
+      }
     }
   },
   computed: {
@@ -154,11 +145,21 @@ export default {
     }
   },
   methods: {
-    imageSuccessCBK(arr) {
-      const tinymce = window.tinymce.get(this.id)
-      arr.forEach(v => {
-        tinymce.insertContent(`<img class="wscnph" src="${v.url}" >`)
-      })
+    async importWordFile(event) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onload = async(e) => {
+        const arrayBuffer = e.target.result
+        try {
+          const result = await mammoth.convertToHtml({ arrayBuffer })
+          this.tinymceContent = result.value // Đặt nội dung vào editor
+        } catch (error) {
+          console.error('Lỗi khi chuyển đổi file Word:', error)
+        }
+      }
+      reader.readAsArrayBuffer(file)
     }
   }
 }
@@ -193,5 +194,13 @@ export default {
 textarea {
   visibility: hidden;
   z-index: -1;
+}
+
+input::file-selector-button {
+  font-weight: bold;
+  color: dodgerblue;
+  padding: 0.3em;
+  border: thin solid grey;
+  border-radius: 3px;
 }
 </style>

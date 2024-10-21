@@ -325,7 +325,7 @@ export default {
     min-width: 600px;
     margin-top: 7rem;
     overflow-y: auto;
-    max-height: 400px;
+    max-height: 288px;
   }
 }
 </style>
