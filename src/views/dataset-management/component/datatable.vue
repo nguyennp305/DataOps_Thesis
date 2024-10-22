@@ -118,7 +118,7 @@
       <el-table-column
         :label="$t('table.actions')"
         :align="'center'"
-        min-width="200px"
+        min-width="300px"
         clas-name="fixed-width"
       >
         <template slot-scope="{row}">
@@ -127,6 +127,9 @@
           </el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">
             {{ $t("table.delete") }}
+          </el-button>
+          <el-button v-waves type="warning" size="mini" icon="el-icon-download">
+            Generate data
           </el-button>
         </template>
       </el-table-column>

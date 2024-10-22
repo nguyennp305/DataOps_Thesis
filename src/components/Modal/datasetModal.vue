@@ -53,6 +53,22 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item :label="'Label Type'" prop="labelType">
+        <el-select
+          v-model="dataForm.labelType"
+          :placeholder="'Label Type'"
+          filterable
+          clearable
+        >
+          <el-option
+            v-for="item in isLabelTypeOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item :label="$t('route.labelGroupName')" prop="labelGroupIds">
         <el-select
           v-model="labelGroupDataListSelected"
@@ -142,6 +158,7 @@ const defaultDataForm = {
   name: '',
   description: '',
   projectId: null,
+  labelType: null,
   labelGroupIds: [],
   labeledImageIds: [],
   id: null
@@ -185,6 +202,13 @@ export default {
             message: 'Project is required',
             trigger: 'blur'
           }
+        ],
+        labelType: [
+          {
+            required: true,
+            message: 'Label Type is required',
+            trigger: 'blur'
+          }
         ]
       },
       projectByOptions: [],
@@ -206,7 +230,11 @@ export default {
       listQueryLabelImageOptions: {
         page: 1,
         size: 10
-      }
+      },
+      isLabelTypeOptions: [
+        { key: 'classification', displayName: 'Classification' },
+        { key: 'objectDetection', displayName: 'Object Detection' }
+      ]
     }
   },
   watch: {
@@ -415,6 +443,7 @@ export default {
             labeledImageIds: this.imageDataListSelected,
             name: this.dataForm.name,
             projectId: this.dataForm.projectId,
+            labelType: this.dataForm.labelType,
             updatedBy: UserModule.id
           }
           await updateDatasetById(dataUpdateDataset)
@@ -447,6 +476,7 @@ export default {
             labeledImageIds: this.imageDataListSelected,
             name: this.dataForm.name,
             projectId: this.dataForm.projectId,
+            labelType: this.dataForm.labelType,
             createdBy: UserModule.id
           }
           await createDataset(dataCreateDataset)

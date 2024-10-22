@@ -61,7 +61,8 @@ export default {
         name: undefined,
         description: undefined,
         createdBy: undefined,
-        projectId: undefined
+        projectId: undefined,
+        labelType: undefined
       },
       showCreatedAt: false,
       showCreatedBy: false,

@@ -10,7 +10,8 @@ export const getDatasetList = async(req: Request, res: Response) => {
     name,
     description,
     projectId,
-    ids
+    ids,
+    labelType
   } = req.query
   const url = BASE_URL + 'dataset'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
@@ -25,6 +26,9 @@ export const getDatasetList = async(req: Request, res: Response) => {
   }
   if (ids) {
     params += `&ids=${ids}`
+  }
+  if (labelType) {
+    params += `&labelType=${labelType}`
   }
   const response = await axios.get(url + params)
   return res.json({

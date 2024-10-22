@@ -64,6 +64,21 @@
           </div>
         </el-select>
       </labeling-slot>
+
+      <labeling-slot :label="'Label Type'">
+        <el-select
+          v-model="localListQuery.labelType"
+          :placeholder="'Label Type'"
+          clearable
+        >
+          <el-option
+            v-for="item in isLabelTypeOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+        </el-select>
+      </labeling-slot>
     </div>
 
     <div class="portlet-filter_action">
@@ -144,7 +159,11 @@ export default {
       listQueryProjectOptions: {
         page: 1,
         size: 10
-      }
+      },
+      isLabelTypeOptions: [
+        { key: 'classification', displayName: 'Classification' },
+        { key: 'objectDetection', displayName: 'Object Detection' }
+      ]
     }
   },
   watch: {
