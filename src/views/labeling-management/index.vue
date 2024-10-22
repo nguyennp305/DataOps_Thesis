@@ -29,6 +29,7 @@
           </div>
         </el-select>
       </labeling-slot>
+      <div v-if="datasetInfo && datasetId">Label type: {{ datasetInfo.labelType === 'objectDetection' ? 'Object Detection' : 'Classification' }}</div>
     </div>
     <div v-if="datasetId">
       <filter-search
@@ -53,13 +54,24 @@
         @pagination="getList"
       />
     </div>
-    <labeling-image-modal
+    <labeling-image-object-detection-modal
+      v-if="datasetInfo && datasetId && datasetInfo.labelType === 'objectDetection'"
       :visible="visible"
       :data="propDataItem"
       :dataset="datasetInfo"
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
+
+    <labeling-image-classification-modal
+      v-if="datasetInfo && datasetId && datasetInfo.labelType === 'classification'"
+      :visible="visible"
+      :data="propDataItem"
+      :dataset="datasetInfo"
+      @update:visible="handleUpdateVisible"
+      @update:reload-table="reloadTable"
+    />
+
   </div>
 </template>
 
@@ -67,7 +79,8 @@
 // import component
 import Datatable from '@/views/labeling-management/component/labeling-image/datatable'
 import FilterSearch from '@/views/labeling-management/component/labeling-image/filter-search'
-import LabelingImageModal from '@/components/Modal/labelingImageModal'
+import LabelingImageObjectDetectionModal from '@/components/Modal/labelingImageObjectDetectionModal'
+import LabelingImageClassificationModal from '@/components/Modal/labelingImageClassificationModal'
 import LabelingSlot from '@/components/Commons/labeling-slot'
 // import function call api.
 // import { getLabelDataList } from '@/api/labeling-management/label-data'
@@ -79,7 +92,8 @@ export default {
   components: {
     Datatable,
     FilterSearch,
-    LabelingImageModal,
+    LabelingImageObjectDetectionModal,
+    LabelingImageClassificationModal,
     LabelingSlot
   },
   data() {
@@ -208,6 +222,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.portlet-filter {
+  display: flex;
+  flex-wrap: nowrap;
+  column-gap: 20px;
+  font-weight: 600;
+  color: red;
+}
 .field-label {
   vertical-align: middle;
 }

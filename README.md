@@ -2,6 +2,7 @@
 #### Sửa lại các cái dropdown trong filter-search
 #### trong table cuar modal gan nhan, chua cos description cho tung item
 #### trong model của modal data, thêm 1 nút chi tiết.
+#### chưa làm cách lưu label = classification  ([thêm labelIdClassification: String] vào data-controller)
 
 ## Project setup
 
