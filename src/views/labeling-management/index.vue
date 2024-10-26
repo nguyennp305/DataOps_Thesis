@@ -29,7 +29,7 @@
           </div>
         </el-select>
       </labeling-slot>
-      <div v-if="datasetInfo && datasetId">Label type: {{ datasetInfo.labelType === 'objectDetection' ? 'Object Detection' : 'Classification' }}</div>
+      <div v-if="datasetInfo && datasetId">Label type: {{ datasetInfo?.labelType === 'objectDetection' ? 'Object Detection' : 'Classification' }}</div>
     </div>
     <div v-if="datasetId">
       <filter-search
@@ -50,13 +50,13 @@
         :listQuery="listQuery"
         :showCreatedAt="showCreatedAt"
         :showCreatedBy="showCreatedBy"
-        :name-type-label="datasetInfo.labelType === 'objectDetection' ? 'Label Object Detection' : 'Label Classification'"
+        :name-type-label="datasetInfo?.labelType === 'objectDetection' ? 'Label Object Detection' : 'Label Classification'"
         @update="handleClickButtonUpdate"
         @pagination="getList"
       />
     </div>
     <labeling-image-object-detection-modal
-      v-if="datasetInfo && datasetId && datasetInfo.labelType === 'objectDetection'"
+      v-if="datasetInfo && datasetId && datasetInfo?.labelType === 'objectDetection'"
       :visible="visible"
       :data="propDataItem"
       :dataset="datasetInfo"
@@ -65,7 +65,7 @@
     />
 
     <labeling-image-classification-modal
-      v-if="datasetInfo && datasetId && datasetInfo.labelType === 'classification'"
+      v-if="datasetInfo && datasetId && datasetInfo?.labelType === 'classification'"
       :visible="visible"
       :data="propDataItem"
       :dataset="datasetInfo"

@@ -3,6 +3,7 @@
     :title="$t('table.label')"
     :visible.sync="visible"
     :width="'90%'"
+    :confirm-disabled="confirmDisabledButton"
     @close="handleModalClose"
     @cancel="handleModalCancel"
     @confirm="handleModalConfirm"
@@ -39,6 +40,7 @@
           :tableKey="tableKey"
           :dataset="datasetInfo"
           @update="handleUpdateLabelingImageInTable"
+          @update:confirm-disabled-button="handleUpdateConfirmDisabledButton"
         />
       </el-form-item>
 
@@ -122,8 +124,10 @@ export default {
       dataSubmitLabelingImage: {
         dataId: null,
         labeledImages: [],
-        status: null
-      }
+        status: null,
+        labeledIdClassification: null
+      },
+      confirmDisabledButton: true
     }
   },
   watch: {
@@ -159,6 +163,7 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.confirmDisabledButton = true
       this.datasetInfo = null
       this.clearValidate()
       this.$emit('update:visible', false)
@@ -204,6 +209,9 @@ export default {
     },
     handleUpdateLabelingImageComponent(data) {
       this.dataForm.labeledImages.push(data)
+    },
+    handleUpdateConfirmDisabledButton(newVal) {
+      this.confirmDisabledButton = newVal
     }
   }
 }

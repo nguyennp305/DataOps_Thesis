@@ -298,6 +298,7 @@ export default {
     },
     handleUpdateLabelInACropperImage() {
       this.$emit('update', this.labeledImagesDataLocal)
+      this.$emit('update:confirm-disabled-button', false)
     },
     reset() {
       this.$refs.cropperShowTable.reset()

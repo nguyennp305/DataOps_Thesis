@@ -9,7 +9,7 @@
     <slot></slot>
     <template v-slot:footer>
       <el-button @click="handleCancel">{{ $t('table.cancel') }}</el-button>
-      <el-button type="primary" @click="handleConfirm">{{ $t('table.confirm') }}</el-button>
+      <el-button type="primary" @click="handleConfirm" :disabled="confirmDisabled">{{ $t('table.confirm') }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -31,6 +31,10 @@ export default {
       default: false
     },
     center: {
+      type: Boolean,
+      default: false
+    },
+    confirmDisabled: {
       type: Boolean,
       default: false
     }
