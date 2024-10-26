@@ -14,22 +14,69 @@
       label-position="top"
       class="labeling-modal-form"
     >
-      <el-form-item :label="$t('login.email')" prop="email">
-        <el-input v-model="dataForm.email" :placeholder="$t('login.email')" />
-      </el-form-item>
-
-      <el-form-item :label="$t('route.enterpriseName')" prop="name">
+      <el-form-item :label="$t('route.labelNameData')" prop="name">
         <el-input
           v-model="dataForm.name"
-          :placeholder="$t('route.enterpriseName')"
+          :placeholder="$t('route.labelNameData')"
+          disabled
         />
       </el-form-item>
 
-      <el-form-item :label="$t('table.description')" prop="description">
-        <el-input
-          v-model="dataForm.description"
-          :placeholder="$t('table.description')"
-        />
+      <el-form-item :label="$t('table.label')" prop="label">
+        <div class="label-classification-content">
+          <div>
+            <img
+              v-if="dataForm.imageUrl"
+              :src="dataForm.imageUrl"
+              alt="Label Image"
+              class="css-and-hover-image"
+            />
+          </div>
+          <div class="label-classification-content-right">
+            <el-select
+              v-model="dataForm.labeledIdClassification"
+              :placeholder="$t('route.labelNameData')"
+              multiple
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in labelDataOptions"
+                :key="item.key"
+                :label="item.displayName"
+                :value="item.key"
+              />
+              <div class="component-add-items-to-list-select">
+                <el-button
+                  size="mini"
+                  type="primary"
+                  :disabled="
+                    totalItemsLabelDataOptions === labelDataOptions.length
+                  "
+                  @click="handleAddLabelsData"
+                >
+                  Add Items
+                </el-button>
+                <span>Total: {{ totalItemsLabelDataOptions }}</span>
+              </div>
+            </el-select>
+          </div>
+        </div>
+      </el-form-item>
+
+      <el-form-item :label="$t('table.status')" prop="status">
+        <el-select
+          v-model="dataForm.status"
+          :placeholder="$t('table.status')"
+          clearable
+        >
+          <el-option
+            v-for="item in isStatusOptions"
+            :key="item.key"
+            :label="item.displayName"
+            :value="item.key"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
   </modal>
@@ -38,16 +85,21 @@
 <script>
 import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
-import {
-  createEnterprise,
-  updateEnterpriseById
-} from '@/api/organization/enterprise'
+import { getLabelGroupList } from '@/api/labeling-management/label-group'
+import { getLabelDataList } from '@/api/labeling-management/label-data'
+import axios from 'axios'
 
 const defaultDataForm = {
-  name: '',
-  email: '',
+  // datasetId: null,
   description: '',
-  id: null
+  id: null,
+  imageUrl: null,
+  labeledImages: [],
+  labeledIdClassification: [],
+  name: '',
+  projectId: null,
+  status: 'notLabel',
+  updatedBy: null
 }
 
 export default {
@@ -66,33 +118,55 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    dataset: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
       dataForm: cloneDeep(defaultDataForm),
       rules: {
-        name: [
+        status: [
           {
             required: true,
-            message: 'Name Enterprise is required',
-            trigger: 'blur'
-          }
-        ],
-        email: [
-          {
-            required: true,
-            message: 'Email Enterprise is required',
+            message: 'Status is required',
             trigger: 'blur'
           }
         ]
       },
-      rolesTypeOptions: []
+      isStatusOptions: [
+        { key: 'notLabel', displayName: 'Not label' },
+        { key: 'labeled', displayName: 'Labeled' },
+        { key: 'labeling', displayName: 'Labeling' }
+      ],
+      dataSubmitLabelingImage: {
+        dataId: null,
+        labeledImages: [],
+        status: null,
+        labeledIdClassification: []
+      },
+      labelDataOptions: [],
+      totalItemsLabelDataOptions: 0,
+      listQueryLabelDataOptions: {
+        page: 1,
+        size: 10,
+        ids: null
+      }
     }
   },
   watch: {
     data: {
       handler(newVal) {
+        if (this.dataset) {
+          const newQuery = {
+            page: 1,
+            size: 10,
+            ids: this.dataset.labelGroupIds.join(',') // Tạo mảng mới
+          }
+          this.fetchDataGetLabelGroupData(newQuery)
+        }
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
         } else {
@@ -101,6 +175,19 @@ export default {
         this.clearValidate()
       },
       deep: true
+    },
+    dataset: {
+      handler(newVal) {
+        console.log('dataset', newVal)
+        const newQuery = {
+          page: 1,
+          size: 10,
+          ids: newVal.labelGroupIds.join(',') // Tạo mảng mới
+        }
+        this.fetchDataGetLabelGroupData(newQuery)
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -111,36 +198,86 @@ export default {
     },
     handleModalClose() {
       this.dataForm = cloneDeep(defaultDataForm)
+      this.dataSubmitLabelingImage = {
+        dataId: null,
+        labeledImages: [],
+        status: null,
+        labeledIdClassification: []
+      }
+      this.labelDataOptions = []
+      this.totalItemsLabelDataOptions = 0
+      this.listQueryLabelDataOptions = {
+        page: 1,
+        size: 10,
+        ids: null
+      }
       this.clearValidate()
       this.$emit('update:visible', false)
     },
     handleModalCancel() {
-      this.$emit('update:visible', false)
+      this.handleModalClose()
     },
     handleModalConfirm() {
       this.updateLabelingImageModal()
     },
     updateLabelingImageModal() {
-      // this.$refs.dataFormRef.validate(async(valid) => {
-      //   if (valid) {
-      //     await updateEnterpriseById(this.dataForm)
-      //       .then((res) => {
-      //         this.$notify({
-      //           title: 'Success',
-      //           message: 'Update Successfully',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //         this.$emit('update:reload-table')
-      //         this.$emit('update:visible', false)
-      //       })
-      //       .catch((err) => {
-      //         console.log('err', err)
-      //       })
-      //   } else {
-      //     console.log('Form update is invalid')
-      //   }
-      // })
+      const BASE_URL = 'http://localhost:8089/api/'
+      this.$refs.dataFormRef.validate(async(valid) => {
+        if (valid) {
+          this.dataSubmitLabelingImage.dataId = this.dataForm.id
+          this.dataSubmitLabelingImage.status = this.dataForm.status
+          this.dataSubmitLabelingImage.labeledIdClassification =
+            this.dataForm.labeledIdClassification
+          await axios
+            .post(BASE_URL + 'data/crop-label', this.dataSubmitLabelingImage)
+            .then((res) => {
+              console.log('res', res)
+              this.$notify({
+                title: 'Success',
+                message: 'Label Successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('update:reload-table')
+              this.$emit('update:visible', false)
+            })
+            .catch((err) => {
+              console.log('err', err)
+            })
+        } else {
+          console.log('Form update is invalid')
+        }
+      })
+    },
+    async fetchDataGetLabelGroupData(queryLabelData) {
+      const { data } = await getLabelGroupList(queryLabelData)
+      const labelIdsSet = new Set()
+      data.items.forEach((item) => {
+        item.labelIds.forEach((id) => labelIdsSet.add(id))
+      })
+      this.listQueryLabelDataOptions.ids = Array.from(labelIdsSet).join(',')
+      await this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
+    },
+    async fetchDataGetLabelData(queryLabelData) {
+      const { data } = await getLabelDataList(queryLabelData)
+      const newArray = data.items.map((item) => ({
+        key: item.id,
+        displayName: item.name
+      }))
+      // Kiểm tra và chỉ thêm những item chưa tồn tại
+      newArray.forEach((newItem) => {
+        const isExist = this.labelDataOptions.some(
+          (existingItem) => existingItem.key === newItem.key
+        )
+        if (!isExist) {
+          this.labelDataOptions.push(newItem)
+        }
+      })
+      this.totalItemsLabelDataOptions = data.total
+    },
+    async handleAddLabelsData() {
+      this.listQueryLabelDataOptions.page += 1
+      await this.fetchDataGetLabelData(this.listQueryLabelDataOptions)
     }
   }
 }
@@ -150,5 +287,24 @@ export default {
 .labeling-modal-form {
   max-height: 60vh;
   overflow-y: auto;
+
+  .css-and-hover-image {
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    transition: transform 0.3s ease;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .label-classification-content {
+    display: flex;
+    column-gap: 2rem;
+    .label-classification-content-right {
+      flex: 1;
+    }
+  }
 }
 </style>

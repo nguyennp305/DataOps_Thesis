@@ -125,7 +125,7 @@ export default {
         dataId: null,
         labeledImages: [],
         status: null,
-        labeledIdClassification: null
+        labeledIdClassification: []
       },
       confirmDisabledButton: true
     }
