@@ -50,6 +50,7 @@
         :listQuery="listQuery"
         :showCreatedAt="showCreatedAt"
         :showCreatedBy="showCreatedBy"
+        :name-type-label="datasetInfo.labelType === 'objectDetection' ? 'Label Object Detection' : 'Label Classification'"
         @update="handleClickButtonUpdate"
         @pagination="getList"
       />

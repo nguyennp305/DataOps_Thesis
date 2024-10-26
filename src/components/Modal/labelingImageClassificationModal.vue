@@ -2,6 +2,7 @@
   <modal
     :title="isEdit ? $t('route.edit') : $t('route.add')"
     :visible.sync="visible"
+    :width="'60%'"
     @close="handleModalClose"
     @cancel="handleModalCancel"
     @confirm="handleModalConfirm"
@@ -11,6 +12,7 @@
       :rules="rules"
       :model="dataForm"
       label-position="top"
+      class="labeling-modal-form"
     >
       <el-form-item :label="$t('login.email')" prop="email">
         <el-input v-model="dataForm.email" :placeholder="$t('login.email')" />
@@ -145,5 +147,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/* Add your styles here */
+.labeling-modal-form {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 </style>

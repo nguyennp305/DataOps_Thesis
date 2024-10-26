@@ -13,8 +13,6 @@
     "mock": "cd mock && ts-node-dev mock-server.ts"
   },
   "dependencies": {
-    "@tensorflow-models/coco-ssd": "^2.2.3",
-    "@tensorflow/tfjs": "^4.21.0",
     "@tinymce/tinymce-vue": "^3.2.6",
     "@toast-ui/editor": "^2.5.1",
     "axios": "^0.21.1",

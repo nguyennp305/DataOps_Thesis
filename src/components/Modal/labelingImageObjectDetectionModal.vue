@@ -14,10 +14,10 @@
       label-position="top"
       class="labeling-modal-form"
     >
-      <el-form-item :label="$t('route.labelGroupName')" prop="name">
+      <el-form-item :label="$t('route.labelNameData')" prop="name">
         <el-input
           v-model="dataForm.name"
-          :placeholder="$t('route.labelGroupName')"
+          :placeholder="$t('route.labelNameData')"
           disabled
         />
       </el-form-item>

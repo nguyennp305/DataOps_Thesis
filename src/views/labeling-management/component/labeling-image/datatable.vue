@@ -102,7 +102,8 @@
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            {{ $t("table.label") }}
+            <!-- {{ $t("table.label") }} -->
+              {{ nameTypeLabel }}
           </el-button>
         </template>
       </el-table-column>
@@ -132,7 +133,8 @@ export default {
     tableKey: Number,
     listQuery: Object,
     showCreatedAt: Boolean,
-    showCreatedBy: Boolean
+    showCreatedBy: Boolean,
+    nameTypeLabel: String
   },
   data() {
     return {}

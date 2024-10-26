@@ -96,7 +96,7 @@
         </el-table-column>
 
         <el-table-column
-          :label="$t('route.labelExactRatio')"
+          :label="'Label ExactRatio'"
           :align="'center'"
           width="500px"
         >
