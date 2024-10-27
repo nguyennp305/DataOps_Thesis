@@ -22,6 +22,7 @@
       :showCreatedAt="showCreatedAt"
       :showCreatedBy="showCreatedBy"
       @update="handleClickButtonUpdate"
+      @generate-data="handleClickButtonGenerateData"
       @delete="handleDelete"
       @pagination="getList"
     />
@@ -32,6 +33,12 @@
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
+    <generate-data-label-model
+      :visible="visibleGenerateData"
+      :dataset="propDataItemGenerateData"
+      @update:visible="handleUpdateVisibleGenerateData"
+      @update:reload-table="reloadTable"
+    />
   </div>
 </template>
 
@@ -40,6 +47,7 @@
 import Datatable from '@/views/dataset-management/component/datatable'
 import FilterSearch from '@/views/dataset-management/component/filter-search'
 import DatasetModal from '@/components/Modal/datasetModal'
+import GenerateDataLabelModel from '@/components/Modal/generateDataLabelModel.vue'
 // import function call api.
 import { getDatasetList, deleteDatasetById } from '@/api/dataset-management/dataset'
 export default {
@@ -47,7 +55,8 @@ export default {
   components: {
     Datatable,
     FilterSearch,
-    DatasetModal
+    DatasetModal,
+    GenerateDataLabelModel
   },
   data() {
     return {
@@ -69,7 +78,9 @@ export default {
       downloadLoading: false,
       visible: false,
       isEditModal: false,
-      propDataItem: null
+      propDataItem: null,
+      visibleGenerateData: false,
+      propDataItemGenerateData: null
     }
   },
   created() {
@@ -97,6 +108,14 @@ export default {
     handleUpdateVisible(newVal) {
       this.propDataItem = null
       this.visible = newVal
+    },
+    handleClickButtonGenerateData(row) {
+      this.propDataItemGenerateData = row
+      this.visibleGenerateData = true
+    },
+    handleUpdateVisibleGenerateData(newVal) {
+      this.propDataItemGenerateData = null
+      this.visibleGenerateData = newVal
     },
     handleDelete(row) {
       this.$confirm(

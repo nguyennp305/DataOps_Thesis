@@ -128,7 +128,7 @@
           <el-button type="danger" size="mini" @click="handleDelete(row)">
             {{ $t("table.delete") }}
           </el-button>
-          <el-button v-waves type="warning" size="mini" icon="el-icon-download">
+          <el-button v-waves type="warning" size="mini" icon="el-icon-download" @click="handleGenerateData(row)">
             Generate data
           </el-button>
         </template>
@@ -177,6 +177,9 @@ export default {
     },
     handleDelete(row) {
       this.$emit('delete', row)
+    },
+    handleGenerateData(row) {
+      this.$emit('generate-data', row)
     },
     emitPagination() {
       this.$emit('pagination')
