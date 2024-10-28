@@ -25,7 +25,7 @@
           </div>
           <count-to
             :start-val="0"
-            :end-val="102400"
+            :end-val="panelGroupData.newVisitis"
             :duration="2600"
             class="card-panel-num"
           />
@@ -42,19 +42,19 @@
         class="card-panel"
         @click="handleSetLineChartData('messages')"
       >
-        <div class="card-panel-icon-wrapper icon-message">
+        <div class="card-panel-icon-wrapper icon-tree">
           <svg-icon
-            name="message"
+            name="tree"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Messages
+            Datasets
           </div>
           <count-to
             :start-val="0"
-            :end-val="81212"
+            :end-val="panelGroupData.datasets"
             :duration="3000"
             class="card-panel-num"
           />
@@ -71,19 +71,19 @@
         class="card-panel"
         @click="handleSetLineChartData('purchases')"
       >
-        <div class="card-panel-icon-wrapper icon-money">
+        <div class="card-panel-icon-wrapper icon-qq">
           <svg-icon
-            name="money"
+            name="qq"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Purchases
+            Labels
           </div>
           <count-to
             :start-val="0"
-            :end-val="9280"
+            :end-val="panelGroupData.labels"
             :duration="3200"
             class="card-panel-num"
           />
@@ -100,19 +100,19 @@
         class="card-panel"
         @click="handleSetLineChartData('shoppings')"
       >
-        <div class="card-panel-icon-wrapper icon-shopping">
+        <div class="card-panel-icon-wrapper icon-documentation">
           <svg-icon
-            name="shopping"
+            name="documentation"
             class="card-panel-icon"
           />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            Shoppings
+            Images
           </div>
           <count-to
             :start-val="0"
-            :end-val="13600"
+            :end-val="panelGroupData.images"
             :duration="3600"
             class="card-panel-num"
           />
@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import CountTo from 'vue-count-to'
 
 @Component({
@@ -132,7 +132,17 @@ import CountTo from 'vue-count-to'
     CountTo
   }
 })
+
 export default class extends Vue {
+  @Prop({
+    default: () => ({
+      newVisitis: 1000,
+      datasets: 2000,
+      labels: 3000,
+      images: 4000
+    })
+  }) private panelGroupData!: any
+
   private handleSetLineChartData(type: string) {
     this.$emit('handle-set-line-chart-data', type)
   }
@@ -167,15 +177,15 @@ export default class extends Vue {
          background: #40c9c6;
       }
 
-      .icon-message {
+      .icon-tree {
         background: #36a3f7;
       }
 
-      .icon-money {
+      .icon-qq {
         background: #f4516c;
       }
 
-      .icon-shopping {
+      .icon-documentation {
         background: #34bfa3
       }
     }
@@ -184,15 +194,15 @@ export default class extends Vue {
       color: #40c9c6;
     }
 
-    .icon-message {
+    .icon-tree {
       color: #36a3f7;
     }
 
-    .icon-money {
+    .icon-qq {
       color: #f4516c;
     }
 
-    .icon-shopping {
+    .icon-documentation {
       color: #34bfa3
     }
 

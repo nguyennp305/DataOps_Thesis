@@ -108,6 +108,9 @@ router.get('/reports', api.getReportList)
 router.delete('/reports/:id', api.deleteReportById)
 router.post('/reports', api.createReport)
 router.put('/reports/:id', api.updateReportById)
+// analystics:
+router.get('/analystics', api.getAnalysticUserList)
+router.get('/analystics-project', api.getAnalysticProjectList)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)
