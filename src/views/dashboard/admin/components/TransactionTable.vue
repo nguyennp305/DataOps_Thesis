@@ -1,32 +1,18 @@
 <template>
-  <el-table
-    :data="list"
-    style="width: 100%;padding-top: 15px;"
-  >
-    <el-table-column
-      label="OrderID"
-      min-width="200"
-    >
+  <el-table :data="list" style="width: 100%; padding-top: 15px" class="transaction-table-css">
+    <el-table-column :label="'My task'" min-width="195">
       <template slot-scope="{row}">
-        {{ row.orderId | orderNoFilter }}
+        {{ row.name }}
       </template>
     </el-table-column>
-    <el-table-column
-      label="Price"
-      width="195"
-      align="center"
-    >
+    <el-table-column label="ProjectId" min-width="200" :align="'center'">
       <template slot-scope="{row}">
-        ¥{{ row.price | toThousandFilter }}
+        {{ row.projectId }}
       </template>
     </el-table-column>
-    <el-table-column
-      label="Status"
-      width="100"
-      align="center"
-    >
+    <el-table-column label="Status" width="130" :align="'center'">
       <template slot-scope="{row}">
-        <el-tag :type="row.status | transactionStatusFilter">
+        <el-tag :type="row.status | transactionStatusFilter" class="el-tags-css">
           {{ row.status }}
         </el-tag>
       </template>
@@ -34,38 +20,56 @@
   </el-table>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { getTransactions } from '@/api/transactions'
-import { ITransactionData } from '@/api/types'
+<script>
 
-@Component({
-  name: 'TransactionTable',
+export default {
+  name: 'MyTaskTable',
+  props: {
+    tasksChartData: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      list: []
+    }
+  },
+  watch: {
+    tasksChartData: {
+      handler(newVal) {
+        this.list = newVal.map((item) => ({
+          name: item.name,
+          projectId: item.projectId,
+          status: item.status
+        }))
+      },
+      deep: true
+    }
+  },
+  methods: {},
   filters: {
-    transactionStatusFilter: (status: string) => {
-      const statusMap: { [key: string]: string } = {
-        success: 'success',
-        pending: 'danger'
+    transactionStatusFilter: (status) => {
+      const statusMap = {
+        todo: 'info',
+        inprogress: 'warning',
+        review: 'warning',
+        complete: 'success',
+        onhold: 'info',
+        rework: 'danger'
       }
       return statusMap[status]
-    },
-    orderNoFilter: (str: string) => str.substring(0, 30),
-    // Input 10000 => Output "10,000"
-    toThousandFilter: (num: number) => {
-      return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
     }
-  }
-})
-export default class extends Vue {
-  private list: ITransactionData[] = []
-
-  created() {
-    this.fetchData()
-  }
-
-  private async fetchData() {
-    const { data } = await getTransactions({ /* Your params here */ })
-    this.list = data.items.slice(0, 8)
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.el-tags-css {
+  min-width: 100px;
+}
+.transaction-table-css {
+  max-height: 600px;
+  overflow-y: auto;
+}
+</style>

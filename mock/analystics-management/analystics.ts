@@ -35,6 +35,19 @@ export const getAnalysticProjectList = async(req: Request, res: Response) => {
   })
 }
 
+export const getMyTaskByUserId = async(req: Request, res: Response) => {
+  const { userId } = req.query
+  const urlGetMyTaskByUserId = BASE_URL + 'task?page=0&size=10000000'
+  const responseGetMyTaskByUserId = await axios.get(urlGetMyTaskByUserId)
+  const myTaskByUserId = responseGetMyTaskByUserId.data.data.filter((task: any) => task.assigneeId === userId)
+  return res.json({
+    code: 20000,
+    data: {
+      tasks: myTaskByUserId
+    }
+  })
+}
+
 // Hàm để lấy top 5 project có nhiều member nhất
 function getTopProjectsByMemberCount(projects: any) {
   return projects

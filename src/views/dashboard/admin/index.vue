@@ -9,16 +9,18 @@
     </el-row> -->
 
     <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <radar-chart />
-        </div>
-      </el-col>
       <el-col :xs="24" :sm="24" :lg="12">
         <div class="chart-wrapper">
           <pie-chart :projectChatData="projectChatData" />
         </div>
       </el-col>
+
+      <el-col :xs="24" :sm="24" :lg="12">
+        <div class="chart-wrapper">
+          <radar-chart />
+        </div>
+      </el-col>
+
       <!-- <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
           <bar-chart />
@@ -35,7 +37,7 @@
         :xl="{span: 12}"
         style="padding-right: 8px; margin-bottom: 30px"
       >
-        <transaction-table />
+        <transaction-table :tasksChartData="tasksChartData" />
       </el-col>
       <el-col
         :xs="{span: 24}"
@@ -73,7 +75,8 @@ import PieChart from './components/PieChart.vue'
 import RadarChart from './components/RadarChart.vue'
 import TodoList from './components/TodoList/index.vue'
 import TransactionTable from './components/TransactionTable.vue'
-import { getAnalysticUserList, getAnalysticProjectList } from '@/api/analystics-management/analystics'
+import { UserModule } from '@/store/modules/user'
+import { getAnalysticUserList, getAnalysticProjectList, getMyTaskByUserId } from '@/api/analystics-management/analystics'
 
 // const lineChartData: { [type: string]: ILineChartData } = {
 //   newVisitis: {
@@ -112,15 +115,15 @@ export default class extends Vue {
   // private lineChartData = lineChartData.newVisitis;
   private panelGroupData = {};
   private projectChatData = [];
+  private tasksChartData = [];
 
   private handleSetLineChartData(type: string) {
-    console.log(type)
+    // console.log(type)
     // this.lineChartData = lineChartData[type];
   }
 
   async created() {
     await getAnalysticUserList().then(response => {
-      console.log(response.data)
       this.panelGroupData = {
         newVisitis: response.data.users,
         datasets: response.data.datasets,
@@ -130,6 +133,9 @@ export default class extends Vue {
     })
     const resultProject: any = await getAnalysticProjectList()
     this.projectChatData = resultProject.data.projects
+    const resultTask: any = await getMyTaskByUserId({ userId: UserModule.id })
+    console.log(resultTask.data.tasks)
+    this.tasksChartData = resultTask.data.tasks
   }
 }
 </script>

@@ -13,3 +13,12 @@ export const getAnalysticProjectList = () => {
   })
   return result
 }
+
+export const getMyTaskByUserId = (params: any) => {
+  const result = request({
+    url: '/analystics-my-tasks',
+    method: 'get',
+    params
+  })
+  return result
+}

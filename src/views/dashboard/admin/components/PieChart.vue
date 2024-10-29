@@ -52,7 +52,6 @@ export default {
   watch: {
     projectChatData: {
       handler(newVal) {
-        console.log(newVal)
         this.dataProject = newVal.map((item) => ({
           name: item.name,
           value: item.memberCount
@@ -72,9 +71,21 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
       this.chart.setOption({
+        title: {
+          text: 'Project Pie Chart', // Tiêu đề của biểu đồ
+          left: 'left', // Vị trí của tiêu đề, có thể là 'center', 'left', 'right'
+          top: 'top', // Vị trí trên của tiêu đề, có thể là 'top', 'middle', 'bottom'
+          textStyle: {
+            fontSize: 14,
+            fontWeight: 'bold'
+            // color: '#333'
+          }
+        },
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: (params) => {
+            return `Project: ${params.name} <br/>Members count: ${params.value} (${params.percent}%)`
+          }
         },
         legend: {
           left: 'center',
