@@ -60,6 +60,7 @@
                 <span>Total: {{ totalItemsLabelDataOptions }}</span>
               </div>
             </el-select>
+            <classification-label :image-link="dataForm.imageUrl" />
           </div>
         </div>
       </el-form-item>
@@ -87,6 +88,7 @@ import Modal from '@/components/Commons/modal.vue'
 import { cloneDeep } from 'lodash'
 import { getLabelGroupList } from '@/api/labeling-management/label-group'
 import { getLabelDataList } from '@/api/labeling-management/label-data'
+import classificationLabel from '@/components/AutoLabelWithTensoflow/classificationLabel.vue'
 import axios from 'axios'
 
 const defaultDataForm = {
@@ -104,7 +106,8 @@ const defaultDataForm = {
 
 export default {
   components: {
-    Modal
+    Modal,
+    classificationLabel
   },
   props: {
     visible: {
