@@ -31,6 +31,8 @@
         />
       </el-form-item>
 
+      <object-dectection-label v-if="dataForm.imageUrl" :image-link="dataForm.imageUrl" />
+
       <el-form-item :label="$t('route.table')" prop="table">
         <table-labeling-image
           v-if="dataForm.imageUrl && datasetInfo"
@@ -68,6 +70,7 @@ import { cloneDeep } from 'lodash'
 import LabelingImageComponent from '@/components/LabelingImage/index'
 import tableLabelingImage from '@/components/LabelingImage/table-labeling-image'
 import axios from 'axios'
+import objectDectectionLabel from '@/components/AutoLabelWithTensoflow/objectDectectionLabel.vue'
 
 const defaultDataForm = {
   // datasetId: null,
@@ -85,7 +88,8 @@ export default {
   components: {
     Modal,
     LabelingImageComponent,
-    tableLabelingImage
+    tableLabelingImage,
+    objectDectectionLabel
   },
   props: {
     visible: {
