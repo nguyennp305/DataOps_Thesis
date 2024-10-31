@@ -269,6 +269,15 @@ export const asyncRoutes = [
           title: 'dataset',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'lianalyticsst',
+        component: 'views/dataset-management/analytics.vue',
+        name: 'Analytics',
+        meta: {
+          title: 'analytics',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },

@@ -321,6 +321,15 @@ export const asyncRoutes: RouteConfig[] = [
           title: 'dataset',
           roles: ['admin', 'admin_project']
         }
+      },
+      {
+        path: 'analytics',
+        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/dataset-management/analytics.vue'),
+        name: 'Analytics',
+        meta: {
+          title: 'analytics',
+          roles: ['admin', 'admin_project']
+        }
       }
     ]
   },

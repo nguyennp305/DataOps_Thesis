@@ -62,6 +62,7 @@ export default {
     labelData: 'Label Data',
     labelNameData: 'Label Name',
     datasetNameData: 'Dataset Name',
+    analytics: 'Analytics',
     labelGroupName: 'Label Group Name',
     taskManagement: 'Task Management',
     taskName: 'Task Name',
