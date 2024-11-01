@@ -22,3 +22,12 @@ export const getMyTaskByUserId = (params: any) => {
   })
   return result
 }
+
+export const getAnalysticDatasetPanelGroup = (params: any) => {
+  const result = request({
+    url: '/analystics-dataset-panel-group',
+    method: 'get',
+    params
+  })
+  return result
+}

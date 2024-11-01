@@ -112,6 +112,7 @@ router.put('/reports/:id', api.updateReportById)
 router.get('/analystics', api.getAnalysticUserList)
 router.get('/analystics-project', api.getAnalysticProjectList)
 router.get('/analystics-my-tasks', api.getMyTaskByUserId)
+router.get('/analystics-dataset-panel-group', api.getAnalysticDatasetPanelGroup)
 
 // Use the router with the prefix
 app.use('/mock-api/v1', router)

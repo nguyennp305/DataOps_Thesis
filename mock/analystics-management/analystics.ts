@@ -48,6 +48,40 @@ export const getMyTaskByUserId = async(req: Request, res: Response) => {
   })
 }
 
+export const getAnalysticDatasetPanelGroup = async(req: Request, res: Response) => {
+  let labels = 0
+  let images = 0
+  let labeledImages = 0
+  const { projectId } = req.query
+  const urlGetDataset = BASE_URL + 'dataset?page=0&size=1000000&projectId=' + projectId
+  const responseDataset = await axios.get(urlGetDataset)
+  if (getUniqueLabelGroupIds(responseDataset.data.data)) {
+    const urlGetLabelSetData = BASE_URL + 'label-set?page=0&size=1000000&ids=' + getUniqueLabelGroupIds(responseDataset.data.data)
+    const responseLabelSetData = await axios.get(urlGetLabelSetData)
+    if (responseLabelSetData) {
+      labels = countUniqueLabels(responseLabelSetData.data.data)
+    }
+  }
+  if (getUniqueLabeledImageIds(responseDataset.data.data)) {
+    const urlGetLabeledImageData = BASE_URL + 'data?page=0&size=100000000&ids=' + getUniqueLabeledImageIds(responseDataset.data.data)
+    const responseLabeledImageData = await axios.get(urlGetLabeledImageData)
+    console.log(responseLabeledImageData.data.data)
+    if (responseLabeledImageData) {
+      images = responseLabeledImageData.data.data.length
+      labeledImages = responseLabeledImageData.data.data.filter((item: any) => item.status === 'labeled').length
+    }
+  }
+  return res.json({
+    code: 20000,
+    data: {
+      datasets: responseDataset.data.data.length,
+      labels: labels,
+      images: images,
+      labeledImages: labeledImages
+    }
+  })
+}
+
 // Hàm để lấy top 5 project có nhiều member nhất
 function getTopProjectsByMemberCount(projects: any) {
   return projects
@@ -58,4 +92,40 @@ function getTopProjectsByMemberCount(projects: any) {
     }))
     .sort((a: any, b: any) => b.memberCount - a.memberCount) // Sắp xếp theo số lượng thành viên giảm dần
     .slice(0, 5) // Lấy 5 dự án đầu tiên
+}
+
+function getUniqueLabelGroupIds(data: any) {
+  const labelGroupIds: string[] = []
+  data.forEach((item: any) => {
+    item.labelGroupIds.forEach((id: string) => {
+      if (!labelGroupIds.includes(id)) {
+        labelGroupIds.push(id)
+      }
+    })
+  })
+  return labelGroupIds.join(',')
+}
+
+function countUniqueLabels(data: any) {
+  const uniqueLabels: string[] = []
+  data.forEach((labelSet: any) => {
+    labelSet.labelIds.forEach((labelId: string) => {
+      if (!uniqueLabels.includes(labelId)) {
+        uniqueLabels.push(labelId)
+      }
+    })
+  })
+  return uniqueLabels.length
+}
+
+function getUniqueLabeledImageIds(data: any) {
+  const labeledImageIds: string[] = []
+  data.forEach((item: any) => {
+    item.labeledImageIds.forEach((id: string) => {
+      if (!labeledImageIds.includes(id)) {
+        labeledImageIds.push(id)
+      }
+    })
+  })
+  return labeledImageIds.join(',')
 }
