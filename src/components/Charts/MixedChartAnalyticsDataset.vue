@@ -53,7 +53,7 @@ export default class extends mixins(ResizeMixin) {
     this.chart.setOption({
       backgroundColor: '#344b58',
       title: {
-        text: 'statistics',
+        text: 'Datasets MixedChart',
         top: '20',
         textStyle: {
           color: '#fff',
@@ -83,7 +83,7 @@ export default class extends mixins(ResizeMixin) {
         textStyle: {
           color: '#90979c'
         },
-        data: ['female', 'male', 'average']
+        data: ['labelGroups', 'labels', 'image']
       },
       xAxis: [{
         type: 'category',
