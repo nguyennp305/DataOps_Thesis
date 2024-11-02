@@ -60,6 +60,10 @@ import ThemePicker from '@/components/ThemePicker/index.vue'
   }
 })
 export default class extends Vue {
+  mounted() {
+    this.themeChange('#D0C73F')
+  }
+
   get fixedHeader() {
     return SettingsModule.fixedHeader
   }
