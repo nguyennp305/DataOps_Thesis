@@ -31,3 +31,12 @@ export const getAnalysticDatasetPanelGroup = (params: any) => {
   })
   return result
 }
+
+export const getAnalysticDatasetMixedChart = (params: any) => {
+  const result = request({
+    url: '/analystics-dataset-mixed-chart',
+    method: 'get',
+    params
+  })
+  return result
+}

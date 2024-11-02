@@ -39,7 +39,9 @@ export const getMyTaskByUserId = async(req: Request, res: Response) => {
   const { userId } = req.query
   const urlGetMyTaskByUserId = BASE_URL + 'task?page=0&size=10000000'
   const responseGetMyTaskByUserId = await axios.get(urlGetMyTaskByUserId)
-  const myTaskByUserId = responseGetMyTaskByUserId.data.data.filter((task: any) => task.assigneeId === userId)
+  const myTaskByUserId = responseGetMyTaskByUserId.data.data.filter(
+    (task: any) => task.assigneeId === userId
+  )
   return res.json({
     code: 20000,
     data: {
@@ -48,27 +50,38 @@ export const getMyTaskByUserId = async(req: Request, res: Response) => {
   })
 }
 
-export const getAnalysticDatasetPanelGroup = async(req: Request, res: Response) => {
+export const getAnalysticDatasetPanelGroup = async(
+  req: Request,
+  res: Response
+) => {
   let labels = 0
   let images = 0
   let labeledImages = 0
   const { projectId } = req.query
-  const urlGetDataset = BASE_URL + 'dataset?page=0&size=1000000&projectId=' + projectId
+  const urlGetDataset =
+    BASE_URL + 'dataset?page=0&size=1000000&projectId=' + projectId
   const responseDataset = await axios.get(urlGetDataset)
   if (getUniqueLabelGroupIds(responseDataset.data.data)) {
-    const urlGetLabelSetData = BASE_URL + 'label-set?page=0&size=1000000&ids=' + getUniqueLabelGroupIds(responseDataset.data.data)
+    const urlGetLabelSetData =
+      BASE_URL +
+      'label-set?page=0&size=1000000&ids=' +
+      getUniqueLabelGroupIds(responseDataset.data.data)
     const responseLabelSetData = await axios.get(urlGetLabelSetData)
     if (responseLabelSetData) {
       labels = countUniqueLabels(responseLabelSetData.data.data)
     }
   }
   if (getUniqueLabeledImageIds(responseDataset.data.data)) {
-    const urlGetLabeledImageData = BASE_URL + 'data?page=0&size=100000000&ids=' + getUniqueLabeledImageIds(responseDataset.data.data)
+    const urlGetLabeledImageData =
+      BASE_URL +
+      'data?page=0&size=100000000&ids=' +
+      getUniqueLabeledImageIds(responseDataset.data.data)
     const responseLabeledImageData = await axios.get(urlGetLabeledImageData)
-    console.log(responseLabeledImageData.data.data)
     if (responseLabeledImageData) {
       images = responseLabeledImageData.data.data.length
-      labeledImages = responseLabeledImageData.data.data.filter((item: any) => item.status === 'labeled').length
+      labeledImages = responseLabeledImageData.data.data.filter(
+        (item: any) => item.status === 'labeled'
+      ).length
     }
   }
   return res.json({
@@ -78,6 +91,44 @@ export const getAnalysticDatasetPanelGroup = async(req: Request, res: Response) 
       labels: labels,
       images: images,
       labeledImages: labeledImages
+    }
+  })
+}
+
+export const getAnalysticDatasetMixedChart = async(
+  req: Request,
+  res: Response
+) => {
+  const dataChart: any = []
+  const { projectId } = req.query
+  const urlGetDataset =
+    BASE_URL + 'dataset?page=0&size=1000000&projectId=' + projectId
+  const responseDataset = await axios.get(urlGetDataset)
+
+  for (const item of responseDataset.data.data) {
+    let labelsInDataset = 0
+    if (item.labelGroupIds.length > 0) {
+      const urlGetLabelSetData =
+        BASE_URL +
+        'label-set?page=0&size=1000000&ids=' +
+        item.labelGroupIds.join(',')
+      const responseLabelSetData = await axios.get(urlGetLabelSetData)
+      if (responseLabelSetData) {
+        labelsInDataset = countUniqueLabels(responseLabelSetData.data.data)
+      }
+    }
+    dataChart.push({
+      name: item.name,
+      labelGroups: item.labelGroupIds.length,
+      image: item.labeledImageIds.length,
+      labels: labelsInDataset
+    })
+  }
+
+  return res.json({
+    code: 20000,
+    data: {
+      dataChart: dataChart
     }
   })
 }
