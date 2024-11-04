@@ -4,10 +4,10 @@
       :listQuery="listQuery"
       :showCreatedAt.sync="showCreatedAt"
       :showCreatedBy.sync="showCreatedBy"
-      :downloadLoading="downloadLoading"
+      :importLoading="importLoading"
       @filter="handleFilter"
       @create="handleCreate"
-      @download="handleDownload"
+      @import="handleImport"
       @update:listQuery="updateListQuery"
       @update:showCreatedAt="updateShowCreatedAt"
       @update:showCreatedBy="updateShowCreatedBy"
@@ -32,6 +32,12 @@
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
+    <import-file
+      :visible="importVisible"
+      :url-api="'label'"
+      @update:visible="handleUpdateImportVisible"
+      @update:reload-table="reloadTable"
+    />
   </div>
 </template>
 
@@ -41,13 +47,19 @@ import Datatable from '@/views/labeling-management/component/label-data/datatabl
 import FilterSearch from '@/views/labeling-management/component/label-data/filter-search'
 import LabelDataModal from '@/components/Modal/labelDataModal'
 // import function call api.
-import { getLabelDataList, deleteLabelDataById } from '@/api/labeling-management/label-data'
+import {
+  getLabelDataList,
+  deleteLabelDataById
+} from '@/api/labeling-management/label-data'
+import ImportFile from '@/components/Modal/importFile'
+
 export default {
   name: 'LabelData',
   components: {
     Datatable,
     FilterSearch,
-    LabelDataModal
+    LabelDataModal,
+    ImportFile
   },
   data() {
     return {
@@ -65,8 +77,9 @@ export default {
       },
       showCreatedAt: false,
       showCreatedBy: false,
-      downloadLoading: false,
+      importLoading: false,
       visible: false,
+      importVisible: false,
       isEditModal: false,
       propDataItem: null
     }
@@ -96,6 +109,10 @@ export default {
     handleUpdateVisible(newVal) {
       this.propDataItem = null
       this.visible = newVal
+    },
+    handleUpdateImportVisible(newVal) {
+      this.importVisible = newVal
+      this.importLoading = false
     },
     handleDelete(row) {
       this.$confirm(
@@ -129,10 +146,11 @@ export default {
       this.isEditModal = false
       this.visible = true
     },
-    handleDownload() {
-      this.downloadLoading = true
-      console.log('handleDownload')
-      this.downloadLoading = false
+    handleImport() {
+      this.importLoading = true
+      this.importVisible = true
+      console.log('handleImport')
+      // this.importLoading = false;
     },
     updateListQuery(newListQuery) {
       this.listQuery = newListQuery

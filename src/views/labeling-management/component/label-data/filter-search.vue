@@ -95,12 +95,12 @@
       </el-button>
       <el-button
         v-waves
-        :loading="downloadLoading"
+        :loading="importLoading"
         type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
+        icon="el-icon-upload"
+        @click="handleImport"
       >
-        {{ $t("table.export") }}
+        Import
       </el-button>
     </div>
   </div>
@@ -123,7 +123,7 @@ export default {
     showCreatedAt: Boolean,
     showCreatedBy: Boolean,
     tableKey: Number,
-    downloadLoading: Boolean
+    importLoading: Boolean
   },
   data() {
     return {
@@ -203,8 +203,8 @@ export default {
     handleCreate() {
       this.$emit('create')
     },
-    handleDownload() {
-      this.$emit('download')
+    handleImport() {
+      this.$emit('import')
     }
   }
 }
