@@ -126,7 +126,7 @@
               height="100px"
               image="https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191"
             >
-              dataOps
+            label-image
             </pan-thumb>
           </div>
         </el-card>
@@ -162,7 +162,7 @@
           <div class="component-item">
             <mallki
               class-name="mallki-text"
-              text="dataOps"
+              text="label-image"
             />
           </div>
         </el-card>

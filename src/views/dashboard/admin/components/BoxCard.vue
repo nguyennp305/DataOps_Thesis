@@ -16,7 +16,7 @@
       />
       <mallki
         class="mallki-text"
-        text="dataOps"
+        text="label-image"
       />
       <div
         style="padding-top:35px;"
