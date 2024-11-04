@@ -36,7 +36,7 @@
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <el-tag>
+          <el-tag class="status-el-tag">
             {{ row.status }}
           </el-tag>
         </template>
@@ -150,4 +150,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.status-el-tag {
+  min-width: 100px;
+}
+</style>

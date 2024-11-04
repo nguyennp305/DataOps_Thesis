@@ -47,7 +47,7 @@
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <el-tag>
+          <el-tag class="report-type-el-tag">
             {{ row.reportType }}
           </el-tag>
         </template>
@@ -141,4 +141,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.report-type-el-tag {
+  min-width: 150px;
+}
+</style>

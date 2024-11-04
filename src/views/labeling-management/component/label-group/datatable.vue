@@ -40,11 +40,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column
-        :label="$t('route.labelNameData')"
-        :align="'center'"
-        min-width="150px"
-      >
+      <!-- :label="$t('route.labelNameData')" -->
+      <el-table-column :label="'Label ID'" :align="'center'" min-width="150px">
         <template slot-scope="{row}">
           <div v-if="row.labelIds && row.labelIds.length > 0">
             <el-tag v-for="(labelData, index) in row.labelIds" :key="index">

@@ -41,7 +41,7 @@
 
       <el-table-column
         :label="$t('route.rolePermission')"
-        width="100px"
+        width="200px"
         :align="'center'"
       >
         <template slot-scope="{row}">

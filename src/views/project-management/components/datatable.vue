@@ -25,7 +25,7 @@
         :align="'center'"
       >
         <template slot-scope="{row}">
-          <el-tag>{{ row.enterprise.name }}</el-tag>
+          <el-tag class="status-el-tag">{{ row.enterprise.name }}</el-tag>
         </template>
       </el-table-column>
 
@@ -70,9 +70,7 @@
             <span style="color: red">{{ $t("table.noData") }}</span>
           </div>
           <div v-else>
-            <el-tag v-for="(member, index) in row.members" :key="index">
-              {{ member.username }}
-            </el-tag>
+            <el-tag class="member-el-tag">{{ row.members.length }}</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -181,4 +179,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.status-el-tag {
+  min-width: 100px;
+}
+.member-el-tag {
+  min-width: 50px;
+}
+</style>
