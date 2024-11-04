@@ -59,16 +59,6 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.useLabeledName')"
-        min-width="150px"
-        :align="'center'"
-      >
-        <template slot-scope="{row}">
-          <el-tag v-for="(label, index) in labeledNames.find((item) => item.id === row.id).data" :key="index">{{ label }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column
         :label="$t('table.status')"
         min-width="150px"
         :align="'center'"

@@ -34,7 +34,7 @@
     />
     <import-file
       :visible="importVisible"
-      :url-api="'label'"
+      :urlAPI="'label'"
       @update:visible="handleUpdateImportVisible"
       @update:reload-table="reloadTable"
     />

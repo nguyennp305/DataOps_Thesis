@@ -34,10 +34,10 @@
       :listQuery="listQuery"
       :showCreatedAt.sync="showCreatedAt"
       :showCreatedBy.sync="showCreatedBy"
-      :downloadLoading="downloadLoading"
+      :importLoading="importLoading"
       @filter="handleFilter"
       @create="handleCreate"
-      @download="handleDownload"
+      @import="handleImport"
       @update:listQuery="updateListQuery"
       @update:showCreatedAt="updateShowCreatedAt"
       @update:showCreatedBy="updateShowCreatedBy"
@@ -62,6 +62,12 @@
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
+    <import-file
+      :visible="importVisible"
+      :urlAPI="'data'"
+      @update:visible="handleUpdateImportVisible"
+      @update:reload-table="reloadTable"
+    />
   </div>
 </template>
 
@@ -74,6 +80,7 @@ import LabelingSlot from '@/components/Commons/labeling-slot'
 // import function call api.
 import { getDataList, deleteDataById } from '@/api/data-management/data'
 import { getDatasetList } from '@/api/dataset-management/dataset'
+import ImportFile from '@/components/Modal/importFile'
 
 export default {
   name: 'DataList',
@@ -81,7 +88,8 @@ export default {
     Datatable,
     FilterSearch,
     DataModal,
-    LabelingSlot
+    LabelingSlot,
+    ImportFile
   },
   data() {
     return {
@@ -101,7 +109,8 @@ export default {
       },
       showCreatedAt: false,
       showCreatedBy: false,
-      downloadLoading: false,
+      importLoading: false,
+      importVisible: false,
       visible: false,
       isEditModal: false,
       propDataItem: null,
@@ -169,7 +178,14 @@ export default {
     async getList() {
       this.listLoading = true
       const { data } = await getDataList(this.listQuery)
-      this.list = data.items
+      const processedData = data.items.map((item) => {
+        if (item.labeledImages === null) {
+          item.labeledImages = []
+        }
+        return item
+      })
+
+      this.list = processedData
       this.total = data.total
       setTimeout(() => {
         this.listLoading = false
@@ -187,6 +203,16 @@ export default {
     handleUpdateVisible(newVal) {
       this.propDataItem = null
       this.visible = newVal
+    },
+    handleUpdateImportVisible(newVal) {
+      this.importVisible = newVal
+      this.importLoading = false
+    },
+    handleImport() {
+      this.importLoading = true
+      this.importVisible = true
+      console.log('handleImport')
+      // this.importLoading = false;
     },
     handleDelete(row) {
       this.$confirm(
@@ -219,11 +245,6 @@ export default {
       this.propDataItem = null
       this.isEditModal = false
       this.visible = true
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      console.log('handleDownload')
-      this.downloadLoading = false
     },
     updateListQuery(newListQuery) {
       this.listQuery = newListQuery
