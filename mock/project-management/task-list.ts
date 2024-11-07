@@ -4,7 +4,7 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getTaskList = async(req: Request, res: Response) => {
-  const {
+  let {
     page = 1,
     size = 10,
     name,
@@ -13,7 +13,8 @@ export const getTaskList = async(req: Request, res: Response) => {
   const url = BASE_URL + 'task'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
   if (name) {
-    params += `&name=${name}`
+    name = decodeURIComponent(name.toString())
+    params += `&name=${encodeURIComponent(name)}`
   }
   if (projectId) {
     params += `&projectId=${projectId}`

@@ -41,15 +41,15 @@
       </el-table-column>
 
       <!-- :label="$t('route.labelNameData')" -->
-      <el-table-column :label="'Label ID'" :align="'center'" min-width="150px">
+      <el-table-column :label="'Label'" :align="'center'" min-width="150px">
         <template slot-scope="{row}">
           <div v-if="row.labelIds && row.labelIds.length > 0">
-            <el-tag v-for="(labelData, index) in row.labelIds" :key="index">
-              {{ labelData }}
+            <el-tag>
+              {{ row.labelIds.length }} labels
             </el-tag>
           </div>
           <div v-else>
-            <span style="color: red">{{ $t("table.noData") }}</span>
+            <span style="color: red">No labels</span>
           </div>
         </template>
       </el-table-column>

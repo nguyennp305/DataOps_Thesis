@@ -4,17 +4,20 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getEnterprises = async(req: Request, res: Response) => {
-  const { page = 1, size = 10, word, startDate, enbDate, ids } = req.query
+  let { page = 1, size = 10, word, startDate, enbDate, ids } = req.query
   const url = BASE_URL + 'enterprise'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
   if (word) {
-    params += `&word=${word}`
+    word = decodeURIComponent(word.toString())
+    params += `&word=${encodeURIComponent(word)}`
   }
   if (startDate) {
-    params += `&startDate=${startDate}`
+    startDate = decodeURIComponent(startDate.toString())
+    params += `&startDate=${encodeURIComponent(startDate)}`
   }
   if (enbDate) {
-    params += `&enbDate=${enbDate}`
+    enbDate = decodeURIComponent(enbDate.toString())
+    params += `&enbDate=${encodeURIComponent(enbDate)}`
   }
   if (ids) {
     params += `&ids=${ids}`

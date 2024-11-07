@@ -4,7 +4,7 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getLabelGroupList = async(req: Request, res: Response) => {
-  const {
+  let {
     page = 1,
     size = 10,
     name,
@@ -16,10 +16,12 @@ export const getLabelGroupList = async(req: Request, res: Response) => {
   const url = BASE_URL + 'label-set'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
   if (name) {
-    params += `&name=${name}`
+    name = decodeURIComponent(name.toString())
+    params += `&name=${encodeURIComponent(name)}`
   }
   if (description) {
-    params += `&description=${description}`
+    description = decodeURIComponent(description.toString())
+    params += `&description=${encodeURIComponent(description)}`
   }
   if (createdBy) {
     params += `&createdBy=${createdBy}`

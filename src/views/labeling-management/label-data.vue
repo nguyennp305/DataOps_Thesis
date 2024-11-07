@@ -150,6 +150,7 @@ export default {
       this.importLoading = true
       this.importVisible = true
       console.log('handleImport')
+      this.reloadTable()
       // this.importLoading = false;
     },
     updateListQuery(newListQuery) {

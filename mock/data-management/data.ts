@@ -4,7 +4,7 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getDataList = async(req: Request, res: Response) => {
-  const {
+  let {
     page = 1,
     size = 10,
     createdBy,
@@ -19,14 +19,16 @@ export const getDataList = async(req: Request, res: Response) => {
   if (createdBy) {
     params += `&createdBy=${createdBy}`
   }
+  if (name) {
+    name = decodeURIComponent(name.toString())
+    params += `&name=${encodeURIComponent(name)}`
+  }
   if (description) {
-    params += `&description=${description}`
+    description = decodeURIComponent(description.toString())
+    params += `&description=${encodeURIComponent(description)}`
   }
   if (ids) {
     params += `&ids=${ids}`
-  }
-  if (name) {
-    params += `&name=${name}`
   }
   if (ids) {
     params += `&ids=${ids}`

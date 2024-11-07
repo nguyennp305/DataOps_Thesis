@@ -4,7 +4,7 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getReportList = async(req: Request, res: Response) => {
-  const {
+  let {
     page = 1,
     size = 10,
     description,
@@ -18,7 +18,8 @@ export const getReportList = async(req: Request, res: Response) => {
     params += `&description=${description}`
   }
   if (name) {
-    params += `&name=${name}`
+    name = decodeURIComponent(name.toString())
+    params += `&name=${encodeURIComponent(name)}`
   }
   if (projectId) {
     params += `&projectId=${projectId}`

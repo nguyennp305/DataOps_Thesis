@@ -4,7 +4,7 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:8089/api/'
 
 export const getUserList = async(req: Request, res: Response) => {
-  const {
+  let {
     page = 1,
     size = 10,
     username,
@@ -18,16 +18,19 @@ export const getUserList = async(req: Request, res: Response) => {
   const url = BASE_URL + 'user'
   let params = `?page=${parseInt(page.toString()) - 1}&size=${size}`
   if (username) {
-    params += `&username=${username}`
+    username = decodeURIComponent(username.toString())
+    params += `&username=${encodeURIComponent(username)}`
   }
   if (status) {
     params += `&status=${status}`
   }
   if (startTime) {
-    params += `&startTime=${startTime}`
+    startTime = decodeURIComponent(startTime.toString())
+    params += `&startTime=${encodeURIComponent(startTime)}`
   }
   if (endTime) {
-    params += `&endTime=${endTime}`
+    endTime = decodeURIComponent(endTime.toString())
+    params += `&endTime=${encodeURIComponent(endTime)}`
   }
   if (roleId) {
     params += `&roleId=${roleId}`
