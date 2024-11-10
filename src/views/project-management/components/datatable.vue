@@ -9,6 +9,17 @@
       highlight-current-row
       style="width: 100%"
     >
+
+    <el-table-column
+        :label="'ID'"
+        width="200px"
+        :align="'center'"
+      >
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column
         :label="$t('route.projectName')"
         width="200px"

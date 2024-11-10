@@ -25,6 +25,7 @@ class User extends VuexModule implements IUserState {
   public roles: string[] = []
   public email = ''
   public id = ''
+  public username = ''
 
   @Mutation
   private SET_TOKEN(token: string) {
@@ -34,6 +35,11 @@ class User extends VuexModule implements IUserState {
   @Mutation
   private SET_NAME(name: string) {
     this.name = name
+  }
+
+  @Mutation
+  private SET_USERNAME(username: string) {
+    this.username = username
   }
 
   @Mutation
@@ -89,7 +95,7 @@ class User extends VuexModule implements IUserState {
     if (!data) {
       throw Error('Verification failed, please Login again.')
     }
-    const { roles, name, avatar, introduction, email, id } = data.user
+    const { roles, name, avatar, introduction, email, id, username } = data.user
     // roles must be a non-empty array
     if (!roles || roles.length <= 0) {
       throw Error('GetUserInfo: roles must be a non-null array!')
@@ -100,6 +106,7 @@ class User extends VuexModule implements IUserState {
     this.SET_INTRODUCTION(introduction)
     this.SET_EMAIL(email)
     this.SET_ID(id)
+    this.SET_USERNAME(username)
   }
 
   @Action

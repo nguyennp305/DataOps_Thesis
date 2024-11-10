@@ -15,16 +15,19 @@
           :width="'100px'"
           :hoverable="false"
         >
-          <div>Hello</div>
-          {{ user.roles }}
+          <div>Role:</div>
+          <b style="color: #d1c843;">{{ user.roles }}</b>
         </pan-thumb>
       </div>
       <div class="box-center">
         <div class="user-name text-center">
-          {{ user.name }}
+          {{ user.username }}
+        </div>
+        <div class="user-name text-center" style="font-size: 12px; margin-top: 10px; cursor: pointer;">
+          <u>ID: {{ user.id }}</u>
         </div>
         <div class="user-role text-center text-muted">
-          {{ user.roles | uppercaseFirstChar }}
+          Email: {{ user.email }}
         </div>
       </div>
     </div>

@@ -53,13 +53,17 @@ export interface IProfile {
   email: string
   avatar: string
   roles: string
+  id: string
+  username: string
 }
 
 const defaultProfile: IProfile = {
   name: 'Loading...',
   email: 'Loading...',
   avatar: 'Loading...',
-  roles: 'Loading...'
+  roles: 'Loading...',
+  id: 'Loading...',
+  username: 'Loading...'
 }
 
 @Component({
@@ -79,6 +83,10 @@ export default class extends Vue {
     return UserModule.name
   }
 
+  get username() {
+    return UserModule.username
+  }
+
   get email() {
     return UserModule.email
   }
@@ -91,6 +99,10 @@ export default class extends Vue {
     return UserModule.roles
   }
 
+  get id() {
+    return UserModule.id
+  }
+
   created() {
     this.getUser()
   }
@@ -100,7 +112,9 @@ export default class extends Vue {
       name: this.name,
       email: this.email,
       avatar: this.avatar,
-      roles: this.roles.join(' | ')
+      roles: this.roles.join(' | '),
+      id: this.id,
+      username: this.username
     }
   }
 }
