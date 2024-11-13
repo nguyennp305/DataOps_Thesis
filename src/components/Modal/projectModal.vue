@@ -2,6 +2,7 @@
   <modal
     :title="isEdit ? $t('route.edit') : $t('route.add')"
     :visible.sync="visible"
+    :width="'70%'"
     @close="handleModalClose"
     @cancel="handleModalCancel"
     @confirm="handleModalConfirm"
@@ -62,7 +63,14 @@
             :value="item.key"
           />
           <div class="component-add-items-to-list-select">
-            <el-button size="mini" type="primary" :disabled="totalItemsEnterpriseTypeOptions === enterpriseTypeOptions.length" @click="handleAddEnterprises">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="
+                totalItemsEnterpriseTypeOptions === enterpriseTypeOptions.length
+              "
+              @click="handleAddEnterprises"
+            >
               Add Items
             </el-button>
             <span>Total: {{ totalItemsEnterpriseTypeOptions }}</span>
@@ -85,12 +93,56 @@
             :value="item.key"
           />
           <div class="component-add-items-to-list-select">
-            <el-button size="mini" type="primary" :disabled="totalItemsUsersTypeOptions === usersTypeOptions.length" @click="handleAddUsers">
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="totalItemsUsersTypeOptions === usersTypeOptions.length"
+              @click="handleAddUsers"
+            >
               Add Items
             </el-button>
             <span>Total: {{ totalItemsUsersTypeOptions }}</span>
           </div>
         </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="reportList && reportList.length > 0"
+        :label="'Project Report'"
+        prop="report"
+      >
+        <div class="components-report-tinymce">
+          <div class="report-component">
+            <div v-for="item in reportList" :key="item.id" class="report-row">
+              <el-tag
+                class="report-el-tag"
+                @click="handleChooseShowReport(item)"
+                >{{ item.name }}</el-tag
+              >
+              <el-button
+                v-waves
+                type="primary"
+                size="mini"
+                icon="el-icon-download"
+                class="export-content-as-pdf"
+                @click="exportContentAsPDF(item.data)"
+              />
+              <el-button
+                v-waves
+                type="primary"
+                size="mini"
+                icon="el-icon-delete"
+                class="delete-content-as-pdf"
+                @click="handleDeleteReportInProject(item)"
+              />
+            </div>
+          </div>
+          <div
+            v-if="reportData"
+            class="editor-content"
+            v-html="reportData.data"
+          ></div>
+        </div>
       </el-form-item>
     </el-form>
   </modal>
@@ -107,6 +159,11 @@ import {
 import { getListEnterprise } from '@/api/organization/enterprise'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import moment from 'moment'
+import {
+  getReportList,
+  deleteReportById
+} from '@/api/project-management/report-list'
+import html2pdf from 'html2pdf.js'
 
 const defaultDataForm = {
   name: '',
@@ -172,7 +229,14 @@ export default {
       listQueryntUsersTypeOptions: {
         page: 1,
         size: 10
-      }
+      },
+      listQueryReportByProject: {
+        page: 1,
+        size: 1000000,
+        projectId: undefined
+      },
+      reportList: [],
+      reportData: null
     }
   },
   computed: {
@@ -197,14 +261,17 @@ export default {
   },
   watch: {
     data: {
-      handler(newVal, oldVal) {
+      async handler(newVal, oldVal) {
         this.fetchDataGetUsers(this.listQueryntUsersTypeOptions)
         this.fetchDataGetEnterprises(this.listQueryntEnterpriseTypeOptions)
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          await this.getListReportByProject(newVal.id)
           if (newVal.members && newVal.members.length > 0) {
             this.userListSelected = newVal.members.map((item) => item.id) // Tạo mảng mới
-            this.fetchDataGetUsersByListIdWhenEdit(newVal.members.map((item) => item.id).join(','))
+            this.fetchDataGetUsersByListIdWhenEdit(
+              newVal.members.map((item) => item.id).join(',')
+            )
           } else {
             this.userListSelected = [] // Mảng trống nếu không có member
           }
@@ -226,9 +293,7 @@ export default {
   },
   methods: {
     async fetchDataGetEnterprises(queryEnterprises) {
-      const { data } = await getListEnterprise(
-        queryEnterprises
-      )
+      const { data } = await getListEnterprise(queryEnterprises)
       const newArray = data.items.map((item) => ({
         key: item.id,
         displayName: item.name
@@ -379,6 +444,62 @@ export default {
     convertToISOString(dateString) {
       const date = moment.parseZone(dateString)
       return date.toISOString()
+    },
+    async getListReportByProject(id) {
+      if (id) {
+        this.listQueryReportByProject.projectId = id
+        const { data } = await getReportList(this.listQueryReportByProject)
+        this.reportList = data.items
+        console.log('reportList', this.reportList)
+      }
+    },
+    handleChooseShowReport(item) {
+      this.reportData = item
+    },
+    exportContentAsPDF(content) {
+      // Tạo một div tạm thời để chứa nội dung cần chuyển đổi thành PDF
+      const element = document.createElement('div')
+      element.innerHTML = content
+      document.body.appendChild(element)
+      // Cấu hình cho html2pdf
+      const options = {
+        margin: 1,
+        filename: 'document.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }
+      // Tạo PDF và tải xuống
+      html2pdf().set(options).from(element).save().then(() => {
+        document.body.removeChild(element) // Xóa div tạm sau khi tạo PDF
+      })
+    },
+    handleDeleteReportInProject(item) {
+      this.$confirm(
+        'Confirm to remove this report?',
+        'Warning',
+        {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
+        .then(async() => {
+          await deleteReportById({
+            id: item.id
+          })
+          this.$notify({
+            title: 'Success',
+            message: 'Delete Successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.getListReportByProject(this.dataForm.id)
+          this.reportData = null
+        })
+        .catch((err) => {
+          console.error(err)
+        })
     }
   }
 }
@@ -388,5 +509,38 @@ export default {
 /* Add your styles here */
 .date-range-picker {
   width: 100%;
+}
+.report-el-tag {
+  min-width: 100px;
+  cursor: pointer;
+}
+.report-component {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+.report-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.components-report-tinymce {
+  display: flex;
+  justify-content: space-between;
+  .editor-content {
+    flex: 1;
+    margin-left: 10px;
+    max-width: 80%;
+    min-width: 600px;
+    overflow-y: auto;
+    max-height: 288px;
+    border: 1px solid #ccc;
+  }
+}
+.export-content-as-pdf {
+  margin-left: 10px;
+}
+.delete-content-as-pdf {
+  margin-left: 10px;
 }
 </style>

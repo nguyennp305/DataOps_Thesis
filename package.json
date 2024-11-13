@@ -27,6 +27,7 @@
     "file-saver": "^2.0.5",
     "form-data": "^4.0.1",
     "fuse.js": "^6.4.6",
+    "html2pdf.js": "^0.10.2",
     "js-cookie": "^2.2.1",
     "jsonlint": "^1.6.3",
     "jszip": "^3.6.0",

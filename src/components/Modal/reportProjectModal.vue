@@ -79,6 +79,16 @@
           />
           <div class="editor-content" v-html="dataForm.data"></div>
         </div>
+        <el-button
+          v-waves
+          type="primary"
+          size="mini"
+          icon="el-icon-download"
+          @click="exportContentAsPDF"
+          class="export-content-as-pdf"
+        >
+          Export PDF
+        </el-button>
       </el-form-item>
     </el-form>
   </modal>
@@ -94,6 +104,7 @@ import {
 } from '@/api/project-management/report-list'
 import { UserModule } from '@/store/modules/user'
 import ReportProjectTinymce from '@/components/Tinymce/reportProjectTinymce'
+import html2pdf from 'html2pdf.js'
 
 const defaultDataForm = {
   name: '',
@@ -301,6 +312,25 @@ export default {
     },
     updateDataReportContent(content) {
       this.dataForm.data = content
+    },
+    exportContentAsPDF() {
+      const content = this.dataForm.data // Lấy nội dung HTML từ TinyMCE
+      // Tạo một div tạm thời để chứa nội dung cần chuyển đổi thành PDF
+      const element = document.createElement('div')
+      element.innerHTML = content
+      document.body.appendChild(element)
+      // Cấu hình cho html2pdf
+      const options = {
+        margin: 1,
+        filename: 'document.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }
+      // Tạo PDF và tải xuống
+      html2pdf().set(options).from(element).save().then(() => {
+        document.body.removeChild(element) // Xóa div tạm sau khi tạo PDF
+      })
     }
   }
 }
@@ -327,5 +357,8 @@ export default {
     overflow-y: auto;
     max-height: 288px;
   }
+}
+.export-content-as-pdf {
+  margin-top: 1rem;
 }
 </style>
