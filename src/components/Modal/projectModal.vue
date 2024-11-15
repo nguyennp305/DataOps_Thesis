@@ -117,8 +117,9 @@
               <el-tag
                 class="report-el-tag"
                 @click="handleChooseShowReport(item)"
-                >{{ item.name }}</el-tag
               >
+                {{ item.name }} - {{ item.reportType }}
+              </el-tag>
               <el-button
                 v-waves
                 type="primary"
