@@ -1,6 +1,5 @@
 ### Note
 #### Sửa lại các cái dropdown trong filter-search
-#### trong table cuar modal gan nhan, chua cos description cho tung item
 #### trong model của modal data, thêm 1 nút chi tiết.
 #### tham khao cac generate trong https://app.roboflow.com/nguyen-kd7i0/hard-hat-sample-ktktq/1/export
 

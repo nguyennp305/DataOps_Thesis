@@ -30,6 +30,7 @@
       :visible="visible"
       :isEdit="isEditModal"
       :data="propDataItem"
+      :listAllDatasetInProject="listAllDatasetInProject"
       @update:visible="handleUpdateVisible"
       @update:reload-table="reloadTable"
     />
@@ -49,7 +50,10 @@ import FilterSearch from '@/views/dataset-management/component/filter-search'
 import DatasetModal from '@/components/Modal/datasetModal'
 import GenerateDataLabelModel from '@/components/Modal/generateDataLabelModel.vue'
 // import function call api.
-import { getDatasetList, deleteDatasetById } from '@/api/dataset-management/dataset'
+import {
+  getDatasetList,
+  deleteDatasetById
+} from '@/api/dataset-management/dataset'
 export default {
   name: 'DatasetList',
   components: {
@@ -80,11 +84,13 @@ export default {
       isEditModal: false,
       propDataItem: null,
       visibleGenerateData: false,
-      propDataItemGenerateData: null
+      propDataItemGenerateData: null,
+      listAllDatasetInProject: []
     }
   },
   created() {
     this.getList()
+    this.getListAllDatasetInProject()
   },
   methods: {
     async getList() {
@@ -96,6 +102,22 @@ export default {
         this.listLoading = false
       }, 0.5 * 1000)
     },
+    async getListAllDatasetInProject() {
+      const query = {
+        page: 1,
+        size: 100000000 // mock số lượng.
+      }
+      const { data } = await getDatasetList(query)
+      // Dùng reduce để gộp tất cả các labeledImageIds
+      const allLabeledImageIds = data.items.reduce((acc, item) => {
+        if (item.labeledImageIds && Array.isArray(item.labeledImageIds)) {
+          return acc.concat(item.labeledImageIds)
+        }
+        return acc
+      }, [])
+      this.listAllDatasetInProject = allLabeledImageIds
+    },
+
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -172,5 +194,4 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

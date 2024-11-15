@@ -87,11 +87,11 @@
             />
             <div v-else class="crop-placeholder" />
           </div>
-          <div class="show-used-label">
+          <!-- <div class="show-used-label">
             <el-tag v-for="(label, index) in labeledNames" :key="index">{{
               label
             }}</el-tag>
-          </div>
+          </div> -->
         </div>
       </el-form-item>
     </el-form>
@@ -176,25 +176,25 @@ export default {
       ]
     }
   },
-  computed: {
-    labeledNames() {
-      if (this.dataForm.id) {
-        let response = []
-        if (this.dataForm.labeledImages.length === 0) {
-          response.push('Not use label')
-          return response
-        }
-        const uniqueLabels = new Set() // Sử dụng Set để lọc các giá trị không trùng nhau
-        this.dataForm.labeledImages.forEach((labeledImage) => {
-          uniqueLabels.add(labeledImage.labelId)
-        })
-        response = [...uniqueLabels] // Chuyển Set thành mảng và gán vào response
-        return response
-      } else {
-        return []
-      }
-    }
-  },
+  // computed: {
+  //   labeledNames() {
+  //     if (this.dataForm.id) {
+  //       let response = []
+  //       if (this.dataForm.labeledImages.length === 0) {
+  //         response.push('Not use label')
+  //         return response
+  //       }
+  //       const uniqueLabels = new Set() // Sử dụng Set để lọc các giá trị không trùng nhau
+  //       this.dataForm.labeledImages.forEach((labeledImage) => {
+  //         uniqueLabels.add(labeledImage.labelId)
+  //       })
+  //       response = [...uniqueLabels] // Chuyển Set thành mảng và gán vào response
+  //       return response
+  //     } else {
+  //       return []
+  //     }
+  //   }
+  // },
   watch: {
     data: {
       handler(newVal) {

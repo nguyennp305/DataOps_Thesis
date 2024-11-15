@@ -30,6 +30,7 @@
         <el-select
           v-model="dataForm.projectId"
           :placeholder="$t('route.project')"
+          :disabled="isEdit"
           filterable
           clearable
         >
@@ -57,6 +58,7 @@
         <el-select
           v-model="dataForm.labelType"
           :placeholder="'Label Type'"
+          :disabled="isEdit"
           filterable
           clearable
         >
@@ -104,6 +106,7 @@
           v-model="imageDataListSelected"
           :placeholder="$t('route.image')"
           :filter-method="onInputChangeSearchImage"
+          :disabled="!dataForm.projectId"
           multiple
           filterable
           clearable
@@ -180,6 +183,10 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    listAllDatasetInProject: {
+      type: Array,
+      default: null
     }
   },
   data() {
@@ -229,7 +236,8 @@ export default {
       totalItemsImageDataOptions: 0,
       listQueryLabelImageOptions: {
         page: 1,
-        size: 10
+        size: 10,
+        status: 'notLabel'
       },
       isLabelTypeOptions: [
         { key: 'classification', displayName: 'Classification' },
@@ -239,30 +247,37 @@ export default {
   },
   watch: {
     data: {
-      handler(newVal) {
-        this.fetchDataGetProject(this.listQueryProjectOptions)
-        this.fetchDataGetLabelGroupData(this.listQueryLabelGroupDataOptions)
-        this.fetchDataGetImageData(this.listQueryLabelImageOptions)
+      async handler(newVal) {
+        await this.fetchDataGetProject(this.listQueryProjectOptions)
+        await this.fetchDataGetLabelGroupData(this.listQueryLabelGroupDataOptions)
+        // fetch image with status notLabel
+        this.listQueryLabelImageOptions.status = 'notLabel'
+        await this.fetchDataGetImageData(this.listQueryLabelImageOptions)
         if (newVal) {
           this.dataForm = cloneDeep(newVal)
+          // fetch image with status notLabel
+          this.listQueryLabelImageOptions.status = 'notLabel'
           if (newVal.projectId) {
-            this.fetchDataGetProjectsByListIdWhenEdit(newVal.projectId)
+            await this.fetchDataGetProjectsByListIdWhenEdit(newVal.projectId)
           }
           if (newVal.labelGroupIds && newVal.labelGroupIds.length > 0) {
             this.labelGroupDataListSelected = newVal.labelGroupIds.map(
               (item) => item
             ) // Tạo mảng mới
-            this.fetchDataGetLabelGroupDataByListIdWhenEdit(
+            await this.fetchDataGetLabelGroupDataByListIdWhenEdit(
               newVal.labelGroupIds.map((item) => item).join(',')
             )
           } else {
             this.labelGroupDataListSelected = [] // Mảng trống nếu không có member
           }
+          // check xem dataset có chọn ảnh nào hay chưa.
           if (newVal.labeledImageIds && newVal.labeledImageIds.length > 0) {
             this.imageDataListSelected = newVal.labeledImageIds.map(
               (item) => item
             ) // Tạo mảng mới
-            this.fetchDataGetImageDataByListIdWhenEdit(
+            // fetch image with not status
+            this.listQueryLabelImageOptions.status = ''
+            await this.fetchDataGetImageDataByListIdWhenEdit(
               newVal.labeledImageIds.map((item) => item).join(',')
             )
           } else {
@@ -275,10 +290,18 @@ export default {
       },
       deep: true
     }
+    // listAllDatasetInProject: {
+    //   async handler(newVal) {
+    //     console.log('listAllDatasetInProject', newVal)
+    //   },
+    //   deep: true,
+    // }
   },
   created() {
     this.fetchDataGetProject(this.listQueryProjectOptions)
     this.fetchDataGetLabelGroupData(this.listQueryLabelGroupDataOptions)
+    // fetch image with status notLabel
+    this.listQueryLabelImageOptions.status = 'notLabel'
     this.fetchDataGetImageData(this.listQueryLabelImageOptions)
   },
   methods: {
@@ -343,6 +366,8 @@ export default {
       }
       await this.fetchDataGetProject(newQueryUsers)
     },
+    // ban đầu sẽ fetch image nằm trong dự án đã chọn, với status chưa gán nhãn và phải không được chọn bởi các dataset khác.
+    // nếu đã chọn sẵn image rồi thì thêm vào mảng.
     async fetchDataGetImageData(queryImageData) {
       const { data } = await getDataList(queryImageData)
       const newArray = data.items.map((item) => ({
@@ -350,12 +375,16 @@ export default {
         displayName: item.name,
         imageUrl: item.imageUrl
       }))
+
       // Kiểm tra và chỉ thêm những item chưa tồn tại
       newArray.forEach((newItem) => {
         const isExist = this.imageDataOptions.some(
           (existingItem) => existingItem.key === newItem.key
         )
-        if (!isExist) {
+        if (!isExist && this.listAllDatasetInProject.includes(newItem.key) === false) {
+          console.log('----------', newItem.key)
+          console.log('----------', this.listAllDatasetInProject)
+          console.log('----------', this.listAllDatasetInProject.includes(newItem.key))
           this.imageDataOptions.push(newItem)
         }
       })
@@ -363,20 +392,24 @@ export default {
     },
     async handleAddImageData() {
       this.listQueryLabelImageOptions.page += 1
+      this.listQueryLabelImageOptions.status = 'notLabel'
       await this.fetchDataGetImageData(this.listQueryLabelImageOptions)
     },
     async fetchDataGetImageDataByListIdWhenEdit(ids) {
       const newQueryImageData = {
         page: 1,
         size: 20,
-        ids: ids
+        ids: ids,
+        status: ''
       }
       await this.fetchDataGetImageData(newQueryImageData)
     },
     handleSearchDebounceImage: debounce(async function(name) {
       if (!name || name === '') {
         this.listQueryLabelImageOptions.page = 1
+        this.listQueryLabelImageOptions.status = 'notLabel'
         this.imageDataOptions = []
+        // fetch image with status notLabel
         await this.fetchDataGetImageData(this.listQueryLabelImageOptions)
       } else {
         const newQuery = {
