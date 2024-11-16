@@ -27,6 +27,7 @@
           type="text"
           tabindex="1"
           autocomplete="on"
+          @keyup.enter.native="handleLogin"
         />
       </el-form-item>
 
@@ -73,12 +74,11 @@
 
       <div style="position:relative">
         <div class="tips">
-          <span>{{ $t('login.username') }} : admin </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }} </span>
+          <span>Dev test: </span>
         </div>
         <div class="tips">
-          <span>{{ $t('login.username') }} : editor </span>
-          <span>{{ $t('login.password') }} : {{ $t('login.any') }} </span>
+          <span>{{ $t('login.username') }} : testlogin2 </span>
+          <span>{{ $t('login.password') }} : 123456aA@ </span>
         </div>
 
         <el-button
