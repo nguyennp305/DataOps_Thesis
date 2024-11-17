@@ -45,7 +45,7 @@
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
           </router-link>
-          <a
+          <!-- <a
             target="_blank"
             href="https://github.com"
           >
@@ -58,7 +58,7 @@
             href="https://github.com"
           >
             <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          </a> -->
           <el-dropdown-item
             divided
             @click.native="logout"

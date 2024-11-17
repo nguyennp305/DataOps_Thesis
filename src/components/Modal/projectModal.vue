@@ -107,7 +107,7 @@
       </el-form-item>
 
       <el-form-item
-        v-if="reportList && reportList.length > 0"
+        v-if="reportList && reportList.length > 0 && isEdit"
         :label="'Project Report'"
         prop="report"
       >
@@ -509,7 +509,7 @@ export default {
 <style lang="scss" scoped>
 /* Add your styles here */
 .date-range-picker {
-  width: 100%;
+  width: 100% !important;
 }
 .report-el-tag {
   min-width: 100px;

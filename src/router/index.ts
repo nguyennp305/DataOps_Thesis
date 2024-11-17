@@ -354,257 +354,257 @@ export const asyncRoutes: RouteConfig[] = [
       }
     ]
   },
-  {
-    path: '/icon',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "icons" */ '@/views/icons/index.vue'),
-        name: 'Icons',
-        meta: {
-          title: 'icons',
-          icon: 'icon',
-          roles: ['admin'],
-          noCache: true
-        }
-      }
-    ]
-  },
-  /** when your routing map is too long, you can split it into small modules **/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    meta: {
-      title: 'example',
-      icon: 'example',
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'create',
-        component: () => import(/* webpackChunkName: "example-create" */ '@/views/example/create.vue'),
-        name: 'CreateArticle',
-        meta: {
-          title: 'createArticle',
-          icon: 'edit',
-          roles: ['admin']
-        }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import(/* webpackChunkName: "example-edit" */ '@/views/example/edit.vue'),
-        name: 'EditArticle',
-        meta: {
-          title: 'editArticle',
-          roles: ['admin'],
-          noCache: true,
-          activeMenu: '/example/list',
-          hidden: true
-        }
-      },
-      {
-        path: 'list',
-        component: () => import(/* webpackChunkName: "example-list" */ '@/views/example/list.vue'),
-        name: 'ArticleList',
-        meta: {
-          title: 'articleList',
-          icon: 'list',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/tab',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "tab" */ '@/views/tab/index.vue'),
-        name: 'Tab',
-        meta: {
-          title: 'tab',
-          icon: 'tab',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/error',
-    component: Layout,
-    redirect: 'noredirect',
-    meta: {
-      title: 'errorPages',
-      icon: '404',
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: '401',
-        component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/error-page/401.vue'),
-        name: 'Page401',
-        meta: {
-          title: 'page401',
-          roles: ['admin'],
-          noCache: true
-        }
-      },
-      {
-        path: '404',
-        component: () => import(/* webpackChunkName: "error-page-404" */ '@/views/error-page/404.vue'),
-        name: 'Page404',
-        meta: {
-          title: 'page404',
-          roles: ['admin'],
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    meta: {
-      title: 'excel',
-      icon: 'excel',
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'export-excel',
-        component: () => import(/* webpackChunkName: "export-excel" */ '@/views/excel/export-excel.vue'),
-        name: 'ExportExcel',
-        meta: { title: 'exportExcel', roles: ['admin'] }
-      },
-      {
-        path: 'export-selected-excel',
-        component: () => import(/* webpackChunkName: "select-excel" */ '@/views/excel/select-excel.vue'),
-        name: 'SelectExcel',
-        meta: { title: 'selectExcel', roles: ['admin'] }
-      },
-      {
-        path: 'export-merge-header',
-        component: () => import(/* webpackChunkName: "merge-header" */ '@/views/excel/merge-header.vue'),
-        name: 'MergeHeader',
-        meta: { title: 'mergeHeader', roles: ['admin'] }
-      },
-      {
-        path: 'upload-excel',
-        component: () => import(/* webpackChunkName: "upload-excel" */ '@/views/excel/upload-excel.vue'),
-        name: 'UploadExcel',
-        meta: { title: 'uploadExcel', roles: ['admin'] }
-      }
-    ]
-  },
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    meta: {
-      title: 'zip',
-      icon: 'zip',
-      roles: ['admin'],
-      alwaysShow: true // will always show the root menu
-    },
-    children: [
-      {
-        path: 'download',
-        component: () => import(/* webpackChunkName: "zip" */ '@/views/zip/index.vue'),
-        name: 'ExportZip',
-        meta: { title: 'exportZip', roles: ['admin'] }
-      }
-    ]
-  },
-  {
-    path: '/pdf',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    redirect: '/pdf/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "pdf" */ '@/views/pdf/index.vue'),
-        name: 'PDF',
-        meta: {
-          title: 'pdf',
-          icon: 'pdf',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/pdf-download-example',
-    component: () => import(/* webpackChunkName: "pdf-download-example" */ '@/views/pdf/download.vue'),
-    meta: { hidden: true, roles: ['admin'] }
-  },
-  {
-    path: '/theme',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "theme" */ '@/views/theme/index.vue'),
-        name: 'Theme',
-        meta: {
-          title: 'theme',
-          icon: 'theme',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: '/i18n',
-    component: Layout,
-    meta: {
-      roles: ['admin']
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import(/* webpackChunkName: "i18n-demo" */ '@/views/i18n-demo/index.vue'),
-        name: 'I18n',
-        meta: {
-          title: 'i18n',
-          icon: 'international',
-          roles: ['admin']
-        }
-      }
-    ]
-  },
-  {
-    path: 'https://github.com',
-    meta: {
-      title: 'externalLink',
-      icon: 'link',
-      roles: ['admin']
-    }
-  },
+  // {
+  //   path: '/icon',
+  //   component: Layout,
+  //   meta: {
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import(/* webpackChunkName: "icons" */ '@/views/icons/index.vue'),
+  //       name: 'Icons',
+  //       meta: {
+  //         title: 'icons',
+  //         icon: 'icon',
+  //         roles: ['admin'],
+  //         noCache: true
+  //       }
+  //     }
+  //   ]
+  // },
+  // /** when your routing map is too long, you can split it into small modules **/
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
+  // tableRouter,
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   meta: {
+  //     title: 'example',
+  //     icon: 'example',
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'create',
+  //       component: () => import(/* webpackChunkName: "example-create" */ '@/views/example/create.vue'),
+  //       name: 'CreateArticle',
+  //       meta: {
+  //         title: 'createArticle',
+  //         icon: 'edit',
+  //         roles: ['admin']
+  //       }
+  //     },
+  //     {
+  //       path: 'edit/:id(\\d+)',
+  //       component: () => import(/* webpackChunkName: "example-edit" */ '@/views/example/edit.vue'),
+  //       name: 'EditArticle',
+  //       meta: {
+  //         title: 'editArticle',
+  //         roles: ['admin'],
+  //         noCache: true,
+  //         activeMenu: '/example/list',
+  //         hidden: true
+  //       }
+  //     },
+  //     {
+  //       path: 'list',
+  //       component: () => import(/* webpackChunkName: "example-list" */ '@/views/example/list.vue'),
+  //       name: 'ArticleList',
+  //       meta: {
+  //         title: 'articleList',
+  //         icon: 'list',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/tab',
+  //   component: Layout,
+  //   meta: {
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import(/* webpackChunkName: "tab" */ '@/views/tab/index.vue'),
+  //       name: 'Tab',
+  //       meta: {
+  //         title: 'tab',
+  //         icon: 'tab',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   meta: {
+  //     title: 'errorPages',
+  //     icon: '404',
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: '401',
+  //       component: () => import(/* webpackChunkName: "error-page-401" */ '@/views/error-page/401.vue'),
+  //       name: 'Page401',
+  //       meta: {
+  //         title: 'page401',
+  //         roles: ['admin'],
+  //         noCache: true
+  //       }
+  //     },
+  //     {
+  //       path: '404',
+  //       component: () => import(/* webpackChunkName: "error-page-404" */ '@/views/error-page/404.vue'),
+  //       name: 'Page404',
+  //       meta: {
+  //         title: 'page404',
+  //         roles: ['admin'],
+  //         noCache: true
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   meta: {
+  //     title: 'excel',
+  //     icon: 'excel',
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'export-excel',
+  //       component: () => import(/* webpackChunkName: "export-excel" */ '@/views/excel/export-excel.vue'),
+  //       name: 'ExportExcel',
+  //       meta: { title: 'exportExcel', roles: ['admin'] }
+  //     },
+  //     {
+  //       path: 'export-selected-excel',
+  //       component: () => import(/* webpackChunkName: "select-excel" */ '@/views/excel/select-excel.vue'),
+  //       name: 'SelectExcel',
+  //       meta: { title: 'selectExcel', roles: ['admin'] }
+  //     },
+  //     {
+  //       path: 'export-merge-header',
+  //       component: () => import(/* webpackChunkName: "merge-header" */ '@/views/excel/merge-header.vue'),
+  //       name: 'MergeHeader',
+  //       meta: { title: 'mergeHeader', roles: ['admin'] }
+  //     },
+  //     {
+  //       path: 'upload-excel',
+  //       component: () => import(/* webpackChunkName: "upload-excel" */ '@/views/excel/upload-excel.vue'),
+  //       name: 'UploadExcel',
+  //       meta: { title: 'uploadExcel', roles: ['admin'] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/zip',
+  //   component: Layout,
+  //   redirect: '/zip/download',
+  //   meta: {
+  //     title: 'zip',
+  //     icon: 'zip',
+  //     roles: ['admin'],
+  //     alwaysShow: true // will always show the root menu
+  //   },
+  //   children: [
+  //     {
+  //       path: 'download',
+  //       component: () => import(/* webpackChunkName: "zip" */ '@/views/zip/index.vue'),
+  //       name: 'ExportZip',
+  //       meta: { title: 'exportZip', roles: ['admin'] }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/pdf',
+  //   component: Layout,
+  //   meta: {
+  //     roles: ['admin']
+  //   },
+  //   redirect: '/pdf/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import(/* webpackChunkName: "pdf" */ '@/views/pdf/index.vue'),
+  //       name: 'PDF',
+  //       meta: {
+  //         title: 'pdf',
+  //         icon: 'pdf',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/pdf-download-example',
+  //   component: () => import(/* webpackChunkName: "pdf-download-example" */ '@/views/pdf/download.vue'),
+  //   meta: { hidden: true, roles: ['admin'] }
+  // },
+  // {
+  //   path: '/theme',
+  //   component: Layout,
+  //   meta: {
+  //     roles: ['admin']
+  //   },
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import(/* webpackChunkName: "theme" */ '@/views/theme/index.vue'),
+  //       name: 'Theme',
+  //       meta: {
+  //         title: 'theme',
+  //         icon: 'theme',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/i18n',
+  //   component: Layout,
+  //   meta: {
+  //     roles: ['admin']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import(/* webpackChunkName: "i18n-demo" */ '@/views/i18n-demo/index.vue'),
+  //       name: 'I18n',
+  //       meta: {
+  //         title: 'i18n',
+  //         icon: 'international',
+  //         roles: ['admin']
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: 'https://github.com',
+  //   meta: {
+  //     title: 'externalLink',
+  //     icon: 'link',
+  //     roles: ['admin']
+  //   }
+  // },
   {
     path: '*',
     redirect: '/404',
-    meta: { hidden: true, roles: ['admin'] }
+    meta: { hidden: true, roles: ['admin', 'admin_project'] }
   }
 ]
 

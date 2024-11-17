@@ -15,20 +15,6 @@
         </div>
       </el-col>
 
-      <el-col :xs="24" :sm="24" :lg="12">
-        <div class="chart-wrapper">
-          <radar-chart />
-        </div>
-      </el-col>
-
-      <!-- <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col> -->
-    </el-row>
-
-    <el-row :gutter="8">
       <el-col
         :xs="{span: 24}"
         :sm="{span: 24}"
@@ -39,7 +25,22 @@
       >
         <transaction-table :tasksChartData="tasksChartData" />
       </el-col>
-      <el-col
+
+      <!-- <el-col :xs="24" :sm="24" :lg="12">
+        <div class="chart-wrapper">
+          <radar-chart />
+        </div>
+      </el-col> -->
+
+      <!-- <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <bar-chart />
+        </div>
+      </el-col> -->
+    </el-row>
+
+    <el-row :gutter="8">
+      <!-- <el-col
         :xs="{span: 24}"
         :sm="{span: 12}"
         :md="{span: 12}"
@@ -58,7 +59,7 @@
         style="margin-bottom: 30px"
       >
         <box-card />
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>

@@ -32,6 +32,7 @@
         <el-select
           v-model="dataForm.projectId"
           :placeholder="$t('route.project')"
+          :disabled="isEdit"
           filterable
           clearable
         >
@@ -353,7 +354,7 @@ export default {
     flex: 1;
     max-width: 50%;
     min-width: 600px;
-    margin-top: 7rem;
+    // margin-top: 7rem;
     overflow-y: auto;
     max-height: 288px;
   }

@@ -30,6 +30,7 @@
         <el-select
           v-model="dataForm.projectId"
           :placeholder="$t('route.project')"
+          :disabled="isEdit"
           filterable
           clearable
         >
