@@ -32,7 +32,7 @@
 
       <el-table-column
         :label="$t('route.enterprise')"
-        width="200px"
+        width="150px"
         :align="'center'"
       >
         <template slot-scope="{row}">
@@ -74,7 +74,7 @@
       <el-table-column
         :label="$t('table.members')"
         :align="'center'"
-        min-width="150px"
+        min-width="100px"
       >
         <template slot-scope="{row}">
           <div v-if="row.members.length === 0">
@@ -86,7 +86,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('table.delete')"
         width="100px"
         :align="'center'"
@@ -94,7 +94,7 @@
         <template slot-scope="{row}">
           <span>{{ row.deleted }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         v-if="showCreatedAt"

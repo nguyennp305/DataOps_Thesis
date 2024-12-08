@@ -60,7 +60,7 @@
 
       <el-table-column
         :label="$t('table.status')"
-        min-width="150px"
+        min-width="100px"
         :align="'center'"
       >
         <template slot-scope="{row}">
@@ -114,6 +114,7 @@
         :align="'center'"
         min-width="200px"
         clas-name="fixed-width"
+        fixed="right"
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">

@@ -120,6 +120,7 @@
         :align="'center'"
         min-width="300px"
         clas-name="fixed-width"
+        fixed="right"
       >
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
