@@ -3,7 +3,7 @@
     <el-table
       v-loading="loading"
       :key="tableKey"
-      :data="data"
+      :data="formattedData"
       :border="true"
       fit
       highlight-current-row
@@ -49,7 +49,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('table.delete')"
         width="100px"
         :align="'center'"
@@ -57,16 +57,16 @@
         <template slot-scope="{row}">
           <span>{{ row.deleted }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         v-if="showCreatedAt"
         :label="$t('table.createdAt')"
         :align="'center'"
-        min-width="150px"
+        min-width="200px"
       >
         <template slot-scope="{row}">
-          <span style="color: red;">{{ row.createdAt }}</span>
+          <span style="color: red;">{{ row.formattedCreatedAt }}</span>
         </template>
       </el-table-column>
 
@@ -126,7 +126,20 @@ export default {
   data() {
     return {}
   },
+  computed: {
+    formattedData() {
+      return this.data.map(row => ({
+        ...row,
+        formattedCreatedAt: this.formatDate(row.createdAt)
+      }))
+    }
+  },
   methods: {
+    formatDate(dateString) {
+      if (!dateString) return '' // Xử lý nếu dữ liệu rỗng
+      const date = new Date(dateString)
+      return date.toLocaleString()
+    },
     // getSortClass(key) {
     //   const sort = this.listQuery.sort
     //   return sort === `+${key}` ? 'ascending' : 'descending'

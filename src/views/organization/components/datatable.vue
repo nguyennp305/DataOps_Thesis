@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('table.status')"
         width="150px"
         :align="'center'"
@@ -37,7 +37,7 @@
         <template slot-scope="{row}">
           <el-tag class="status-el-tag">{{ row.status }}</el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         :label="$t('table.description')"
@@ -49,7 +49,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('table.delete')"
         width="100px"
         :align="'center'"
@@ -57,7 +57,7 @@
         <template slot-scope="{row}">
           <el-tag>{{ row.deleted }}</el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         v-if="showCreatedAt"
