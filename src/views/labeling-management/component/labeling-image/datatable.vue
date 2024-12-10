@@ -10,7 +10,7 @@
       style="width: 100%"
     >
       <el-table-column
-        :label="$t('route.labelNameData')"
+        :label="'Image Name'"
         width="200px"
         :align="'center'"
       >
@@ -20,7 +20,7 @@
       </el-table-column>
 
       <el-table-column
-        :label="$t('route.project')"
+        :label="'Image'"
         width="200px"
         :align="'center'"
       >

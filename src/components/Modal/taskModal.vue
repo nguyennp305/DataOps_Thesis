@@ -67,10 +67,10 @@
       </el-form-item>
 
       <el-form-item
-        :label="'Assignee'"
+        :label="'Assignee Name'"
         prop="assignee"
       >
-        <el-tag>{{ dataForm.assigneeId || 'Not Assignee' }}</el-tag>
+        <el-tag>{{ dataForm.assigneeId ? assigneeUser?.username : 'Not Assignee' }}</el-tag>
       </el-form-item>
 
       <el-form-item :label="$t('table.status')" prop="status">
@@ -99,6 +99,7 @@ import { createTask, updateTaskById } from '@/api/project-management/task-list'
 import { UserModule } from '@/store/modules/user'
 import DateRangePicker from '@/components/DateRangePicker/index.vue'
 import moment from 'moment'
+import { getUserList } from '@/api/user-management/user-list'
 
 const defaultDataForm = {
   assigneeId: null,
@@ -165,7 +166,8 @@ export default {
         page: 1,
         size: 10
       },
-      rangeDate: [null, null]
+      rangeDate: [null, null],
+      assigneeUser: null
     }
   },
   computed: {
@@ -197,6 +199,9 @@ export default {
           if (newVal.projectId) {
             this.fetchDataGetProjectsByListIdWhenEdit(newVal.projectId)
           }
+          if (newVal.assigneeId) {
+            this.fetchDataGetUsers(newVal.assigneeId)
+          }
         } else {
           this.dataForm = cloneDeep(defaultDataForm)
           this.rangeDate = [null, null]
@@ -210,6 +215,15 @@ export default {
     this.fetchDataGetProject(this.listQueryProjectOptions)
   },
   methods: {
+    async fetchDataGetUsers(queryUsers) {
+      const query = {
+        page: 1,
+        size: 10,
+        ids: queryUsers
+      }
+      const { data } = await getUserList(query)
+      this.assigneeUser = data.items[0]
+    },
     async fetchDataGetProject(queryProject) {
       const { data } = await getProjectList(queryProject)
       const newArray = data.items.map((item) => ({
@@ -251,6 +265,7 @@ export default {
       this.totalItemsProjectOptions = 0
       this.listQueryProjectOptions.page = 1
       this.rangeDate = [null, null]
+      this.assigneeUser = null
       this.clearValidate()
       this.$emit('update:visible', false)
     },

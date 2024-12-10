@@ -73,13 +73,13 @@
       </el-button>
 
       <div style="position:relative">
-        <div class="tips">
+        <!-- <div class="tips">
           <span>Dev test: </span>
-        </div>
-        <div class="tips">
+        </div> -->
+        <!-- <div class="tips">
           <span>{{ $t('login.username') }} : testlogin2 </span>
           <span>{{ $t('login.password') }} : 123456aA@ </span>
-        </div>
+        </div> -->
 
         <!-- <el-button
           class="thirdparty-button"

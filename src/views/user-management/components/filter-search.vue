@@ -37,7 +37,7 @@
         </el-select>
       </labeling-slot>
 
-      <labeling-slot :label="$t('table.isDelete')">
+      <!-- <labeling-slot :label="$t('table.isDelete')">
         <el-select
           v-model="localListQuery.isDelete"
           :placeholder="$t('table.isDelete')"
@@ -50,7 +50,7 @@
             :value="item.key"
           />
       </el-select>
-      </labeling-slot>
+      </labeling-slot> -->
     </div>
     <div class="portlet-filter_action">
       <el-button

@@ -93,7 +93,7 @@
       <el-button type="primary" icon="el-icon-edit" @click="handleCreate">
         {{ $t("table.add") }}
       </el-button>
-      <el-button
+      <!-- <el-button
         v-waves
         :loading="downloadLoading"
         type="primary"
@@ -101,7 +101,7 @@
         @click="handleDownload"
       >
         {{ $t("table.export") }}
-      </el-button>
+      </el-button> -->
     </div>
   </div>
 </template>

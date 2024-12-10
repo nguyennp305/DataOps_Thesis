@@ -77,7 +77,7 @@
             >
               Add Items
             </el-button>
-            <span>Total: {{ totalItemsLabelDataOptions }}</span>
+            <span>Total: {{ labelDataOptions.length + '/' + totalItemsLabelDataOptions }}</span>
           </div>
         </el-select>
       </el-form-item>
@@ -154,7 +154,7 @@ export default {
       totalItemsLabelDataOptions: 0,
       listQueryLabelDataOptions: {
         page: 1,
-        size: 10
+        size: 100
       }
     }
   },
@@ -211,7 +211,7 @@ export default {
     async fetchDataGetLabelDataByListIdWhenEdit(ids) {
       const newQueryLabelData = {
         page: 1,
-        size: 20,
+        size: 200,
         ids: ids
       }
       await this.fetchDataGetLabelData(newQueryLabelData)
@@ -241,7 +241,7 @@ export default {
     async fetchDataGetProjectsByListIdWhenEdit(ids) {
       const newQueryUsers = {
         page: 1,
-        size: 20,
+        size: 200,
         ids: ids
       }
       await this.fetchDataGetProject(newQueryUsers)

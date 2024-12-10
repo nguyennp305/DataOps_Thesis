@@ -11,7 +11,7 @@
     >
       <el-table-column
         :label="$t('route.taskName')"
-        width="200px"
+        width="500px"
         :align="'center'"
       >
         <template slot-scope="{row}">
@@ -19,7 +19,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('route.project')"
         width="200px"
         :align="'center'"
@@ -27,7 +27,7 @@
         <template slot-scope="{row}">
           <span>{{ row.projectId }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column
         :label="$t('table.status')"

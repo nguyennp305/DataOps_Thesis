@@ -57,7 +57,7 @@
                 >
                   Add Items
                 </el-button>
-                <span>Total: {{ totalItemsLabelDataOptions }}</span>
+                <span>Total: {{ labelDataOptions.length + '/' + totalItemsLabelDataOptions }}</span>
               </div>
             </el-select>
             <classification-label :image-link="dataForm.imageUrl" />
@@ -154,7 +154,7 @@ export default {
       totalItemsLabelDataOptions: 0,
       listQueryLabelDataOptions: {
         page: 1,
-        size: 10,
+        size: 100,
         ids: null
       }
     }
@@ -184,7 +184,7 @@ export default {
         console.log('dataset', newVal)
         const newQuery = {
           page: 1,
-          size: 10,
+          size: 100,
           ids: newVal.labelGroupIds.join(',') // Tạo mảng mới
         }
         this.fetchDataGetLabelGroupData(newQuery)
@@ -211,7 +211,7 @@ export default {
       this.totalItemsLabelDataOptions = 0
       this.listQueryLabelDataOptions = {
         page: 1,
-        size: 10,
+        size: 100,
         ids: null
       }
       this.clearValidate()

@@ -89,7 +89,7 @@
                 >
                   Add Items
                 </el-button>
-                <span>Total: {{ totalItemsLabelDataOptions }}</span>
+                <span>Total: {{ labelDataOptions.length + '/' + totalItemsLabelDataOptions }}</span>
               </div>
             </el-select>
           </template>
@@ -187,7 +187,7 @@ export default {
       totalItemsLabelDataOptions: 0,
       listQueryLabelDataOptions: {
         page: 1,
-        size: 10,
+        size: 100,
         ids: null
       },
       labeledImagesDataLocal: []
@@ -206,7 +206,7 @@ export default {
         console.log('dataset', newVal)
         const newQuery = {
           page: 1,
-          size: 10,
+          size: 100,
           ids: newVal.labelGroupIds.join(',') // Tạo mảng mới
         }
         this.fetchDataGetLabelGroupData(newQuery)
